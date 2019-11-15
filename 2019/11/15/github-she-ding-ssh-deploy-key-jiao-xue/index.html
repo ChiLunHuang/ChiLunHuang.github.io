@@ -1,0 +1,726 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW,en,default">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Github 設定 SSH Deploy key 教學, C.L.H Lab">
+    <meta name="description" content="簡易設定 Deploy keys在不熟悉的環境下使用 git 指令進行 commit、push、pull等等的指令可能會遇到權限問題而無法使用：
+On branch master
+nothing to commit, working dir">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Github 設定 SSH Deploy key 教學 | C.L.H Lab</title>
+    <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+</head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="container">
+            <div class="nav-wrapper">
+                <div class="brand-logo">
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <img src="/medias/logo.png" class="logo-img hide-on-small-only">
+                        
+                        <span class="logo-span">C.L.H Lab</span>
+                    </a>
+                </div>
+                
+
+<a href="#" data-activates="mobile-nav" class="button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首頁</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>文章類別</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>文章標籤</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>文章日曆</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>關於我</span>
+        </a>
+    </li>
+    
+    <li>
+        <a id="toggleSearch" class="waves-effect waves-light">
+            <i id="searchIcon" class="mdi-action-search" title="搜索"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div class="side-nav" id="mobile-nav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">C.L.H Lab</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首頁
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                文章類別
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                文章標籤
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                文章日曆
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                關於我
+            </a>
+        </li>
+        
+        
+    </ul>
+
+    <div class="social-link">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+</div>
+
+            </div>
+        </div>
+
+        
+    </nav>
+</header>
+
+
+
+
+
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Github 設定 SSH Deploy key 教學
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+</style>
+<div class="row">
+    <div class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/github/" target="_blank">
+                                <span class="chip bg-color">github</span>
+                            </a>
+                        
+                            <a href="/tags/Deploy-keys/" target="_blank">
+                                <span class="chip bg-color">Deploy keys</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/GitHub/" class="post-category" target="_blank">
+                                GitHub
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
+                    2019-11-15
+                </div>
+
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>閱讀次數:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="簡易設定-Deploy-keys"><a href="#簡易設定-Deploy-keys" class="headerlink" title="簡易設定 Deploy keys"></a>簡易設定 Deploy keys</h2><p>在不熟悉的環境下使用 <code>git</code> 指令進行 <code>commit</code>、<code>push</code>、<code>pull</code>等等的指令可能會遇到權限問題而無法使用：</p>
+<pre><code>On branch master
+nothing to commit, working directory clean
+Warning: Permanently added the RSA host key for IP address &#39;xxx.xx.xxx.x&#39; to the list of known hosts.
+Permission denied (publickey).
+fatal: Could not read from remote repository.
+</code></pre><p>網路上依據不同情況有很多不同解決方式，本範例單純解決因為本機權限而造成的無法使用 <code>git</code> 相關動作的情形且為 <code>MacOS</code> 環境。</p>
+<h3 id="1-於本機產生-ssh-key"><a href="#1-於本機產生-ssh-key" class="headerlink" title="1.於本機產生 ssh key"></a><strong>1.於本機產生 ssh key</strong></h3><p>打開 Terminal 輸入下述：</p>
+<pre><code class="bash">ssh-keygen -t rsa -b 4096 -C &quot;github帳號mail&quot;</code></pre>
+<p>ex: ssh-keygen -t rsa -b 4096 -C “<a href="mailto:test.developer@gmail.com" target="_blank" rel="noopener">test.developer@gmail.com</a>“</p>
+<h3 id="2-設定路徑與密碼"><a href="#2-設定路徑與密碼" class="headerlink" title="2.設定路徑與密碼"></a><strong>2.設定路徑與密碼</strong></h3><p>可以都直接enter 或 yes，不用輸入任何路徑或是密碼。</p>
+<h3 id="3-將-key-加入-ssh-agent"><a href="#3-將-key-加入-ssh-agent" class="headerlink" title="3.將 key 加入 ssh-agent"></a><strong>3.將 key 加入 ssh-agent</strong></h3><pre><code class="bash">eval &quot;$(ssh-agent -s)&quot;
+ssh-add ~/.ssh/id_rsa</code></pre>
+<h3 id="4-把-SSH-Key-複製下來"><a href="#4-把-SSH-Key-複製下來" class="headerlink" title="4.把 SSH Key 複製下來"></a><strong>4.把 SSH Key 複製下來</strong></h3><pre><code class="bash">vim ~/.ssh/id_rsa.pub</code></pre>
+<p>EX:</p>
+<pre><code class="bash">ssh-rsa AFAAB3NzaC1yc2EAAAADAQABAAACAQDgyUQwYXGwERW/s4/0DVThkXFl1LHNss7Kz8gxMpieLCDF+5MZ+gl7/qewfq2/6aNfoJKizfUHX7ZBklm2Jj46OF+80zRtMhyJ8cI7oHWklVvUZ0csWHZVwN5PIxJ3/WtDtO/zD9OBF/6rCOVq9m1TBkWAgJL4ElnbECkkmR69Ujtpf/xgWQsqtHxPjfogTn5FdpPvmP/zQvTII7WwAZvCZNanX29DGnzuZ/XvdQ82xJuGK8pOPffi5lD760lybaVrYtfd+50aMrhGGrTwDE6J8ES3Ou9TzKA8ctm/12kCRXeM5QGaH5tqxGkl3cGU6kpPjMLq2s9fQwEQnv7tAz4lSmPoBNaDSqIWUzBBHq+6oqR0rtPtfwAXb3qVh20hpSgoDg5gMo3QelP6Q5YV7WaPE9kCd3TU8sVdXY8An2t6P0Zto6K4B9CAUalVLZVqU/kCz38iA/vq03iz3v+P3nAY7/WOUYQbXefN7lEBV5kpQfcWMMCl/6UiB7JzvtNUH7Q5bDkyONyzMct75aHeUVz4v6nR4O6mhvKJM0sBHvPWuHiD5CsJ9SHLE/quHRcnaM8ToeNYDUVeHEBl8SQNipv9SaU7TO7C2/lZCRzgFGQV9BKb9KA9V+8/wxF0Qn6j9GRI8YBOclaB6NOzoNEJfg6Kh2VYWzxBPiZ1noz+L6x7Ew== clh.developer@gmail.com</code></pre>
+<h3 id="5-將-key-加入-Github-Deploy-Key"><a href="#5-將-key-加入-Github-Deploy-Key" class="headerlink" title="5.將 key 加入 Github Deploy Key"></a><strong>5.將 key 加入 Github Deploy Key</strong></h3><p>選取你要處理的 repo 進入 <code>Setting</code> → <code>Deploy Key</code> → <code>Add deploy key</code> → 取名字加入上面複製的 ssh key → 完成</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone, qq, weibo, douban"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;轉載請註明:
+                    </span>
+                    <a href="http://yoursite.com" class="b-link-green">C.L.H Lab</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/11/15/github-she-ding-ssh-deploy-key-jiao-xue/" class="b-link-green">Github 設定 SSH Deploy key 教學</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: '414c0c335a81958b0c2d',
+        clientSecret: '7f1f55f81a6e37aaab79012221ba61e0abc2f3c2',
+        repo: 'ChiLunHuang.github.io',
+        owner: 'chilunhuang',
+        admin: "chilunhuang",
+        id: '2019-11-15T21-40-35',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2019/11/15/github-she-ding-ssh-deploy-key-jiao-xue/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Github 設定 SSH Deploy key 教學">
+                        
+                        <span class="card-title">Github 設定 SSH Deploy key 教學</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">簡易設定 Deploy keys在不熟悉的環境下使用 git 指令進行 commit、push、pull等等的指令可能會遇到權限問題而無法使用：
+On branch master
+nothing to commit, working dir</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-15
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/GitHub/" class="post-category" target="_blank">
+                                    GitHub
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/github/" target="_blank">
+                        <span class="chip bg-color">github</span>
+                    </a>
+                    
+                    <a href="/tags/Deploy-keys/" target="_blank">
+                        <span class="chip bg-color">Deploy keys</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/11/15/gcp-xi-lie-jian-kong-dataproc-zi-yuan-shi-yong/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="GCP系列 監控 Dataproc 資源使用">
+                        
+                        <span class="card-title">GCP系列 監控 Dataproc 資源使用</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">於 Mac 上監控資源使用有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-15
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/GCP/" class="post-category" target="_blank">
+                                    GCP
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/GCP/" target="_blank">
+                        <span class="chip bg-color">GCP</span>
+                    </a>
+                    
+                    <a href="/tags/Dataproc/" target="_blank">
+                        <span class="chip bg-color">Dataproc</span>
+                    </a>
+                    
+                    <a href="/tags/TrackingUI/" target="_blank">
+                        <span class="chip bg-color">TrackingUI</span>
+                    </a>
+                    
+                    <a href="/tags/cpu/" target="_blank">
+                        <span class="chip bg-color">cpu</span>
+                    </a>
+                    
+                    <a href="/tags/memory/" target="_blank">
+                        <span class="chip bg-color">memory</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: C.L.H Lab<br />'
+            + '作者: ChiLun Huang<br />'
+            + '超連結: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作權為作者所有，任何形式的轉載都請註明出處。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    </div>
+    <div class="col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目錄</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright &copy; 2019 | Powered by <a href="https://hexo.io/zh-tw/index.html" target="_blank">Hexo</a> | Theme by <a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a> | Photo by <a href="https://github.com/ChiLunHuang" target="_blank">C.L.H Lab</a> 本站嚴禁任何圖像轉載使用
+
+            
+
+            
+			
+                <br>
+                
+                <span id="busuanzi_container_site_pv">
+                    總瀏覽人數 <span id="busuanzi_value_site_pv" class="white-color"></span>
+                </span>
+                
+                
+                <span id="busuanzi_container_site_uv">
+                    <i class="fa fa-users"></i>
+                    次,&nbsp;目前訪客數 <span id="busuanzi_value_site_uv" class="white-color"></span> 人.
+                </span>
+                
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="搜索關鍵字"
+                   class="search-input" autofocus="">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/js/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-56252174-3"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'UA-56252174-3');
+</script>
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>
