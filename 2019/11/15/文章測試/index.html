@@ -4,8 +4,11 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="測試頁面, C.L.H Lab">
-    <meta name="description" content="測試頁面 | C.L.H Lab">
+    <meta name="keywords" content="於 GCP 上監控 Dataproc 資源, C.L.H Lab">
+    <meta name="description" content="Follow the steps from google pages
+https://cloud.google.com/sdk/docs/quickstart-mac-os-x
+
+1. Check version of python (Py">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +16,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>測試頁面 | C.L.H Lab</title>
+    <title>於 GCP 上監控 Dataproc 資源 | C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -197,13 +200,13 @@
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        測試頁面
+                        於 GCP 上監控 Dataproc 資源
                     </div>
                 </div>
             </div>
@@ -295,12 +298,24 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Python/" target="_blank">
-                                <span class="chip bg-color">Python</span>
-                            </a>
-                        
                             <a href="/tags/GCP/" target="_blank">
                                 <span class="chip bg-color">GCP</span>
+                            </a>
+                        
+                            <a href="/tags/Dataproc/" target="_blank">
+                                <span class="chip bg-color">Dataproc</span>
+                            </a>
+                        
+                            <a href="/tags/TrackingUI/" target="_blank">
+                                <span class="chip bg-color">TrackingUI</span>
+                            </a>
+                        
+                            <a href="/tags/cpu/" target="_blank">
+                                <span class="chip bg-color">cpu</span>
+                            </a>
+                        
+                            <a href="/tags/memory/" target="_blank">
+                                <span class="chip bg-color">memory</span>
                             </a>
                         
                     </div>
@@ -323,7 +338,7 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2019-09-07
+                    2019-11-15
                 </div>
 
                 
@@ -339,7 +354,25 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h2 id="Follow-the-steps-from-google-pages"><a href="#Follow-the-steps-from-google-pages" class="headerlink" title="Follow the steps from google pages"></a>Follow the steps from google pages</h2><blockquote>
+<p><a href="https://cloud.google.com/sdk/docs/quickstart-mac-os-x" target="_blank" rel="noopener">https://cloud.google.com/sdk/docs/quickstart-mac-os-x</a></p>
+</blockquote>
+<p><strong>1. Check version of python (Python 2.7)</strong></p>
+<p><code>python -V</code></p>
+<p><strong>2. Download the archive file:</strong></p>
+<p>Mac OS X (x86_64) or Mac OS X (x86)</p>
+<p><strong>3. Install :</strong></p>
+<p><code>./google-cloud-sdk/install.sh</code></p>
+<p><strong>4. init :</strong></p>
+<p><code>gcloud init</code></p>
+<p><strong>5. Build ssh to the cluster :</strong></p>
+<pre><code class="bash">gcloud compute ssh  --zone=&lt;zone&gt; --ssh-flag=&quot;-D 1080&quot; --ssh-flag=&quot;-N&quot; --ssh-flag=&quot;-n&quot; &lt;ClusterName-m&gt;</code></pre>
+<p><strong>6. Start a web page:</strong></p>
+<pre><code class="bash">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server=&quot;socks5://localhost:1080&quot; --host-resolver-rules=&quot;MAP * 0.0.0.0 , EXCLUDE localhost&quot; --user-data-dir=/tmp/&lt;ClusterName-m&gt;</code></pre>
+<p><strong>7. View TrackingUI or Jupyter :</strong></p>
+<p>TrackingUI: <code>http://&lt;ClusterName-m&gt;:8088</code></p>
+<p>Jupyter: <code>http://&lt;ClusterName-m&gt;:8123</code></p>
+
             </div>
             <hr/>
 
@@ -362,7 +395,7 @@
                     </span>
                     <a href="http://yoursite.com" class="b-link-green">C.L.H Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/2019/09/07/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A62/" class="b-link-green">測試頁面</a>
+                    <a href="/2019/11/15/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A6/" class="b-link-green">於 GCP 上監控 Dataproc 資源</a>
                 </p>
             </div>
         </div>
@@ -383,71 +416,27 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2019/09/08/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A6/">
+                <a href="/2019/11/15/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A6/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="測試頁面">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="於 GCP 上監控 Dataproc 資源">
                         
-                        <span class="card-title">測試頁面</span>
+                        <span class="card-title">於 GCP 上監控 Dataproc 資源</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary"></div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-09-08
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/GCP/" class="post-category" target="_blank">
-                                    GCP
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Python/" target="_blank">
-                        <span class="chip bg-color">Python</span>
-                    </a>
-                    
-                    <a href="/tags/AWS/" target="_blank">
-                        <span class="chip bg-color">AWS</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="fa fa-dot-circle-o"></i>
-            </div>
-            <div class="card">
-                <a href="/2019/09/07/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A62/">
-                    <div class="card-image">
-                        
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="測試頁面">
-                        
-                        <span class="card-title">測試頁面</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary"></div>
+                    <div class="summary">Follow the steps from google pages
+https://cloud.google.com/sdk/docs/quickstart-mac-os-x
+
+1. Check version of python (Py</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-09-07
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-15
                             </span>
                         <span class="publish-author">
                             
@@ -465,12 +454,88 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Python/" target="_blank">
-                        <span class="chip bg-color">Python</span>
+                    <a href="/tags/GCP/" target="_blank">
+                        <span class="chip bg-color">GCP</span>
                     </a>
+                    
+                    <a href="/tags/Dataproc/" target="_blank">
+                        <span class="chip bg-color">Dataproc</span>
+                    </a>
+                    
+                    <a href="/tags/TrackingUI/" target="_blank">
+                        <span class="chip bg-color">TrackingUI</span>
+                    </a>
+                    
+                    <a href="/tags/cpu/" target="_blank">
+                        <span class="chip bg-color">cpu</span>
+                    </a>
+                    
+                    <a href="/tags/memory/" target="_blank">
+                        <span class="chip bg-color">memory</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                本篇&nbsp;<i class="fa fa-dot-circle-o"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/11/15/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A6/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="於 GCP 上監控 Dataproc 資源">
+                        
+                        <span class="card-title">於 GCP 上監控 Dataproc 資源</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">Follow the steps from google pages
+https://cloud.google.com/sdk/docs/quickstart-mac-os-x
+
+1. Check version of python (Py</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-15
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/GCP/" class="post-category" target="_blank">
+                                    GCP
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
                     
                     <a href="/tags/GCP/" target="_blank">
                         <span class="chip bg-color">GCP</span>
+                    </a>
+                    
+                    <a href="/tags/Dataproc/" target="_blank">
+                        <span class="chip bg-color">Dataproc</span>
+                    </a>
+                    
+                    <a href="/tags/TrackingUI/" target="_blank">
+                        <span class="chip bg-color">TrackingUI</span>
+                    </a>
+                    
+                    <a href="/tags/cpu/" target="_blank">
+                        <span class="chip bg-color">cpu</span>
+                    </a>
+                    
+                    <a href="/tags/memory/" target="_blank">
+                        <span class="chip bg-color">memory</span>
                     </a>
                     
                 </div>
