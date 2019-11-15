@@ -4,11 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="於 GCP 上監控 Dataproc 資源, C.L.H Lab">
-    <meta name="description" content="Follow the steps from google pages
-https://cloud.google.com/sdk/docs/quickstart-mac-os-x
-
-1. Check version of python (Py">
+    <meta name="keywords" content="GCP系列 監控 Dataproc 資源使用, C.L.H Lab">
+    <meta name="description" content="於 Mac 上監控資源使用有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -16,7 +13,7 @@ https://cloud.google.com/sdk/docs/quickstart-mac-os-x
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>於 GCP 上監控 Dataproc 資源 | C.L.H Lab</title>
+    <title>GCP系列 監控 Dataproc 資源使用 | C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -206,7 +203,7 @@ https://cloud.google.com/sdk/docs/quickstart-mac-os-x
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        於 GCP 上監控 Dataproc 資源
+                        GCP系列 監控 Dataproc 資源使用
                     </div>
                 </div>
             </div>
@@ -354,23 +351,18 @@ https://cloud.google.com/sdk/docs/quickstart-mac-os-x
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="Follow-the-steps-from-google-pages"><a href="#Follow-the-steps-from-google-pages" class="headerlink" title="Follow the steps from google pages"></a>Follow the steps from google pages</h2><blockquote>
+                <h2 id="於-Mac-上監控資源使用"><a href="#於-Mac-上監控資源使用" class="headerlink" title="於 Mac 上監控資源使用"></a>於 Mac 上監控資源使用</h2><p>有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀況，導致在調教機器數量(省錢)的時候會有一定的困擾。</p>
+<p>以下教學將會示範如何在本機進行連線來查看機器使用狀況(本範例同時也可以在機器直接使用jupyter)。</p>
+<h3 id="大致上可參考-GCP-官方頁面操作"><a href="#大致上可參考-GCP-官方頁面操作" class="headerlink" title="大致上可參考 GCP 官方頁面操作"></a>大致上可參考 GCP 官方頁面操作</h3><blockquote>
 <p><a href="https://cloud.google.com/sdk/docs/quickstart-mac-os-x" target="_blank" rel="noopener">https://cloud.google.com/sdk/docs/quickstart-mac-os-x</a></p>
 </blockquote>
-<p><strong>1. Check version of python (Python 2.7)</strong></p>
-<p><code>python -V</code></p>
-<p><strong>2. Download the archive file:</strong></p>
-<p>Mac OS X (x86_64) or Mac OS X (x86)</p>
-<p><strong>3. Install :</strong></p>
-<p><code>./google-cloud-sdk/install.sh</code></p>
-<p><strong>4. init :</strong></p>
-<p><code>gcloud init</code></p>
-<p><strong>5. Build ssh to the cluster :</strong></p>
-<pre><code class="bash">gcloud compute ssh  --zone=&lt;zone&gt; --ssh-flag=&quot;-D 1080&quot; --ssh-flag=&quot;-N&quot; --ssh-flag=&quot;-n&quot; &lt;ClusterName-m&gt;</code></pre>
-<p><strong>6. Start a web page:</strong></p>
-<pre><code class="bash">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server=&quot;socks5://localhost:1080&quot; --host-resolver-rules=&quot;MAP * 0.0.0.0 , EXCLUDE localhost&quot; --user-data-dir=/tmp/&lt;ClusterName-m&gt;</code></pre>
-<p><strong>7. View TrackingUI or Jupyter :</strong></p>
-<p>TrackingUI: <code>http://&lt;ClusterName-m&gt;:8088</code></p>
+<h3 id="1-確認-python-版本"><a href="#1-確認-python-版本" class="headerlink" title="1.確認 python 版本"></a><strong>1.確認 python 版本</strong></h3><p><code>python -V</code></p>
+<h3 id="2-下載相對應的版本"><a href="#2-下載相對應的版本" class="headerlink" title="2.下載相對應的版本"></a><strong>2.下載相對應的版本</strong></h3><p>Mac OS X (x86_64) or Mac OS X (x86)</p>
+<h3 id="3-安裝"><a href="#3-安裝" class="headerlink" title="3.安裝"></a><strong>3.安裝</strong></h3><p><code>./google-cloud-sdk/install.sh</code></p>
+<h3 id="4-初始化-gcloud-指令"><a href="#4-初始化-gcloud-指令" class="headerlink" title="4.初始化 gcloud 指令"></a><strong>4.初始化 gcloud 指令</strong></h3><p><code>gcloud init</code></p>
+<h3 id="5-與已建立的機器-ssh-連線"><a href="#5-與已建立的機器-ssh-連線" class="headerlink" title="5.與已建立的機器 ssh 連線"></a><strong>5.與已建立的機器 ssh 連線</strong></h3><pre><code class="bash">gcloud compute ssh  --zone=&lt;zone&gt; --ssh-flag=&quot;-D 1080&quot; --ssh-flag=&quot;-N&quot; --ssh-flag=&quot;-n&quot; &lt;ClusterName-m&gt;</code></pre>
+<h3 id="6-開啟新瀏覽視窗"><a href="#6-開啟新瀏覽視窗" class="headerlink" title="6.開啟新瀏覽視窗"></a><strong>6.開啟新瀏覽視窗</strong></h3><pre><code class="bash">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server=&quot;socks5://localhost:1080&quot; --host-resolver-rules=&quot;MAP * 0.0.0.0 , EXCLUDE localhost&quot; --user-data-dir=/tmp/&lt;ClusterName-m&gt;</code></pre>
+<h3 id="7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter"><a href="#7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter" class="headerlink" title="7. 在新瀏覽視窗啟動 TrackingUI or Jupyter"></a><strong>7. 在新瀏覽視窗啟動 TrackingUI or Jupyter</strong></h3><p>TrackingUI: <code>http://&lt;ClusterName-m&gt;:8088</code></p>
 <p>Jupyter: <code>http://&lt;ClusterName-m&gt;:8123</code></p>
 
             </div>
@@ -395,12 +387,34 @@ https://cloud.google.com/sdk/docs/quickstart-mac-os-x
                     </span>
                     <a href="http://yoursite.com" class="b-link-green">C.L.H Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/2019/11/15/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A6/" class="b-link-green">於 GCP 上監控 Dataproc 資源</a>
+                    <a href="/2019/11/15/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A6/" class="b-link-green">GCP系列 監控 Dataproc 資源使用</a>
                 </p>
             </div>
         </div>
     </div>
 
+    
+        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: '414c0c335a81958b0c2d',
+        clientSecret: '7f1f55f81a6e37aaab79012221ba61e0abc2f3c2',
+        repo: 'ChiLunHuang.github.io',
+        owner: 'chilunhuang',
+        admin: "chilunhuang",
+        id: '2019-11-15T17-25-00',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
     
 
     
@@ -424,16 +438,13 @@ https://cloud.google.com/sdk/docs/quickstart-mac-os-x
                 <a href="/2019/11/15/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A6/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="於 GCP 上監控 Dataproc 資源">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="GCP系列 監控 Dataproc 資源使用">
                         
-                        <span class="card-title">於 GCP 上監控 Dataproc 資源</span>
+                        <span class="card-title">GCP系列 監控 Dataproc 資源使用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">Follow the steps from google pages
-https://cloud.google.com/sdk/docs/quickstart-mac-os-x
-
-1. Check version of python (Py</div>
+                    <div class="summary">於 Mac 上監控資源使用有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀</div>
                     <div class="publish-info">
                             <span class="publish-date">
                                 <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-15
@@ -488,16 +499,13 @@ https://cloud.google.com/sdk/docs/quickstart-mac-os-x
                 <a href="/2019/11/15/%E6%96%87%E7%AB%A0%E6%B8%AC%E8%A9%A6/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="於 GCP 上監控 Dataproc 資源">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="GCP系列 監控 Dataproc 資源使用">
                         
-                        <span class="card-title">於 GCP 上監控 Dataproc 資源</span>
+                        <span class="card-title">GCP系列 監控 Dataproc 資源使用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">Follow the steps from google pages
-https://cloud.google.com/sdk/docs/quickstart-mac-os-x
-
-1. Check version of python (Py</div>
+                    <div class="summary">於 Mac 上監控資源使用有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀</div>
                     <div class="publish-info">
                             <span class="publish-date">
                                 <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-15
@@ -640,7 +648,7 @@ https://cloud.google.com/sdk/docs/quickstart-mac-os-x
 <footer class="page-footer bg-color">
     <div class="container row center-align">
         <div class="col s12 m8 l8 copy-right">
-            Copyright &copy; 2019 | Powered by <a href="https://hexo.io/zh-tw/index.html" target="_blank">Hexo</a> | Theme by <a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>
+            Copyright &copy; 2019 | Powered by <a href="https://hexo.io/zh-tw/index.html" target="_blank">Hexo</a> | Theme by <a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a> | Photo by <a href="https://github.com/ChiLunHuang" target="_blank">C.L.H Lab</a> 本站嚴禁任何圖像轉載使用
 
             
 
