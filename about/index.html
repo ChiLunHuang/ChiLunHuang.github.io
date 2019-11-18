@@ -28,6 +28,20 @@
     </style>
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-56252174-3"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'UA-56252174-3');
+</script>
+
+
 </head>
 
 
@@ -431,7 +445,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"GitHub","value":1},{"name":"GCP","value":1}],
+                data: [{"name":"GCP","value":1},{"name":"GitHub","value":1}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -455,7 +469,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
         xAxis: [
             {
                 type: 'category',
-                data: ["github","Deploy keys","GCP","Dataproc","TrackingUI","cpu","memory"]
+                data: ["GCP","Dataproc","TrackingUI","cpu","memory","github","Deploy keys"]
             }
         ],
         yAxis: [
@@ -669,18 +683,6 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
         <div class="tag-chips center-align">
             
             
-            <a href="/tags/github/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">github</span>
-            </a>
-            
-            
-            
-            <a href="/tags/Deploy-keys/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">Deploy keys</span>
-            </a>
-            
-            
-            
             
             
             <a href="/tags/Dataproc/" target="_blank">
@@ -703,6 +705,18 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             
             <a href="/tags/memory/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">memory</span>
+            </a>
+            
+            
+            
+            <a href="/tags/github/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">github</span>
+            </a>
+            
+            
+            
+            <a href="/tags/Deploy-keys/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">Deploy keys</span>
             </a>
             
             
@@ -793,19 +807,6 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
 <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
 <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
 <script src="/js/matery.js"></script>
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-56252174-3"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-
-    gtag('js', new Date());
-    gtag('config', 'UA-56252174-3');
-</script>
 
 
 
