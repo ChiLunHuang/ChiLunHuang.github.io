@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Github 設定 SSH Deploy key 教學, 技術分享,spark,gcp,python">
+    <meta name="keywords" content="Github 設定 SSH Deploy key 教學, 技術分享,spark,gcp,python,CLH Lab">
     <meta name="description" content="簡易設定 Deploy keys在不熟悉的環境下使用 git 指令進行 commit、push、pull等等的指令可能會遇到權限問題而無法使用：
 On branch master
 nothing to commit, working dir">
@@ -411,31 +411,34 @@ ssh-add ~/.ssh/id_rsa</code></pre>
     </div>
 
     
-        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
-<link rel="stylesheet" href="/css/my-gitalk.css">
 
-<div class="card gitalk-card" data-aos="fade-up">
-    <div id="gitalk-container" class="card-content"></div>
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+    </div>
 </div>
 
-<script src="/libs/gitalk/gitalk.min.js"></script>
-<script>
-    let gitalk = new Gitalk({
-        clientID: '414c0c335a81958b0c2d',
-        clientSecret: '7f1f55f81a6e37aaab79012221ba61e0abc2f3c2',
-        repo: 'ChiLunHuang.github.io',
-        owner: 'chilunhuang',
-        admin: "chilunhuang",
-        id: '2019-11-15T21-40-35',
-        distractionFreeMode: false  // Facebook-like distraction free mode
-    });
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://yoursite.com/2019/11/15/github-she-ding-ssh-deploy-key-jiao-xue/';
+        this.page.identifier = '/2019/11/15/github-she-ding-ssh-deploy-key-jiao-xue/';
+        this.page.title = 'Github 設定 SSH Deploy key 教學';
+    };
+    let disqus_shortname = 'clhlab';
 
-    gitalk.render('gitalk-container');
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-    
-
-    
-
     
 
     
@@ -454,9 +457,9 @@ ssh-add ~/.ssh/id_rsa</code></pre>
                 <a href="/2019/11/18/jupyterhub-an-zhuang-she-ding-da-quan/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="Docker+JupyterHub+oauth驗證 安裝設定大全">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="Docker+JupyterHub+GCP OAuth驗證 安裝設定大全">
                         
-                        <span class="card-title">Docker+JupyterHub+oauth驗證 安裝設定大全</span>
+                        <span class="card-title">Docker+JupyterHub+GCP OAuth驗證 安裝設定大全</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
