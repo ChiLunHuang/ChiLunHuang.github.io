@@ -43,7 +43,8 @@
 
 
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -383,8 +384,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <h3 id="2-下載相對應的版本"><a href="#2-下載相對應的版本" class="headerlink" title="2.下載相對應的版本"></a><strong>2.下載相對應的版本</strong></h3><p>Mac OS X (x86_64) or Mac OS X (x86)</p>
 <h3 id="3-安裝"><a href="#3-安裝" class="headerlink" title="3.安裝"></a><strong>3.安裝</strong></h3><p><code>./google-cloud-sdk/install.sh</code></p>
 <h3 id="4-初始化-gcloud-指令"><a href="#4-初始化-gcloud-指令" class="headerlink" title="4.初始化 gcloud 指令"></a><strong>4.初始化 gcloud 指令</strong></h3><p><code>gcloud init</code></p>
-<h3 id="5-與已建立的機器-ssh-連線"><a href="#5-與已建立的機器-ssh-連線" class="headerlink" title="5.與已建立的機器 ssh 連線"></a><strong>5.與已建立的機器 ssh 連線</strong></h3><pre class=" language-bash"><code class="language-bash">gcloud compute <span class="token function">ssh</span>  --zone<span class="token operator">=</span><span class="token operator">&lt;</span>zone<span class="token operator">></span> --ssh-flag<span class="token operator">=</span><span class="token string">"-D 1080"</span> --ssh-flag<span class="token operator">=</span><span class="token string">"-N"</span> --ssh-flag<span class="token operator">=</span><span class="token string">"-n"</span> <span class="token operator">&lt;</span>ClusterName-m<span class="token operator">></span></code></pre>
-<h3 id="6-開啟新瀏覽視窗"><a href="#6-開啟新瀏覽視窗" class="headerlink" title="6.開啟新瀏覽視窗"></a><strong>6.開啟新瀏覽視窗</strong></h3><pre class=" language-bash"><code class="language-bash">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server<span class="token operator">=</span><span class="token string">"socks5://localhost:1080"</span> --host-resolver-rules<span class="token operator">=</span><span class="token string">"MAP * 0.0.0.0 , EXCLUDE localhost"</span> --user-data-dir<span class="token operator">=</span>/tmp/<span class="token operator">&lt;</span>ClusterName-m<span class="token operator">></span></code></pre>
+<h3 id="5-與已建立的機器-ssh-連線"><a href="#5-與已建立的機器-ssh-連線" class="headerlink" title="5.與已建立的機器 ssh 連線"></a><strong>5.與已建立的機器 ssh 連線</strong></h3><pre class="line-numbers language-bash"><code class="language-bash">gcloud compute <span class="token function">ssh</span>  --zone<span class="token operator">=</span><span class="token operator">&lt;</span>zone<span class="token operator">></span> --ssh-flag<span class="token operator">=</span><span class="token string">"-D 1080"</span> --ssh-flag<span class="token operator">=</span><span class="token string">"-N"</span> --ssh-flag<span class="token operator">=</span><span class="token string">"-n"</span> <span class="token operator">&lt;</span>ClusterName-m<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="6-開啟新瀏覽視窗"><a href="#6-開啟新瀏覽視窗" class="headerlink" title="6.開啟新瀏覽視窗"></a><strong>6.開啟新瀏覽視窗</strong></h3><pre class="line-numbers language-bash"><code class="language-bash">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server<span class="token operator">=</span><span class="token string">"socks5://localhost:1080"</span> --host-resolver-rules<span class="token operator">=</span><span class="token string">"MAP * 0.0.0.0 , EXCLUDE localhost"</span> --user-data-dir<span class="token operator">=</span>/tmp/<span class="token operator">&lt;</span>ClusterName-m<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h3 id="7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter"><a href="#7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter" class="headerlink" title="7. 在新瀏覽視窗啟動 TrackingUI or Jupyter"></a><strong>7. 在新瀏覽視窗啟動 TrackingUI or Jupyter</strong></h3><p>TrackingUI: <code>http://&lt;ClusterName-m&gt;:8088</code></p>
 <p>Jupyter: <code>http://&lt;ClusterName-m&gt;:8123</code></p>
 
