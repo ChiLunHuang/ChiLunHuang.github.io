@@ -4,8 +4,10 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="GCP系列 監控 Dataproc 資源使用, 技術分享,spark,gcp,python,clhlab,CLH Lab,教學">
-    <meta name="description" content="於 Mac 上監控資源使用有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀">
+    <meta name="keywords" content="Github 設定 SSH Deploy key 教學, 技術分享,spark,gcp,python,clhlab,CLH Lab,教學">
+    <meta name="description" content="簡易設定 Deploy keys在不熟悉的環境下使用 git 指令進行 commit、push、pull等等的指令可能會遇到權限問題而無法使用：
+On branch master
+nothing to commit, working dir">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +15,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>GCP系列 監控 Dataproc 資源使用 | C.L.H Lab</title>
+    <title>Github 設定 SSH Deploy key 教學 | C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -220,13 +222,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        GCP系列 監控 Dataproc 資源使用
+                        Github 設定 SSH Deploy key 教學
                     </div>
                 </div>
             </div>
@@ -318,24 +320,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/GCP/" target="_blank">
-                                <span class="chip bg-color">GCP</span>
+                            <a href="/tags/github/" target="_blank">
+                                <span class="chip bg-color">github</span>
                             </a>
                         
-                            <a href="/tags/Dataproc/" target="_blank">
-                                <span class="chip bg-color">Dataproc</span>
-                            </a>
-                        
-                            <a href="/tags/TrackingUI/" target="_blank">
-                                <span class="chip bg-color">TrackingUI</span>
-                            </a>
-                        
-                            <a href="/tags/cpu/" target="_blank">
-                                <span class="chip bg-color">cpu</span>
-                            </a>
-                        
-                            <a href="/tags/memory/" target="_blank">
-                                <span class="chip bg-color">memory</span>
+                            <a href="/tags/Deploy-keys/" target="_blank">
+                                <span class="chip bg-color">Deploy keys</span>
                             </a>
                         
                     </div>
@@ -346,8 +336,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/GCP/" class="post-category" target="_blank">
-                                GCP
+                            <a href="/categories/GitHub/" class="post-category" target="_blank">
+                                GitHub
                             </a>
                         
                     </div>
@@ -374,19 +364,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="於-Mac-上監控資源使用"><a href="#於-Mac-上監控資源使用" class="headerlink" title="於 Mac 上監控資源使用"></a>於 Mac 上監控資源使用</h2><p>有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀況，導致在調教機器數量(省錢)的時候會有一定的困擾。</p>
-<p>以下教學將會示範如何在本機進行連線來查看機器使用狀況(本範例同時也可以在機器直接使用jupyter)。</p>
-<h3 id="大致上可參考-GCP-官方頁面操作"><a href="#大致上可參考-GCP-官方頁面操作" class="headerlink" title="大致上可參考 GCP 官方頁面操作"></a>大致上可參考 GCP 官方頁面操作</h3><blockquote>
-<p><a href="https://cloud.google.com/sdk/docs/quickstart-mac-os-x" target="_blank" rel="noopener">https://cloud.google.com/sdk/docs/quickstart-mac-os-x</a></p>
-</blockquote>
-<h3 id="1-確認-python-版本"><a href="#1-確認-python-版本" class="headerlink" title="1.確認 python 版本"></a><strong>1.確認 python 版本</strong></h3><p><code>python -V</code></p>
-<h3 id="2-下載相對應的版本"><a href="#2-下載相對應的版本" class="headerlink" title="2.下載相對應的版本"></a><strong>2.下載相對應的版本</strong></h3><p>Mac OS X (x86_64) or Mac OS X (x86)</p>
-<h3 id="3-安裝"><a href="#3-安裝" class="headerlink" title="3.安裝"></a><strong>3.安裝</strong></h3><p><code>./google-cloud-sdk/install.sh</code></p>
-<h3 id="4-初始化-gcloud-指令"><a href="#4-初始化-gcloud-指令" class="headerlink" title="4.初始化 gcloud 指令"></a><strong>4.初始化 gcloud 指令</strong></h3><p><code>gcloud init</code></p>
-<h3 id="5-與已建立的機器-ssh-連線"><a href="#5-與已建立的機器-ssh-連線" class="headerlink" title="5.與已建立的機器 ssh 連線"></a><strong>5.與已建立的機器 ssh 連線</strong></h3><pre class=" language-bash"><code class="language-bash">gcloud compute <span class="token function">ssh</span>  --zone<span class="token operator">=</span><span class="token operator">&lt;</span>zone<span class="token operator">></span> --ssh-flag<span class="token operator">=</span><span class="token string">"-D 1080"</span> --ssh-flag<span class="token operator">=</span><span class="token string">"-N"</span> --ssh-flag<span class="token operator">=</span><span class="token string">"-n"</span> <span class="token operator">&lt;</span>ClusterName-m<span class="token operator">></span></code></pre>
-<h3 id="6-開啟新瀏覽視窗"><a href="#6-開啟新瀏覽視窗" class="headerlink" title="6.開啟新瀏覽視窗"></a><strong>6.開啟新瀏覽視窗</strong></h3><pre class=" language-bash"><code class="language-bash">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server<span class="token operator">=</span><span class="token string">"socks5://localhost:1080"</span> --host-resolver-rules<span class="token operator">=</span><span class="token string">"MAP * 0.0.0.0 , EXCLUDE localhost"</span> --user-data-dir<span class="token operator">=</span>/tmp/<span class="token operator">&lt;</span>ClusterName-m<span class="token operator">></span></code></pre>
-<h3 id="7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter"><a href="#7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter" class="headerlink" title="7. 在新瀏覽視窗啟動 TrackingUI or Jupyter"></a><strong>7. 在新瀏覽視窗啟動 TrackingUI or Jupyter</strong></h3><p>TrackingUI: <code>http://&lt;ClusterName-m&gt;:8088</code></p>
-<p>Jupyter: <code>http://&lt;ClusterName-m&gt;:8123</code></p>
+                <h2 id="簡易設定-Deploy-keys"><a href="#簡易設定-Deploy-keys" class="headerlink" title="簡易設定 Deploy keys"></a>簡易設定 Deploy keys</h2><p>在不熟悉的環境下使用 <code>git</code> 指令進行 <code>commit</code>、<code>push</code>、<code>pull</code>等等的指令可能會遇到權限問題而無法使用：</p>
+<pre class=" language-bash"><code class="language-bash">On branch master
+nothing to commit, working directory clean
+Warning: Permanently added the RSA host key <span class="token keyword">for</span> IP address <span class="token string">'xxx.xx.xxx.x'</span> to the list of known hosts.
+Permission denied <span class="token punctuation">(</span>publickey<span class="token punctuation">)</span>.
+fatal: Could not <span class="token function">read</span> from remote repository.
+</code></pre>
+<p>網路上依據不同情況有很多不同解決方式，本範例單純解決因為本機權限而造成的無法使用 <code>git</code> 相關動作的情形且為 <code>MacOS</code> 環境。</p>
+<h3 id="1-於本機產生-ssh-key"><a href="#1-於本機產生-ssh-key" class="headerlink" title="1.於本機產生 ssh key"></a><strong>1.於本機產生 ssh key</strong></h3><p>打開 Terminal 輸入下述：</p>
+<pre class=" language-bash"><code class="language-bash">ssh-keygen -t rsa -b 4096 -C <span class="token string">"github帳號mail"</span></code></pre>
+<p>ex: ssh-keygen -t rsa -b 4096 -C “<a href="mailto:test.developer@gmail.com" target="_blank" rel="noopener">test.developer@gmail.com</a>“</p>
+<h3 id="2-設定路徑與密碼"><a href="#2-設定路徑與密碼" class="headerlink" title="2.設定路徑與密碼"></a><strong>2.設定路徑與密碼</strong></h3><p>可以都直接enter 或 yes，不用輸入任何路徑或是密碼。</p>
+<h3 id="3-將-key-加入-ssh-agent"><a href="#3-將-key-加入-ssh-agent" class="headerlink" title="3.將 key 加入 ssh-agent"></a><strong>3.將 key 加入 ssh-agent</strong></h3><pre class=" language-bash"><code class="language-bash"><span class="token function">eval</span> <span class="token string">"<span class="token variable"><span class="token variable">$(</span>ssh-agent -s<span class="token variable">)</span></span>"</span>
+ssh-add ~/.ssh/id_rsa</code></pre>
+<h3 id="4-把-SSH-Key-複製下來"><a href="#4-把-SSH-Key-複製下來" class="headerlink" title="4.把 SSH Key 複製下來"></a><strong>4.把 SSH Key 複製下來</strong></h3><pre class=" language-bash"><code class="language-bash">vim ~/.ssh/id_rsa.pub</code></pre>
+<p>EX:</p>
+<pre class=" language-bash"><code class="language-bash">ssh-rsa AFAAB3NzaC1yc2EAAAADAQABAAACAQDgyUQwYXGwERW/s4/0DVThkXFl1LHNss7Kz8gxMpieLCDF+5MZ+gl7/qewfq2/6aNfoJKizfUHX7ZBklm2Jj46OF+80zRtMhyJ8cI7oHWklVvUZ0csWHZVwN5PIxJ3/WtDtO/zD9OBF/6rCOVq9m1TBkWAgJL4ElnbECkkmR69Ujtpf/xgWQsqtHxPjfogTn5FdpPvmP/zQvTII7WwAZvCZNanX29DGnzuZ/XvdQ82xJuGK8pOPffi5lD760lybaVrYtfd+50aMrhGGrTwDE6J8ES3Ou9TzKA8ctm/12kCRXeM5QGaH5tqxGkl3cGU6kpPjMLq2s9fQwEQnv7tAz4lSmPoBNaDSqIWUzBBHq+6oqR0rtPtfwAXb3qVh20hpSgoDg5gMo3QelP6Q5YV7WaPE9kCd3TU8sVdXY8An2t6P0Zto6K4B9CAUalVLZVqU/kCz38iA/vq03iz3v+P3nAY7/WOUYQbXefN7lEBV5kpQfcWMMCl/6UiB7JzvtNUH7Q5bDkyONyzMct75aHeUVz4v6nR4O6mhvKJM0sBHvPWuHiD5CsJ9SHLE/quHRcnaM8ToeNYDUVeHEBl8SQNipv9SaU7TO7C2/lZCRzgFGQV9BKb9KA9V+8/wxF0Qn6j9GRI8YBOclaB6NOzoNEJfg6Kh2VYWzxBPiZ1noz+L6x7Ew<span class="token operator">==</span> clh.developer@gmail.com</code></pre>
+<h3 id="5-將-key-加入-Github-Deploy-Key"><a href="#5-將-key-加入-Github-Deploy-Key" class="headerlink" title="5.將 key 加入 Github Deploy Key"></a><strong>5.將 key 加入 Github Deploy Key</strong></h3><p>選取你要處理的 repo 進入 <code>Setting</code> → <code>Deploy Key</code> → <code>Add deploy key</code> → 取名字加入上面複製的 ssh key → 完成</p>
 
             </div>
             <hr/>
@@ -408,9 +403,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <span class="reprint-tip">
                         <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;歡迎轉載但請註明作者:
                     </span>
-                    <a href="http://yoursite.com" class="b-link-green">C.L.H Lab</a>
+                    <a href="https://chilunhuang.github.io" class="b-link-green">C.L.H Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/9f35bf9c/" class="b-link-green">GCP系列 監控 Dataproc 資源使用</a>
+                    <a href="/posts/1127381336/" class="b-link-green">Github 設定 SSH Deploy key 教學</a>
                 </p>
             </div>
         </div>
@@ -431,9 +426,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'http://yoursite.com/posts/9f35bf9c/';
-        this.page.identifier = '/posts/9f35bf9c/';
-        this.page.title = 'GCP系列 監控 Dataproc 資源使用';
+        this.page.url = 'https://chilunhuang.github.io/posts/1127381336/';
+        this.page.identifier = '/posts/1127381336/';
+        this.page.title = 'Github 設定 SSH Deploy key 教學';
     };
     let disqus_shortname = 'clhlab';
 
@@ -460,28 +455,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/43327958/">
+                <a href="/posts/2470429202/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Github 設定 SSH Deploy key 教學">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="Docker+JupyterHub+GCP OAuth驗證 安裝設定大全">
                         
-                        <span class="card-title">Github 設定 SSH Deploy key 教學</span>
+                        <span class="card-title">Docker+JupyterHub+GCP OAuth驗證 安裝設定大全</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">簡易設定 Deploy keys在不熟悉的環境下使用 git 指令進行 commit、push、pull等等的指令可能會遇到權限問題而無法使用：
-On branch master
-nothing to commit, working dir</div>
+                    <div class="summary">Docker+JupyterHub+GCP OAuth驗證 安裝教學在十月的時候由於公司有相關的需求，就埋頭來研究一下 JupyterHub 的安裝與建置，網路上雖然有很多相關的參考文章了依然的撞了很多牆，除了紀錄有點舊以外，官網的相關說明</div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-15
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-18
                         </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/GitHub/" class="post-category" target="_blank">
-                                    GitHub
+                            <a href="/categories/Jupyterhub/" class="post-category" target="_blank">
+                                    Jupyterhub
                                 </a>
                             
                             
@@ -491,12 +484,20 @@ nothing to commit, working dir</div>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/github/" target="_blank">
-                        <span class="chip bg-color">github</span>
+                    <a href="/tags/jupyterhub/" target="_blank">
+                        <span class="chip bg-color">jupyterhub</span>
                     </a>
                     
-                    <a href="/tags/Deploy-keys/" target="_blank">
-                        <span class="chip bg-color">Deploy keys</span>
+                    <a href="/tags/docker/" target="_blank">
+                        <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                    <a href="/tags/gcp/" target="_blank">
+                        <span class="chip bg-color">gcp</span>
+                    </a>
+                    
+                    <a href="/tags/oauth/" target="_blank">
+                        <span class="chip bg-color">oauth</span>
                     </a>
                     
                 </div>
@@ -507,10 +508,10 @@ nothing to commit, working dir</div>
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="fa fa-dot-circle-o"></i>
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/9f35bf9c/">
+                <a href="/posts/2671099804/">
                     <div class="card-image">
                         
                         <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="GCP系列 監控 Dataproc 資源使用">
@@ -536,7 +537,6 @@ nothing to commit, working dir</div>
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
