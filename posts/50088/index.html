@@ -4,8 +4,14 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Docker+JupyterHub+GCP_OAuth憑證安裝流程, 技術分享,spark,gcp,python,clhlab,CLH Lab,教學">
-    <meta name="description" content="Docker+JupyterHub+GCP OAuth驗證 安裝教學在十月的時候由於公司有相關的需求，就埋頭來研究一下 JupyterHub 的安裝與建置，網路上雖然有很多相關的參考文章了依然的撞了很多牆，除了紀錄有點舊以外，官網的相關說明">
+    <meta name="keywords" content="pyspark系列 如何傳遞所有column 給 UDF實例, 技術分享,spark,gcp,python,clhlab,CLH Lab,教學">
+    <meta name="description" content="如何傳遞所有column 給 UDF實例在本範例你會學到：
+
+簡易UDF (User Define function) 使用方式
+傳遞多參數給UDF
+
+1.定義UDF
+用一個簡單加總所有欄位的 function 作為實現範例(當然有更好的方">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +19,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Docker+JupyterHub+GCP_OAuth憑證安裝流程 | C.L.H Lab</title>
+    <title>pyspark系列 如何傳遞所有column 給 UDF實例 | C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -221,13 +227,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        Docker+JupyterHub+GCP_OAuth憑證安裝流程
+                        pyspark系列 如何傳遞所有column 給 UDF實例
                     </div>
                 </div>
             </div>
@@ -319,20 +325,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/jupyterhub/" target="_blank">
-                                <span class="chip bg-color">jupyterhub</span>
+                            <a href="/tags/pyspark/" target="_blank">
+                                <span class="chip bg-color">pyspark</span>
                             </a>
                         
-                            <a href="/tags/docker/" target="_blank">
-                                <span class="chip bg-color">docker</span>
-                            </a>
-                        
-                            <a href="/tags/gcp/" target="_blank">
-                                <span class="chip bg-color">gcp</span>
-                            </a>
-                        
-                            <a href="/tags/oauth/" target="_blank">
-                                <span class="chip bg-color">oauth</span>
+                            <a href="/tags/udf/" target="_blank">
+                                <span class="chip bg-color">udf</span>
                             </a>
                         
                     </div>
@@ -343,8 +341,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Jupyterhub/" class="post-category" target="_blank">
-                                Jupyterhub
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                pyspark
                             </a>
                         
                     </div>
@@ -355,7 +353,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2019-11-18
+                    2019-11-21
                 </div>
 
                 
@@ -371,123 +369,62 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Docker-JupyterHub-GCP-OAuth驗證-安裝教學"><a href="#Docker-JupyterHub-GCP-OAuth驗證-安裝教學" class="headerlink" title="Docker+JupyterHub+GCP OAuth驗證 安裝教學"></a>Docker+JupyterHub+GCP OAuth驗證 安裝教學</h1><p>在十月的時候由於公司有相關的需求，就埋頭來研究一下 JupyterHub 的安裝與建置，網路上雖然有很多相關的參考文章了依然的撞了很多牆，除了紀錄有點舊以外，官網的相關說明其實有些地方我也看得一頭霧水，所以來紀錄一下，最後也把相關設定包入 docker 以利後需使用，有任何錯誤歡迎指正。</p>
-<p><strong>本文學習重點</strong></p>
-<p>1.利用 docker 快速建立多人使用的 JupyterHub</p>
-<p>2.使用 OAuth驗證 使用公司 gmail 作為登入帳號</p>
-<p><strong>備註</strong>：<br>本教學使用的環境預設使用者已熟知於 <code>如何於GCP環境架設VM</code>，並對 <code>Docker</code> 有基礎的了解(使用自己的環境也不會有問題，都已 docker 化，可依需求調整 dockerfile)。</p>
-<h2 id="1-安裝-Docker"><a href="#1-安裝-Docker" class="headerlink" title="1.安裝 Docker"></a>1.安裝 Docker</h2><p>若有安裝過了請跳過此步驟。</p>
+                <h2 id="如何傳遞所有column-給-UDF實例"><a href="#如何傳遞所有column-給-UDF實例" class="headerlink" title="如何傳遞所有column 給 UDF實例"></a>如何傳遞所有column 給 UDF實例</h2><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>docker : 前往 <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank" rel="noopener">docker 官網</a> 選擇自己合適的作業系統 (連結為 <code>ubuntu</code> 的範例)，跟著步驟安裝即可。</li>
-<li>docker-compose : 前往 <a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">官網</a> 依照相對應 OS 安裝即可。</li>
+<li>簡易UDF (User Define function) 使用方式</li>
+<li>傳遞多參數給UDF</li>
 </ul>
-<h2 id="2-Clone-repository"><a href="#2-Clone-repository" class="headerlink" title="2.Clone repository"></a>2.Clone repository</h2><p>基本上都已經包好了，clone 下來就能使用</p>
-<pre class="line-numbers language-bash"><code class="language-bash"> <span class="token function">git</span> clone https://github.com/ChiLunHuang/jupyterhub.git<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="3-env-設定"><a href="#3-env-設定" class="headerlink" title="3. .env 設定"></a>3. .env 設定</h2><p><code>cd</code> 進入資料夾操作，複製 .env 檔並依照需求填入相關參數</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token function">cp</span> env.example .env<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<ul>
-<li><code>SHARE_FOLDER</code> 為所有使用者在 container 的 code ，方便未來移植、複製環境</li>
-<li><code>port</code> 預設為 <code>8000</code> 可依需求更改 (gcp 環境新開 port 請更改防火牆設定) </li>
-</ul>
-<h2 id="4-OAuth-Authenticator-設定"><a href="#4-OAuth-Authenticator-設定" class="headerlink" title="4.OAuth Authenticator 設定"></a>4.OAuth Authenticator 設定</h2><p>這個部分就稍微複雜麻煩點了，由於 GCP 服務更新變動的相當平凡，網路教學可能隨時會過時導致資訊很不完整，請特別注意。</p>
-<p>GCP 啟用 oauth 服務請見以下教學：</p>
-<p>  1.在 GCP 左方導覽列中尋找 <code>API和服務</code></p>
-<p>  <img src="/medias/post_img/gcp_api.png" alt="點擊API和服務"></p>
-<p>  2.第一次使用要 先進入 <code>OAuth 同意畫面</code> 填入相關資料，還蠻容易理解的我就不多做說明。</p>
-<p>  <img src="/medias/post_img/oauth_approve.png" alt="於同意畫面填寫資料"></p>
-<p>  <strong>當中有個 <code>已授權網域</code> 請填寫公司的網域名稱，ex:google.com，否則下一步會出錯</strong></p>
-<p>  2.接下來進入憑證的步驟，主要是要取得 certificate <code>用戶端 ID(client_id)</code> 與 <code>用戶端密碼(client_secret)</code> </p>
-<ul>
-<li><p>點擊導覽列的憑證 &gt; 點擊建立憑證按鈕 &gt; OAuth 用戶端ID</p>
-<p><img src="/medias/post_img/add_oauth.png" alt="新增OAuth 用戶端ID"></p>
+<h3 id="1-定義UDF"><a href="#1-定義UDF" class="headerlink" title="1.定義UDF"></a><strong>1.定義UDF</strong></h3><ul>
+<li><p>用一個簡單加總所有欄位的 function 作為實現範例(當然有更好的方式做加總這個動作)。</p>
 </li>
-<li><p>填寫相關資料 (參考下圖)</p>
-<ul>
-<li>網路應用程式</li>
-<li>名稱 </li>
-<li>已授權的 JavaScript 來源 (請將範例中的網域位置換成自己相對應的網域且必須跟上一步驟的<code>已授權網域</code>相同，否則會跟我有一樣的錯誤訊息)</li>
-</ul>
+<li><p>熟悉 <code>python</code> 的人應該已經熟悉 <code>*columns</code> 的用法，代表所有的參數</p>
+</li>
+<li><p>有興趣可以參考以下網址，講的蠻詳盡的。</p>
 <blockquote>
-<p>若上一步驟 <code>已授權網域</code> 填寫的是 <code>lab.tw</code>，這步驟可能就會如下圖一樣(hostname.domain)</p>
-</blockquote>
-<p><img src="/medias/post_img/add_oauth2.png" alt="填寫相關網域資料">   </p>
-<p>相關資訊也可參考：<a href="https://cadlab.mde.tw/post/jupyterhub-oauth2-deng-ru-she-ding.html" target="_blank" rel="noopener">config 與 certificate 設定參考</a></p>
-</li>
-</ul>
-<h2 id="5-jupyterhub-config-py-設定"><a href="#5-jupyterhub-config-py-設定" class="headerlink" title="5.jupyterhub_config.py 設定"></a>5.jupyterhub_config.py 設定</h2><ul>
-<li><p>複製設定檔</p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">cp</span> config_folder/example.jupyterhub_config.py config_folder/jupyterhub_config.py<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
-<li><p><strong>若有使用 <code>docker-compose down</code> 再重新啟動後使用者資料都會重置， <code>config_folder</code> 資料夾內的資料也是方便未來移植、複製使用者資料</strong></p>
-</li>
-<li><p>設定上一步驟得到的憑證以及填入自己的 domain 、 host，需要設定的有 <code>oauth_callback_url</code>、<code>client_id</code>、<code>client_secret</code>、<code>hosted_domain</code>、<code>login_service</code></p>
-<ul>
-<li><code>oauth_callback_url</code>：填入剛剛申請憑證的那個 callback url</li>
-<li><code>client_id</code>、<code>client_secret</code>:填入剛剛申請憑證的兩組號碼</li>
-<li><code>hosted_domain</code>：允許進入網頁的domain，例如公司的 xxx.com，可設定多組使用逗號分隔  [‘hosted_domain 1’,’hosted_domain 2’]</li>
-<li><code>login_service</code>：登入時的顯示資訊，自由更改</li>
-</ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> oauthenticator<span class="token punctuation">.</span>google <span class="token keyword">import</span> LocalGoogleOAuthenticator
-c<span class="token punctuation">.</span>JupyterHub<span class="token punctuation">.</span>authenticator_class <span class="token operator">=</span> LocalGoogleOAuthenticator
-<span class="token comment" spellcheck="true"># use Google OAuthenticator for local users</span>
-c<span class="token punctuation">.</span>JupyterHub<span class="token punctuation">.</span>authenticator_class <span class="token operator">=</span> <span class="token string">'oauthenticator.LocalGoogleOAuthenticator'</span>
-<span class="token comment" spellcheck="true"># Need to create certificate in gcp interface and get client_id, client_secret</span>
-c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token punctuation">.</span>oauth_callback_url <span class="token operator">=</span> <span class="token string">'http://your_domain_url:8000/hub/oauth_callback'</span>
-c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token punctuation">.</span>client_id <span class="token operator">=</span> <span class="token string">'your_client_id'</span>
-c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token punctuation">.</span>client_secret <span class="token operator">=</span> <span class="token string">'your_client_secret'</span>
-c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token punctuation">.</span>hosted_domain <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'host_name'</span><span class="token punctuation">]</span>
-c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token punctuation">.</span>login_service <span class="token operator">=</span> <span class="token string">'Login with email'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<ul>
-<li><p><strong>補充：</strong> 使用 Email 新增使用者可能會遇到下方訊息，<a href="https://professorkazarinoff.github.io/jupyterhub-engr114/google_oauth/" target="_blank" rel="noopener">解決方式參考</a></p>
-<blockquote>
-<p>Please enter a username matching the regular expression configured via the NAME_REGEX</p>
-</blockquote>
-<blockquote>
-<p>要加入 c.Authenticator.add_user_cmd = [‘adduser’, ‘-q’, ‘–gecos’, ‘“”‘, ‘–disabled-password’, ‘–force-badname’]</p>
+<p><a href="https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html" target="_blank" rel="noopener">https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html</a></p>
 </blockquote>
 </li>
-<li><p>其他 config 設定例如白名單、黑名單(whitelist &amp; blacklist)基本上官網就很清楚了，就不贅述。如果沒有特別需求，直接使用 repo 裡的設定更改即可。</p>
+</ul>
+<pre class="line-numbers language-py"><code class="language-py"># function for summing
+def get_total(*columns):
+    total = 0
+    for col_value in columns:
+        total += col_value
+    return total
+
+# Define udf type and func
+udf_get_total = F.udf(get_total,IntegerType())
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-將所有column傳給UDF"><a href="#2-將所有column傳給UDF" class="headerlink" title="2.將所有column傳給UDF"></a><strong>2.將所有column傳給UDF</strong></h3><ul>
+<li><p>沒什麼特別的用法，就是用全部的欄位作為一個 list 傳入</p>
+</li>
+<li><p><code>*[col for col in df.columns]</code>，df.columns 為全部的欄位</p>
 </li>
 </ul>
-</li>
-</ul>
-<h2 id="6-啟動-Build-image-and-start-containers"><a href="#6-啟動-Build-image-and-start-containers" class="headerlink" title="6.啟動 Build image and start containers"></a>6.啟動 Build image and start containers</h2><pre class="line-numbers language-bash"><code class="language-bash">  docker-compose up -d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<ul>
-<li>Build images：第一次啟動/或改動 <code>dockerfile</code> </li>
-</ul>
-<pre class="line-numbers language-bash"><code class="language-bash">  docker-compose up --build -d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<ul>
-<li>手動重啟</li>
-</ul>
-<pre class="line-numbers language-bash"><code class="language-bash">  docker-compose restart<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="7-暫停-Stops-containers"><a href="#7-暫停-Stops-containers" class="headerlink" title="7.暫停 Stops containers"></a>7.暫停 Stops containers</h2><pre class="line-numbers language-bash"><code class="language-bash">  docker-compose down<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="8-JupyterHub-URL"><a href="#8-JupyterHub-URL" class="headerlink" title="8.JupyterHub URL"></a>8.JupyterHub URL</h2><p>  依需求更換 port，並確認是否可以連線</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  http://<span class="token operator">&lt;</span>IP-Adress<span class="token operator">></span>:8000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="9-使用-OAuth-驗證帳號設定"><a href="#9-使用-OAuth-驗證帳號設定" class="headerlink" title="9.使用 OAuth 驗證帳號設定"></a>9.使用 OAuth 驗證帳號設定</h2><p>  在 admin 頁面新增即可</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  http://<span class="token operator">&lt;</span>yourdomain.tw<span class="token operator">></span>:8000/hub/admin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h2 id="10-非使用-OAuth-驗證帳號設定-新增-刪除-修改"><a href="#10-非使用-OAuth-驗證帳號設定-新增-刪除-修改" class="headerlink" title="10.非使用 OAuth 驗證帳號設定(新增/刪除/修改)"></a>10.非使用 OAuth 驗證帳號設定(新增/刪除/修改)</h2><p>提供不使用 google gmail 作為帳號的方式：</p>
-<p>  1.更新</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token function">sudo</span> docker <span class="token function">exec</span> -it jupyterhub <span class="token function">passwd</span> <span class="token operator">&lt;</span>user<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>  2.新增</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token function">sudo</span> docker <span class="token function">exec</span> -it jupyterhub <span class="token function">useradd</span> --create-home <span class="token operator">&lt;</span>user<span class="token operator">></span>
-  <span class="token function">sudo</span> docker <span class="token function">exec</span> -it jupyterhub <span class="token function">passwd</span> <span class="token operator">&lt;</span>user<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>  若有新增使用者必須在 admin 頁面也新增一樣名稱的使用者，否則 Jupyter 不會認得</p>
-<pre class="line-numbers language-bash"><code class="language-bash">  http://<span class="token operator">&lt;</span>IP-Adress<span class="token operator">></span>:8000/hub/admin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>  3.刪除</p>
-<p>  未確定該使用者的資料都不需要時請勿加上 <code>-r</code></p>
-<pre class="line-numbers language-bash"><code class="language-bash">  <span class="token function">sudo</span> docker <span class="token function">exec</span> -it jupyterhub <span class="token function">userdel</span> <span class="token operator">&lt;</span>user<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="參考資料與說明"><a href="#參考資料與說明" class="headerlink" title="參考資料與說明"></a>參考資料與說明</h3><ul>
-<li>Config 設定上可以參考下方兩篇文章:</li>
-</ul>
-<blockquote>
-<p><a href="https://github.com/jupyterhub/oauthenticator" target="_blank" rel="noopener">https://github.com/jupyterhub/oauthenticator</a><br><a href="https://cadlab.mde.tw/post/jupyterhub-oauth2-deng-ru-she-ding.html" target="_blank" rel="noopener">https://cadlab.mde.tw/post/jupyterhub-oauth2-deng-ru-she-ding.html</a></p>
-</blockquote>
-<ul>
-<li><p>這個 <code>docker-compose.yml</code> 直接使用官網上的 <a href="https://hub.docker.com/r/jupyterhub/jupyterhub/" target="_blank" rel="noopener">image</a>，若有其他版本需求再自行更改 <code>Dockerfile</code>  </p>
-</li>
-<li><p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也請在 <a href="https://github.com/ChiLunHuang/jupyterhub" target="_blank" rel="noopener">github.com</a> 按個星星讓我知道，謝謝。</p>
-</li>
-</ul>
+<pre class="line-numbers language-py"><code class="language-py">df.withColumn('sum',udf_get_total(*[col for col in df.columns])).show()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="3-完整的範例"><a href="#3-完整的範例" class="headerlink" title="3.完整的範例"></a><strong>3.完整的範例</strong></h3><pre class="line-numbers language-py"><code class="language-py">from pyspark import SparkConf, SparkContext
+from pyspark.sql import SparkSession
+import pyspark.sql.functions as F
+from pyspark.sql.types import *
+
+spark = SparkSession.builder.appName('pass_columns').getOrCreate()
+
+# function for summing
+def get_total(*columns):
+    total = 0
+    for col_value in columns:
+        total += col_value
+    return total
+
+# Create dataframe
+df = spark.createDataFrame([(1, 2, 3, 4, 5, 6),(12, 24, 33, 44, 54, 66)], ["A", "B", "C", "D", "E", "F"])
+
+# Define udf type and func
+udf_get_total = F.udf(get_total,IntegerType())
+
+# pass all column to UDF and create a new column for summing result.
+df.withColumn('sum',udf_get_total(*[col for col in df.columns])).show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>
 
             </div>
             <hr/>
@@ -511,7 +448,7 @@ c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token 
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">C.L.H Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/62028/" class="b-link-green">Docker+JupyterHub+GCP_OAuth憑證安裝流程</a>
+                    <a href="/posts/50088/" class="b-link-green">pyspark系列 如何傳遞所有column 給 UDF實例</a>
                 </p>
             </div>
         </div>
@@ -532,9 +469,9 @@ c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token 
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/62028/';
-        this.page.identifier = '/posts/62028/';
-        this.page.title = 'Docker+JupyterHub+GCP_OAuth憑證安裝流程';
+        this.page.url = 'https://chilunhuang.github.io/posts/50088/';
+        this.page.identifier = '/posts/50088/';
+        this.page.title = 'pyspark系列 如何傳遞所有column 給 UDF實例';
     };
     let disqus_shortname = 'clhlab';
 
@@ -557,9 +494,10 @@ c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token 
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/posts/50088/">
                     <div class="card-image">
@@ -578,9 +516,9 @@ c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token 
 1.定義UDF
 用一個簡單加總所有欄位的 function 作為實現範例(當然有更好的方</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-21
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-21
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -593,6 +531,7 @@ c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token 
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -615,28 +554,26 @@ c<span class="token punctuation">.</span>GoogleOAuthenticator<span class="token 
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/1127381336/">
+                <a href="/posts/62028/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Github - SSH Deploy key 設定教學">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="Docker+JupyterHub+GCP_OAuth憑證安裝流程">
                         
-                        <span class="card-title">Github - SSH Deploy key 設定教學</span>
+                        <span class="card-title">Docker+JupyterHub+GCP_OAuth憑證安裝流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">簡易設定 Deploy keys在不熟悉的環境下使用 git 指令進行 commit、push、pull等等的指令可能會遇到權限問題而無法使用：
-On branch master
-nothing to commit, working dir</div>
+                    <div class="summary">Docker+JupyterHub+GCP OAuth驗證 安裝教學在十月的時候由於公司有相關的需求，就埋頭來研究一下 JupyterHub 的安裝與建置，網路上雖然有很多相關的參考文章了依然的撞了很多牆，除了紀錄有點舊以外，官網的相關說明</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-15
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-18
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/GitHub/" class="post-category" target="_blank">
-                                    GitHub
+                            <a href="/categories/Jupyterhub/" class="post-category" target="_blank">
+                                    Jupyterhub
                                 </a>
                             
                             
@@ -646,12 +583,20 @@ nothing to commit, working dir</div>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/github/" target="_blank">
-                        <span class="chip bg-color">github</span>
+                    <a href="/tags/jupyterhub/" target="_blank">
+                        <span class="chip bg-color">jupyterhub</span>
                     </a>
                     
-                    <a href="/tags/Deploy-keys/" target="_blank">
-                        <span class="chip bg-color">Deploy keys</span>
+                    <a href="/tags/docker/" target="_blank">
+                        <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                    <a href="/tags/gcp/" target="_blank">
+                        <span class="chip bg-color">gcp</span>
+                    </a>
+                    
+                    <a href="/tags/oauth/" target="_blank">
+                        <span class="chip bg-color">oauth</span>
                     </a>
                     
                 </div>

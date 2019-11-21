@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>pyspark系列 如何傳遞所有column 給 UDF實例</title>
+      <link href="/posts/50088/"/>
+      <url>/posts/50088/</url>
+      
+        <content type="html"><![CDATA[<h2 id="如何傳遞所有column-給-UDF實例"><a href="#如何傳遞所有column-給-UDF實例" class="headerlink" title="如何傳遞所有column 給 UDF實例"></a>如何傳遞所有column 給 UDF實例</h2><p><strong>在本範例你會學到：</strong></p><ul><li>簡易UDF (User Define function) 使用方式</li><li>傳遞多參數給UDF</li></ul><h3 id="1-定義UDF"><a href="#1-定義UDF" class="headerlink" title="1.定義UDF"></a><strong>1.定義UDF</strong></h3><ul><li><p>用一個簡單加總所有欄位的 function 作為實現範例(當然有更好的方式做加總這個動作)。</p></li><li><p>熟悉 <code>python</code> 的人應該已經熟悉 <code>*columns</code> 的用法，代表所有的參數</p></li><li><p>有興趣可以參考以下網址，講的蠻詳盡的。</p><blockquote><p><a href="https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html" target="_blank" rel="noopener">https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html</a></p></blockquote></li></ul><pre class="line-numbers language-py"><code class="language-py"># function for summingdef get_total(*columns):    total = 0    for col_value in columns:        total += col_value    return total# Define udf type and funcudf_get_total = F.udf(get_total,IntegerType())<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h3 id="2-將所有column傳給UDF"><a href="#2-將所有column傳給UDF" class="headerlink" title="2.將所有column傳給UDF"></a><strong>2.將所有column傳給UDF</strong></h3><ul><li><p>沒什麼特別的用法，就是用全部的欄位作為一個 list 傳入</p></li><li><p><code>*[col for col in df.columns]</code>，df.columns 為全部的欄位</p></li></ul><pre class="line-numbers language-py"><code class="language-py">df.withColumn('sum',udf_get_total(*[col for col in df.columns])).show()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h3 id="3-完整的範例"><a href="#3-完整的範例" class="headerlink" title="3.完整的範例"></a><strong>3.完整的範例</strong></h3><pre class="line-numbers language-py"><code class="language-py">from pyspark import SparkConf, SparkContextfrom pyspark.sql import SparkSessionimport pyspark.sql.functions as Ffrom pyspark.sql.types import *spark = SparkSession.builder.appName('pass_columns').getOrCreate()# function for summingdef get_total(*columns):    total = 0    for col_value in columns:        total += col_value    return total# Create dataframedf = spark.createDataFrame([(1, 2, 3, 4, 5, 6),(12, 24, 33, 44, 54, 66)], ["A", "B", "C", "D", "E", "F"])# Define udf type and funcudf_get_total = F.udf(get_total,IntegerType())# pass all column to UDF and create a new column for summing result.df.withColumn('sum',udf_get_total(*[col for col in df.columns])).show()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+            <tag> udf </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Docker+JupyterHub+GCP_OAuth憑證安裝流程</title>
       <link href="/posts/62028/"/>
       <url>/posts/62028/</url>
