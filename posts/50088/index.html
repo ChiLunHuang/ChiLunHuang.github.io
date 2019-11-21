@@ -396,9 +396,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 udf_get_total <span class="token operator">=</span> F<span class="token punctuation">.</span>udf<span class="token punctuation">(</span>get_total<span class="token punctuation">,</span>IntegerType<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="2-將所有column傳給UDF"><a href="#2-將所有column傳給UDF" class="headerlink" title="2.將所有column傳給UDF"></a><strong>2.將所有column傳給UDF</strong></h3><ul>
-<li><p>沒什麼特別的用法，就是用全部的欄位作為一個 list 傳入</p>
+<li><p>沒什麼特別的用法，就是用全部的欄位作為一個 list 傳入 <code>*[col for col in df.columns]</code></p>
 </li>
-<li><p><code>*[col for col in df.columns]</code>，df.columns 為全部的欄位</p>
+<li><p>，df.columns 為全部的欄位</p>
 </li>
 </ul>
 <pre class="line-numbers language-python"><code class="language-python">df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'sum'</span><span class="token punctuation">,</span>udf_get_total<span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">[</span>col <span class="token keyword">for</span> col <span class="token keyword">in</span> df<span class="token punctuation">.</span>columns<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -424,6 +424,7 @@ udf_get_total <span class="token operator">=</span> F<span class="token punctuat
 
 <span class="token comment" spellcheck="true"># pass all column to UDF and create a new column for summing result.</span>
 df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'sum'</span><span class="token punctuation">,</span>udf_get_total<span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">[</span>col <span class="token keyword">for</span> col <span class="token keyword">in</span> df<span class="token punctuation">.</span>columns<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-資料與結果"><a href="#4-資料與結果" class="headerlink" title="4.資料與結果"></a><strong>4.資料與結果</strong></h3><p><img src="/medias/post_img/50088_1.png" alt="原始資料示意圖"><br><img src="/medias/post_img/50088_1.png" alt="最後結果示意圖"></p>
 <p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>
 
             </div>
