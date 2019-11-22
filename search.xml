@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title>pyspark系列 如何傳遞所有 column 給 UDF 實例</title>
+      <title>pyspark系列 - 如何傳遞所有 column 給 UDF 實例</title>
       <link href="/posts/50088/"/>
       <url>/posts/50088/</url>
       
@@ -47,11 +47,11 @@
       
         <tags>
             
+            <tag> gcp </tag>
+            
             <tag> jupyterhub </tag>
             
             <tag> docker </tag>
-            
-            <tag> gcp </tag>
             
             <tag> oauth </tag>
             
@@ -62,7 +62,7 @@
     
     
     <entry>
-      <title>Github - SSH Deploy key 設定教學</title>
+      <title>Github-SSH Deploy key 設定教學</title>
       <link href="/posts/1127381336/"/>
       <url>/posts/1127381336/</url>
       
@@ -80,7 +80,7 @@
             
             <tag> github </tag>
             
-            <tag> Deploy keys </tag>
+            <tag> deploy keys </tag>
             
         </tags>
       
@@ -89,7 +89,7 @@
     
     
     <entry>
-      <title>GCP系列 監控Dataproc memory 資源使用狀態</title>
+      <title>GCP系列-監控Dataproc memory 資源使用狀態</title>
       <link href="/posts/2671099804/"/>
       <url>/posts/2671099804/</url>
       
@@ -105,11 +105,11 @@
       
         <tags>
             
-            <tag> GCP </tag>
+            <tag> gcp </tag>
             
-            <tag> Dataproc </tag>
+            <tag> dataproc </tag>
             
-            <tag> TrackingUI </tag>
+            <tag> trackingUI </tag>
             
             <tag> cpu </tag>
             
