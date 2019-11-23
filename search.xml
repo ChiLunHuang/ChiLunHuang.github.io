@@ -47,7 +47,7 @@
       
         <tags>
             
-            <tag> gcp </tag>
+            <tag> GCP </tag>
             
             <tag> jupyterhub </tag>
             
@@ -80,7 +80,7 @@
             
             <tag> github </tag>
             
-            <tag> deploy keys </tag>
+            <tag> Deploy keys </tag>
             
         </tags>
       
@@ -105,11 +105,11 @@
       
         <tags>
             
-            <tag> gcp </tag>
+            <tag> GCP </tag>
             
-            <tag> dataproc </tag>
+            <tag> Dataproc </tag>
             
-            <tag> trackingUI </tag>
+            <tag> TrackingUI </tag>
             
             <tag> cpu </tag>
             
