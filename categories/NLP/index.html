@@ -15,13 +15,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="分類: pyspark" />
+    <meta property="og:title" content="分類: NLP" />
     <meta property="og:description" content="C.L.H 實驗室，不定期分享程式開發、旅遊、生活等等的大小事。" />
     <meta property="og:image" content="/medias/avatar.jpg" />
     <meta property="og:site_name" content="C.L.H Lab" />
 
     <!-- Facebook end-->
-    <title>分類: pyspark | C.L.H Lab</title>
+    <title>分類: NLP | C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -317,7 +317,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 
                 <a href="/categories/NLP/" title="NLP: 1">
                     <span class="chip center-align waves-effect waves-light
-                             chip-default "
+                             chip-active "
                             style="background-color: #E8F8F5;">NLP
                         <span class="tag-length">1</span>
                     </span>
@@ -326,7 +326,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 
                 <a href="/categories/pyspark/" title="pyspark: 2">
                     <span class="chip center-align waves-effect waves-light
-                             chip-active "
+                             chip-default "
                             style="background-color: #FEF9E7;">pyspark
                         <span class="tag-length">2</span>
                     </span>
@@ -345,18 +345,18 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             
             <div class="article tag-post col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/posts/54688/">
+                    <a href="/posts/62615/">
                         <div class="card-image tag-image">
                             
-                            <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="pyspark 系列 - 在 lit 中使用 array">
+                            <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="NLP 系列 - Tensorboard 視覺化 word2vec 詞向量">
                             
-                            <span class="card-title">pyspark 系列 - 在 lit 中使用 array</span>
+                            <span class="card-title">NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</span>
                         </div>
                     </a>
                     <div class="card-content article-content">
                         <div class="summary">
                             
-                                想要使用 lit 增加欄位時，如果增加的是一個 array，spark 將會拋出錯誤 Unsupported literal type class java.util.ArrayList。本文章將簡單的示範該如何解決此問題。
+                                word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。
                             
                         </div>
                         <div class="publish-info">
@@ -367,8 +367,8 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                                 
                                 <i class="fa fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/pyspark/" class="post-category" target="_blank">
-                                    pyspark
+                                <a href="/categories/NLP/" class="post-category" target="_blank">
+                                    NLP
                                 </a>
                                 
                                 
@@ -379,65 +379,16 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/pyspark/" target="_blank">
-                            <span class="chip bg-color">pyspark</span>
+                        <a href="/tags/nlp/" target="_blank">
+                            <span class="chip bg-color">nlp</span>
                         </a>
                         
-                        <a href="/tags/lit/" target="_blank">
-                            <span class="chip bg-color">lit</span>
+                        <a href="/tags/word2vec/" target="_blank">
+                            <span class="chip bg-color">word2vec</span>
                         </a>
                         
-                        <a href="/tags/arraylist/" target="_blank">
-                            <span class="chip bg-color">arraylist</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article tag-post col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/posts/50088/">
-                        <div class="card-image tag-image">
-                            
-                            <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="pyspark系列 - 如何傳遞所有 column 給 UDF 實例">
-                            
-                            <span class="card-title">pyspark系列 - 如何傳遞所有 column 給 UDF 實例</span>
-                        </div>
-                    </a>
-                    <div class="card-content article-content">
-                        <div class="summary">
-                            
-                                當參數稍微多一點時，傳遞參數到UDF就會寫的非常的長，也很不美觀，寫一個簡單的範例來解決此問題。
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-21
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fa fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/pyspark/" class="post-category" target="_blank">
-                                    pyspark
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/pyspark/" target="_blank">
-                            <span class="chip bg-color">pyspark</span>
-                        </a>
-                        
-                        <a href="/tags/udf/" target="_blank">
-                            <span class="chip bg-color">udf</span>
+                        <a href="/tags/tensorboard/" target="_blank">
+                            <span class="chip bg-color">tensorboard</span>
                         </a>
                         
                     </div>

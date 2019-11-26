@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="pyspark,lit,arraylist,array,技術分享,spark,gcp,python,clhlab,CLH Lab,教學">
-    <meta name="description" content="想要使用 lit 增加欄位時，如果增加的是一個 array，spark 將會拋出錯誤 Unsupported literal type class java.util.ArrayList。本文章將簡單的示範該如何解決此問題。">
+    <meta name="keywords" content="nlp, word2vec, tensorboard,技術分享,spark,gcp,python,clhlab,CLH Lab,教學">
+    <meta name="description" content="word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,13 +15,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="pyspark 系列 - 在 lit 中使用 array" />
-    <meta property="og:description" content="想要使用 lit 增加欄位時，如果增加的是一個 array，spark 將會拋出錯誤 Unsupported literal type class java.util.ArrayList。本文章將簡單的示範該如何解決此問題。" />
-    <meta property="og:image" content="/medias/featureimages/5.jpg" />
+    <meta property="og:title" content="NLP 系列 - Tensorboard 視覺化 word2vec 詞向量" />
+    <meta property="og:description" content="word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。" />
+    <meta property="og:image" content="/medias/featureimages/6.jpg" />
     <meta property="og:site_name" content="C.L.H Lab" />
 
     <!-- Facebook end-->
-    <title>pyspark 系列 - 在 lit 中使用 array | C.L.H Lab</title>
+    <title>NLP 系列 - Tensorboard 視覺化 word2vec 詞向量 | C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -247,13 +247,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/6.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        pyspark 系列 - 在 lit 中使用 array
+                        NLP 系列 - Tensorboard 視覺化 word2vec 詞向量
                     </div>
                 </div>
             </div>
@@ -345,16 +345,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/pyspark/" target="_blank">
-                                <span class="chip bg-color">pyspark</span>
+                            <a href="/tags/nlp/" target="_blank">
+                                <span class="chip bg-color">nlp</span>
                             </a>
                         
-                            <a href="/tags/lit/" target="_blank">
-                                <span class="chip bg-color">lit</span>
+                            <a href="/tags/word2vec/" target="_blank">
+                                <span class="chip bg-color">word2vec</span>
                             </a>
                         
-                            <a href="/tags/arraylist/" target="_blank">
-                                <span class="chip bg-color">arraylist</span>
+                            <a href="/tags/tensorboard/" target="_blank">
+                                <span class="chip bg-color">tensorboard</span>
                             </a>
                         
                     </div>
@@ -365,8 +365,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/pyspark/" class="post-category" target="_blank">
-                                pyspark
+                            <a href="/categories/NLP/" class="post-category" target="_blank">
+                                NLP
                             </a>
                         
                     </div>
@@ -393,61 +393,118 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="How-to-pass-array-to-pyspark-lit-function"><a href="#How-to-pass-array-to-pyspark-lit-function" class="headerlink" title="How to pass array to pyspark lit function?"></a>How to pass array to pyspark lit function?</h2><p><strong>在本範例你會學到：</strong></p>
+                <h2 id="How-to-use-tensorboard-to-visualize-project-word2vec-model"><a href="#How-to-use-tensorboard-to-visualize-project-word2vec-model" class="headerlink" title="How to use tensorboard to visualize/project word2vec model?"></a>How to use tensorboard to visualize/project word2vec model?</h2><p>  word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，在應用解釋時(給老闆、業務、行銷與客戶)其實蠻困擾的。此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係，來解決上述問題。</p>
+<p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>如何使用 lit 函式</li>
-<li>將 array 傳給 lit</li>
-<li>解決以下問題</li>
+<li>如何使用 tensorboard</li>
+<li>將 word2vec 詞向量視覺化</li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python">py4j<span class="token punctuation">.</span>protocol<span class="token punctuation">.</span>Py4JJavaError<span class="token punctuation">:</span> An error occurred <span class="token keyword">while</span> calling z<span class="token punctuation">:</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>functions<span class="token punctuation">.</span>lit<span class="token punctuation">.</span><span class="token punctuation">:</span> java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>RuntimeException<span class="token punctuation">:</span> Unsupported literal type <span class="token keyword">class</span> <span class="token class-name">java</span><span class="token punctuation">.</span>util<span class="token punctuation">.</span>ArrayList<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><strong>以下目的是為了展示 lit 使用方式，其範例看起來可能有點傻，請見諒</strong></p>
-<h3 id="1-如何使用-lit"><a href="#1-如何使用-lit" class="headerlink" title="1.如何使用 lit"></a><strong>1.如何使用 lit</strong></h3><p>由於 spark 在操作的時候都是以 <code>rdd</code> 或是 <code>dataframe</code> 的形式在使用，若不是這兩個形態是不能互相處理任何事情的，例如：</p>
+<p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>若我想要新增一個數值在 dataframe 上，而且每個值都一樣，可以這麼做</li>
+<li>word2vec model (本篇不贅述該如何產生一個 word2vec model，若有需要的留言讓我知道)</li>
+<li><strong>注意：本範例會有一點 <code>Tensorflow</code> 的用法，不懂也不會影響使用。</strong></li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> pyspark <span class="token keyword">import</span> SparkConf<span class="token punctuation">,</span> SparkContext
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql <span class="token keyword">import</span> SparkSession
-<span class="token keyword">import</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>functions <span class="token keyword">as</span> F
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>types <span class="token keyword">import</span> <span class="token operator">*</span>
-
-spark <span class="token operator">=</span> SparkSession<span class="token punctuation">.</span>builder<span class="token punctuation">.</span>appName<span class="token punctuation">(</span><span class="token string">'lit_example'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>getOrCreate<span class="token punctuation">(</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># Create dataframe</span>
-df <span class="token operator">=</span> spark<span class="token punctuation">.</span>createDataFrame<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">,</span> <span class="token number">33</span><span class="token punctuation">,</span> <span class="token number">44</span><span class="token punctuation">,</span> <span class="token number">54</span><span class="token punctuation">,</span> <span class="token number">66</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">"A"</span><span class="token punctuation">,</span> <span class="token string">"B"</span><span class="token punctuation">,</span> <span class="token string">"C"</span><span class="token punctuation">,</span> <span class="token string">"D"</span><span class="token punctuation">,</span> <span class="token string">"E"</span><span class="token punctuation">,</span> <span class="token string">"F"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># 不能直接給值會報錯 </span>
-<span class="token comment" spellcheck="true"># 會有以下錯誤： AssertionError: col should be Column</span>
-df_lit <span class="token operator">=</span> df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'lit_column'</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># 正確寫法</span>
-df_lit <span class="token operator">=</span> df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'lit_column'</span><span class="token punctuation">,</span>F<span class="token punctuation">.</span>lit<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-
-df_lit<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="/medias/post_img/54688_1.png" alt="新增數值示意圖"></p>
-<h3 id="2-lit-與-array-的使用方式"><a href="#2-lit-與-array-的使用方式" class="headerlink" title="2.lit 與 array 的使用方式"></a><strong>2.lit 與 array 的使用方式</strong></h3><ul>
-<li>當我想要新增一個 array 的時候，就會遇到上方的錯誤訊息 <code>Unsupported literal type class java.util.ArrayList</code>。延續上方的例子：</li>
+<h3 id="1-套件準備"><a href="#1-套件準備" class="headerlink" title="1.套件準備"></a><strong>1.套件準備</strong></h3><p>在自己喜歡的環境內使用安裝以下套件，基本上就是 <code>tensorflow</code>、<code>gensim</code>、<code>numpy</code>，版本之間的衝突問題請依照自己環境選擇版本，網路上相關範本已經很多了：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">numpy<span class="token operator">==</span>1.17.3
+tensorboard<span class="token operator">==</span>1.15.0
+tensorflow<span class="token operator">==</span>1.15.0
+tensorflow-estimator<span class="token operator">==</span>1.15.1
+gensim<span class="token operator">==</span>3.8.1
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-載入-word2vec-模型"><a href="#2-載入-word2vec-模型" class="headerlink" title="2.載入 word2vec 模型"></a><strong>2.載入 word2vec 模型</strong></h3><ul>
+<li><code>log_dir</code> : Log 要存擋的地方</li>
+<li><code>model_dir</code> : word2vec model 放置的地方(已經提前將模型放到該路徑下 <code>med250.model.bin</code>、<code>med250.model.bin.trainables.syn1neg.npy</code>、<code>med250.model.bin.wv.vectors.npy</code>)</li>
+<li><code>metadata_name</code> : 要存下模型中的字詞對照</li>
+<li><code>model_file</code> : med250.model.bin 所在位置</li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python">
-<span class="token comment" spellcheck="true"># Create dataframe</span>
-df <span class="token operator">=</span> spark<span class="token punctuation">.</span>createDataFrame<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">,</span> <span class="token number">33</span><span class="token punctuation">,</span> <span class="token number">44</span><span class="token punctuation">,</span> <span class="token number">54</span><span class="token punctuation">,</span> <span class="token number">66</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">"A"</span><span class="token punctuation">,</span> <span class="token string">"B"</span><span class="token punctuation">,</span> <span class="token string">"C"</span><span class="token punctuation">,</span> <span class="token string">"D"</span><span class="token punctuation">,</span> <span class="token string">"E"</span><span class="token punctuation">,</span> <span class="token string">"F"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">import</span> tensorflow <span class="token keyword">as</span> tf
+<span class="token keyword">import</span> os
+<span class="token keyword">from</span> gensim<span class="token punctuation">.</span>models<span class="token punctuation">.</span>word2vec <span class="token keyword">import</span> Word2Vec
+<span class="token keyword">from</span> tensorflow<span class="token punctuation">.</span>contrib<span class="token punctuation">.</span>tensorboard<span class="token punctuation">.</span>plugins <span class="token keyword">import</span> projector
+<span class="token keyword">import</span> subprocess
 
-<span class="token comment" spellcheck="true"># 假設我要傳入這個list</span>
-input_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">]</span>
+log_dir <span class="token operator">=</span> <span class="token string">'/home/word2vec_model/embedding_log_demo'</span>
+model_dir <span class="token operator">=</span> <span class="token string">'/home/word2vec_model'</span>
 
-<span class="token comment" spellcheck="true"># 不能直接給list會報錯</span>
-df_lit <span class="token operator">=</span> df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'lit_column'</span><span class="token punctuation">,</span>F<span class="token punctuation">.</span>lit<span class="token punctuation">(</span>input_list<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true"># 若路徑都不存在可以解開註解創立</span>
+<span class="token comment" spellcheck="true"># if not os.path.exists(log_dir):</span>
+<span class="token comment" spellcheck="true">#     os.mkdir(log_dir)</span>
+<span class="token comment" spellcheck="true">#     os.mkdir(model_dir)</span>
 
-<span class="token comment" spellcheck="true"># 正確寫法</span>
-df_lit <span class="token operator">=</span> df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'lit_column'</span><span class="token punctuation">,</span>F<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span>F<span class="token punctuation">.</span>lit<span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token keyword">for</span> x <span class="token keyword">in</span> input_list<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+metadata_name <span class="token operator">=</span> <span class="token string">'metadata.tsv'</span>
 
-df_lit<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="/medias/post_img/54688_2.png" alt="新增 array 示意圖"></p>
-<p>原理其實就是告知 dataframe 我要放入的資料是 <code>F.array</code> 型態，然後把資料裡所有的值都用 for loop 進行 lit 轉換成 dataframe 理解的型態就可使用 <code>F.array([F.lit(x) for x in input_list])</code>。</p>
-<h3 id="相關參考"><a href="#相關參考" class="headerlink" title="相關參考"></a><strong>相關參考</strong></h3><p>就如前言所說，此範例傻傻的，其實也可以用 <code>udf</code> 解決，有興趣的可參考資料。</p>
-<blockquote>
-<p><a href="https://stackoverflow.com/questions/49683897/passing-array-to-python-spark-lit-function" target="_blank" rel="noopener">https://stackoverflow.com/questions/49683897/passing-array-to-python-spark-lit-function</a></p>
+<span class="token comment" spellcheck="true"># load model </span>
+model_file <span class="token operator">=</span> <span class="token string">"/home/word2vec_model/med250.model.bin"</span>
+word2vec <span class="token operator">=</span> Word2Vec<span class="token punctuation">.</span>load<span class="token punctuation">(</span>model_file<span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-處理向量與原對應字詞"><a href="#3-處理向量與原對應字詞" class="headerlink" title="3.處理向量與原對應字詞"></a><strong>3.處理向量與原對應字詞</strong></h3><ul>
+<li>第一部分 <code>embedding</code> : 依順序存下向量</li>
+<li>第二部分 : 存下每個向量原始的字詞意思(label)，存入先前的 <code>metadata_name</code></li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># create a list of vectors</span>
+embedding <span class="token operator">=</span> np<span class="token punctuation">.</span>empty<span class="token punctuation">(</span><span class="token punctuation">(</span>len<span class="token punctuation">(</span>word2vec<span class="token punctuation">.</span>wv<span class="token punctuation">.</span>vocab<span class="token punctuation">.</span>keys<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> word2vec<span class="token punctuation">.</span>vector_size<span class="token punctuation">)</span><span class="token punctuation">,</span> dtype<span class="token operator">=</span>np<span class="token punctuation">.</span>float32<span class="token punctuation">)</span>
+<span class="token keyword">for</span> i<span class="token punctuation">,</span> word <span class="token keyword">in</span> enumerate<span class="token punctuation">(</span>word2vec<span class="token punctuation">.</span>wv<span class="token punctuation">.</span>vocab<span class="token punctuation">.</span>keys<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    embedding<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> word2vec<span class="token punctuation">[</span>word<span class="token punctuation">]</span>
+
+<span class="token comment" spellcheck="true"># write labels </span>
+<span class="token keyword">with</span> open<span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>log_dir<span class="token punctuation">,</span> metadata_name<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+    <span class="token keyword">for</span> word <span class="token keyword">in</span> word2vec<span class="token punctuation">.</span>wv<span class="token punctuation">.</span>vocab<span class="token punctuation">.</span>keys<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>word <span class="token operator">+</span> <span class="token string">'\n'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-建立-Tensorboard"><a href="#4-建立-Tensorboard" class="headerlink" title="4.建立 Tensorboard"></a><strong>4.建立 Tensorboard</strong></h3><ul>
+<li>第一部分：設置 session<ul>
+<li>這部分如果已經對 <code>TensorFlow</code> 有初步的瞭解，可以再細部微調更多的東西，如果不懂也沒關係，照抄就好。</li>
+</ul>
+</li>
+<li>第二部分 : 為 <code>projector</code> 投射/視覺化做準備<ul>
+<li>同上，不懂就先照貼就好，名稱與前面的參數一致就行。</li>
+</ul>
+</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># setup a TensorFlow session</span>
+tf<span class="token punctuation">.</span>reset_default_graph<span class="token punctuation">(</span><span class="token punctuation">)</span>
+sess <span class="token operator">=</span> tf<span class="token punctuation">.</span>InteractiveSession<span class="token punctuation">(</span><span class="token punctuation">)</span>
+X <span class="token operator">=</span> tf<span class="token punctuation">.</span>Variable<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'embedding'</span><span class="token punctuation">)</span>
+place <span class="token operator">=</span> tf<span class="token punctuation">.</span>placeholder<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>float32<span class="token punctuation">,</span> shape<span class="token operator">=</span>embedding<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+set_x <span class="token operator">=</span> tf<span class="token punctuation">.</span>assign<span class="token punctuation">(</span>X<span class="token punctuation">,</span> place<span class="token punctuation">,</span> validate_shape<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+sess<span class="token punctuation">.</span>run<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>global_variables_initializer<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+sess<span class="token punctuation">.</span>run<span class="token punctuation">(</span>set_x<span class="token punctuation">,</span> feed_dict<span class="token operator">=</span><span class="token punctuation">{</span>place<span class="token punctuation">:</span> embedding<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true"># create a TensorFlow summary writer</span>
+summary_writer <span class="token operator">=</span> tf<span class="token punctuation">.</span>summary<span class="token punctuation">.</span>FileWriter<span class="token punctuation">(</span>log_dir<span class="token punctuation">,</span> sess<span class="token punctuation">.</span>graph<span class="token punctuation">)</span>
+config <span class="token operator">=</span> projector<span class="token punctuation">.</span>ProjectorConfig<span class="token punctuation">(</span><span class="token punctuation">)</span>
+embedding_conf <span class="token operator">=</span> config<span class="token punctuation">.</span>embeddings<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token punctuation">)</span>
+embedding_conf<span class="token punctuation">.</span>tensor_name <span class="token operator">=</span> <span class="token string">'embedding:0'</span>
+embedding_conf<span class="token punctuation">.</span>metadata_path <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>log_dir<span class="token punctuation">,</span> metadata_name<span class="token punctuation">)</span>
+projector<span class="token punctuation">.</span>visualize_embeddings<span class="token punctuation">(</span>summary_writer<span class="token punctuation">,</span> config<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-存擋"><a href="#5-存擋" class="headerlink" title="5.存擋"></a><strong>5.存擋</strong></h3><ul>
+<li>將前面處理好的 <code>session</code> 存擋，以利多次使用。 </li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># save the model</span>
+saver <span class="token operator">=</span> tf<span class="token punctuation">.</span>train<span class="token punctuation">.</span>Saver<span class="token punctuation">(</span><span class="token punctuation">)</span>
+saver<span class="token punctuation">.</span>save<span class="token punctuation">(</span>sess<span class="token punctuation">,</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>log_dir<span class="token punctuation">,</span> <span class="token string">"model.ckpt"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="6-啟動-Tensorboard"><a href="#6-啟動-Tensorboard" class="headerlink" title="6.啟動 Tensorboard"></a><strong>6.啟動 Tensorboard</strong></h3><p>最後一步就要大功告成了，請開啟 terminal 輸入下方指令(不是在python環境喔)，將 <code>logdir</code> 指到前面指定的位置。(可以自己的環境需求加上 <code>--port</code>)</p>
+<pre class="line-numbers language-bash"><code class="language-bash">tensorboard --logdir<span class="token operator">=</span><span class="token string">'/home/word2vec_model/embedding_log_demo/'</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="Tensorboard-畫面展示"><a href="#Tensorboard-畫面展示" class="headerlink" title="Tensorboard 畫面展示"></a><strong>Tensorboard 畫面展示</strong></h3><p>等待一下就會出現要輸入的 <code>url</code>，畫面為我自己設定了<code>port 1234</code> 的url，請自行更改 <code>host</code>。</p>
+<p><img src="/medias/post_img/62615_1.png" alt="啟動Tensorboard"></p>
+<p>一開始會進入我們程式建立的 graphic 畫面</p>
+<p><img src="/medias/post_img/62615_2.png" alt="初始畫面"></p>
+<p>選擇右上方下拉選單，點擊 <code>projector</code></p>
+<p><img src="/medias/post_img/62615_3.png" alt="選擇 projector"></p>
+<p>系統將會開始載入，這會花一些時間，如果是在本機嘗試這個專案的朋友們請注意自己機器的 memory 大小，若不夠用可以將自己的 model 切小一點來嘗試</p>
+<p><img src="/medias/post_img/62615_4.png" alt="載入畫面"></p>
+<p>看到一坨藍藍的點點就是成功了</p>
+<p><img src="/medias/post_img/62615_5.png" alt="載入成功"></p>
+<p>維度太多其實很難看到什麼，所以可以利用右側的篩選像是 <code>zoom in</code> 的功能。</p>
+<p>EX:我在 <code>Search</code> 輸入 <code>新北市</code>且選擇 <code>by label</code>後，再點擊 <code>isolate xx point</code>，就可以看到新北市其相關的字詞的距離</p>
+<p><img src="/medias/post_img/62615_6.png" alt="Zoon in 側邊功能"></p>
+<p>其他相關的按鈕與功能我認為蠻直覺的，我就不特別說明了，但如果有需要解釋也請讓我知道！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
+<p><a href="https://eliyar.biz/using-pre-trained-gensim-word2vector-in-a-keras-model-and-visualizing/" target="_blank" rel="noopener">https://eliyar.biz/using-pre-trained-gensim-word2vector-in-a-keras-model-and-visualizing/</a></p>
 </blockquote>
+<p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>
 
             </div>
             <hr/>
@@ -471,7 +528,7 @@ df_lit<span class="token punctuation">.</span>show<span class="token punctuation
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">C.L.H Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/54688/" class="b-link-green">pyspark 系列 - 在 lit 中使用 array</a>
+                    <a href="/posts/62615/" class="b-link-green">NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</a>
                 </p>
             </div>
         </div>
@@ -492,9 +549,9 @@ df_lit<span class="token punctuation">.</span>show<span class="token punctuation
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/54688/';
-        this.page.identifier = '/posts/54688/';
-        this.page.title = 'pyspark 系列 - 在 lit 中使用 array';
+        this.page.url = 'https://chilunhuang.github.io/posts/62615/';
+        this.page.identifier = '/posts/62615/';
+        this.page.title = 'NLP 系列 - Tensorboard 視覺化 word2vec 詞向量';
     };
     let disqus_shortname = 'clhlab';
 
@@ -517,9 +574,10 @@ df_lit<span class="token punctuation">.</span>show<span class="token punctuation
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/posts/62615/">
                     <div class="card-image">
@@ -532,9 +590,9 @@ df_lit<span class="token punctuation">.</span>show<span class="token punctuation
                 <div class="card-content article-content">
                     <div class="summary">How to use tensorboard to visualize/project word2vec model?  word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，在應用解釋時(給</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-26
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-26
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -547,6 +605,7 @@ df_lit<span class="token punctuation">.</span>show<span class="token punctuation
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -573,25 +632,25 @@ df_lit<span class="token punctuation">.</span>show<span class="token punctuation
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/50088/">
+                <a href="/posts/54688/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="pyspark系列 - 如何傳遞所有 column 給 UDF 實例">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="pyspark 系列 - 在 lit 中使用 array">
                         
-                        <span class="card-title">pyspark系列 - 如何傳遞所有 column 給 UDF 實例</span>
+                        <span class="card-title">pyspark 系列 - 在 lit 中使用 array</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">如何傳遞所有column 給 UDF實例在本範例你會學到：
+                    <div class="summary">How to pass array to pyspark lit function?在本範例你會學到：
 
-簡易UDF (User Define function) 使用方式
-傳遞多參數給UDF
+如何使用 lit 函式
+將 array 傳給 lit
+解決以下問題
 
-1.定義UDF
-用一個簡單加總所有欄位的 function 作為實現範例(當然有更好的方</div>
+py4j.protocol.Py4JJavaError: An </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-21
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-26
                             </span>
                         <span class="publish-author">
                             
@@ -612,8 +671,12 @@ df_lit<span class="token punctuation">.</span>show<span class="token punctuation
                         <span class="chip bg-color">pyspark</span>
                     </a>
                     
-                    <a href="/tags/udf/" target="_blank">
-                        <span class="chip bg-color">udf</span>
+                    <a href="/tags/lit/" target="_blank">
+                        <span class="chip bg-color">lit</span>
+                    </a>
+                    
+                    <a href="/tags/arraylist/" target="_blank">
+                        <span class="chip bg-color">arraylist</span>
                     </a>
                     
                 </div>
