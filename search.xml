@@ -89,7 +89,7 @@
     
     
     <entry>
-      <title>Docker+JupyterHub+GCP_OAuth憑證安裝流程</title>
+      <title>使用Docker建立多人使用的JupyterHub環境與OAuth憑證安裝流程</title>
       <link href="/posts/62028/"/>
       <url>/posts/62028/</url>
       
