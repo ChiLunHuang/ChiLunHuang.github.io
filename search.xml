@@ -105,11 +105,11 @@
       
         <tags>
             
+            <tag> GCP </tag>
+            
             <tag> jupyterhub </tag>
             
             <tag> docker </tag>
-            
-            <tag> GCP </tag>
             
             <tag> oauth </tag>
             
