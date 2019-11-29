@@ -574,51 +574,53 @@ saver<span class="token punctuation">.</span>save<span class="token punctuation"
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
-            </div>
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/62615/">
+                <a href="/posts/63500/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="NLP 系列 - Tensorboard 視覺化 word2vec 詞向量">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="keras系列 - 將keras model分散於spark進行預測">
                         
-                        <span class="card-title">NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</span>
+                        <span class="card-title">keras系列 - 將keras model分散於spark進行預測</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to use tensorboard to visualize/project word2vec model?  word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，在應用解釋時(給</div>
+                    <div class="summary">How to serialize keras model and apply to all workers on spark?Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需</div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-26
-                            </span>
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-29
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/NLP/" class="post-category" target="_blank">
-                                    NLP
+                            <a href="/categories/keras/" class="post-category" target="_blank">
+                                    keras
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/nlp/" target="_blank">
-                        <span class="chip bg-color">nlp</span>
+                    <a href="/tags/keras/" target="_blank">
+                        <span class="chip bg-color">keras</span>
                     </a>
                     
-                    <a href="/tags/word2vec/" target="_blank">
-                        <span class="chip bg-color">word2vec</span>
+                    <a href="/tags/serialize/" target="_blank">
+                        <span class="chip bg-color">serialize</span>
                     </a>
                     
-                    <a href="/tags/tensorboard/" target="_blank">
-                        <span class="chip bg-color">tensorboard</span>
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
+                    </a>
+                    
+                    <a href="/tags/spark/" target="_blank">
+                        <span class="chip bg-color">spark</span>
                     </a>
                     
                 </div>
@@ -696,7 +698,7 @@ py4j.protocol.Py4JJavaError: An </div>
 
         var selection = window.getSelection();
         // if the selection is short let's not annoy our users.
-        if (('' + selection).length < Number.parseInt('120')) {
+        if (('' + selection).length < Number.parseInt('200')) {
             return;
         }
 
