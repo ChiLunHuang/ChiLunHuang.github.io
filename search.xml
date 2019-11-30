@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title>keras系列 - 將keras model分散於spark進行預測</title>
+      <title>keras系列 - keras model部署與序列化於spark進行預測</title>
       <link href="/posts/63500/"/>
       <url>/posts/63500/</url>
       
