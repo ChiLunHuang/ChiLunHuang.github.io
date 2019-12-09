@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="nlp, word2vec, tensorboard,技術分享,spark,gcp,python,clhlab,CLH Lab,教學">
-    <meta name="description" content="word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。">
+    <meta name="keywords" content="dataproc,spark,PIP_PACKAGES,CONDA_PACKAGES,gcp,技術分享,spark,gcp,python,clhlab,CLH Lab,教學">
+    <meta name="description" content="本範例將會教授如何使用 dataproc initialization actions 來安裝 python package 於 cluster，就可以在 launch spark 時安裝套件至每一台 worker 上面。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,13 +15,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="NLP 系列 - Tensorboard 視覺化 word2vec 詞向量" />
-    <meta property="og:description" content="word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。" />
-    <meta property="og:image" content="/medias/featureimages/6.jpg" />
+    <meta property="og:title" content="GCP系列-使用 Dataproc initialization actions 安裝 python package" />
+    <meta property="og:description" content="本範例將會教授如何使用 dataproc initialization actions 來安裝 python package 於 cluster，就可以在 launch spark 時安裝套件至每一台 worker 上面。" />
+    <meta property="og:image" content="/medias/featureimages/7.jpg" />
     <meta property="og:site_name" content="C.L.H Lab" />
 
     <!-- Facebook end-->
-    <title>NLP 系列 - Tensorboard 視覺化 word2vec 詞向量 | C.L.H Lab</title>
+    <title>GCP系列-使用 Dataproc initialization actions 安裝 python package | C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -247,13 +247,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/6.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        NLP 系列 - Tensorboard 視覺化 word2vec 詞向量
+                        GCP系列-使用 Dataproc initialization actions 安裝 python package
                     </div>
                 </div>
             </div>
@@ -345,16 +345,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/nlp/" target="_blank">
-                                <span class="chip bg-color">nlp</span>
+                            <a href="/tags/GCP/" target="_blank">
+                                <span class="chip bg-color">GCP</span>
                             </a>
                         
-                            <a href="/tags/word2vec/" target="_blank">
-                                <span class="chip bg-color">word2vec</span>
+                            <a href="/tags/Dataproc/" target="_blank">
+                                <span class="chip bg-color">Dataproc</span>
                             </a>
                         
-                            <a href="/tags/tensorboard/" target="_blank">
-                                <span class="chip bg-color">tensorboard</span>
+                            <a href="/tags/pyspark/" target="_blank">
+                                <span class="chip bg-color">pyspark</span>
                             </a>
                         
                     </div>
@@ -365,8 +365,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/NLP/" class="post-category" target="_blank">
-                                NLP
+                            <a href="/categories/GCP/" class="post-category" target="_blank">
+                                GCP
                             </a>
                         
                     </div>
@@ -377,7 +377,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2019-11-26
+                    2019-12-09
                 </div>
 
                 
@@ -393,116 +393,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="How-to-use-tensorboard-Embedding-Projector-to-visualize-project-word2vec-model"><a href="#How-to-use-tensorboard-Embedding-Projector-to-visualize-project-word2vec-model" class="headerlink" title="How to use tensorboard(Embedding Projector) to visualize/project word2vec model?"></a>How to use tensorboard(Embedding Projector) to visualize/project word2vec model?</h2><p>  word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，在應用解釋時(給老闆、業務、行銷與客戶)其實蠻困擾的。此文章將利用 Tensorboard(Embedding Projector) 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係，來解決上述問題。</p>
+                <h2 id="How-to-use-dataproc-initialization-actions-to-install-python-packages-on-cluser-on-all-workers"><a href="#How-to-use-dataproc-initialization-actions-to-install-python-packages-on-cluser-on-all-workers" class="headerlink" title="How to use dataproc initialization actions to install python packages on cluser (on all workers)?"></a>How to use dataproc initialization actions to install python packages on cluser (on all workers)?</h2><p>在 GCP 的 Dataproc 要啟動 pyspark 後只會有一些相關預設的 python 套件可以使用，如果要額外的 package 就要事後自行安裝，不過卻<code>只能在 master 安裝</code>(除非大大認真的每台都裝)，所以 gcp 有提供 <code>dataproc initialization actions</code> 方法可以在 launch 機器時就將所有的 package 安裝至每一台 worker 上面，此範例將會有兩種用法：<code>PIP_PACKAGES</code>, <code>CONDA_PACKAGES</code>。</p>
 <p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>如何使用 tensorboard</li>
-<li>將 word2vec 詞向量視覺化</li>
+<li>如何使用 dataproc initialization actions</li>
+<li>安裝自己想要的 python 套件於 dataproc 上</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>word2vec model (本篇不贅述該如何產生一個 word2vec model，若有需要的留言讓我知道)</li>
-<li><strong>注意：本範例會有一點 <code>Tensorflow</code> 的用法，不懂也不會影響使用。</strong></li>
+<li>熟知 dataproc 基本語法</li>
+<li>有使用 GCP 服務的經驗</li>
 </ul>
-<h3 id="1-套件準備"><a href="#1-套件準備" class="headerlink" title="1.套件準備"></a><strong>1.套件準備</strong></h3><p>在自己喜歡的環境內使用安裝以下套件，基本上就是 <code>tensorflow</code>、<code>gensim</code>、<code>numpy</code>，版本之間的衝突問題請依照自己環境選擇版本，網路上相關範本已經很多了：</p>
-<pre class="line-numbers language-bash"><code class="language-bash">numpy<span class="token operator">==</span>1.17.3
-tensorboard<span class="token operator">==</span>1.15.0
-tensorflow<span class="token operator">==</span>1.15.0
-tensorflow-estimator<span class="token operator">==</span>1.15.1
-gensim<span class="token operator">==</span>3.8.1
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="2-載入-word2vec-模型"><a href="#2-載入-word2vec-模型" class="headerlink" title="2.載入 word2vec 模型"></a><strong>2.載入 word2vec 模型</strong></h3><ul>
-<li><code>log_dir</code> : Log 要存擋的地方</li>
-<li><code>model_dir</code> : word2vec model 放置的地方(已經提前將模型放到該路徑下 <code>med250.model.bin</code>、<code>med250.model.bin.trainables.syn1neg.npy</code>、<code>med250.model.bin.wv.vectors.npy</code>)</li>
-<li><code>metadata_name</code> : 要存下模型中的字詞對照</li>
-<li><code>model_file</code> : med250.model.bin 所在位置</li>
+<p><strong>註：由於 gcp 語法改版的的頻率其實不低，可能過幾個月就會長得有點不一樣，請大家斟酌參考(也可以留言告知我)。</strong> </p>
+<h3 id="1-基礎語法介紹"><a href="#1-基礎語法介紹" class="headerlink" title="1.基礎語法介紹"></a><strong>1.基礎語法介紹</strong></h3><p>在過去都需要自己去更改 google 所提供的 initialization 的相關檔案，將 <code>pip install ***</code> 放進去才能安裝自己想要的套件，現在<br> google 將它獨立的出來變成了參數可以使用，就不用頻繁地去更動 <code>sh</code> 檔案了。</p>
+<ul>
+<li>基礎範例</li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
-<span class="token keyword">import</span> tensorflow <span class="token keyword">as</span> tf
-<span class="token keyword">import</span> os
-<span class="token keyword">from</span> gensim<span class="token punctuation">.</span>models<span class="token punctuation">.</span>word2vec <span class="token keyword">import</span> Word2Vec
-<span class="token keyword">from</span> tensorflow<span class="token punctuation">.</span>contrib<span class="token punctuation">.</span>tensorboard<span class="token punctuation">.</span>plugins <span class="token keyword">import</span> projector
-<span class="token keyword">import</span> subprocess
-
-log_dir <span class="token operator">=</span> <span class="token string">'/home/word2vec_model/embedding_log_demo'</span>
-model_dir <span class="token operator">=</span> <span class="token string">'/home/word2vec_model'</span>
-
-<span class="token comment" spellcheck="true"># 若路徑都不存在可以解開註解創立</span>
-<span class="token comment" spellcheck="true"># if not os.path.exists(log_dir):</span>
-<span class="token comment" spellcheck="true">#     os.mkdir(log_dir)</span>
-<span class="token comment" spellcheck="true">#     os.mkdir(model_dir)</span>
-
-metadata_name <span class="token operator">=</span> <span class="token string">'metadata.tsv'</span>
-
-<span class="token comment" spellcheck="true"># load model </span>
-model_file <span class="token operator">=</span> <span class="token string">"/home/word2vec_model/med250.model.bin"</span>
-word2vec <span class="token operator">=</span> Word2Vec<span class="token punctuation">.</span>load<span class="token punctuation">(</span>model_file<span class="token punctuation">)</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="3-處理向量與原對應字詞"><a href="#3-處理向量與原對應字詞" class="headerlink" title="3.處理向量與原對應字詞"></a><strong>3.處理向量與原對應字詞</strong></h3><ul>
-<li>第一部分 <code>embedding</code> : 依順序存下向量</li>
-<li>第二部分 : 存下每個向量原始的字詞意思(label)，存入先前的 <code>metadata_name</code></li>
-</ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># create a list of vectors</span>
-embedding <span class="token operator">=</span> np<span class="token punctuation">.</span>empty<span class="token punctuation">(</span><span class="token punctuation">(</span>len<span class="token punctuation">(</span>word2vec<span class="token punctuation">.</span>wv<span class="token punctuation">.</span>vocab<span class="token punctuation">.</span>keys<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> word2vec<span class="token punctuation">.</span>vector_size<span class="token punctuation">)</span><span class="token punctuation">,</span> dtype<span class="token operator">=</span>np<span class="token punctuation">.</span>float32<span class="token punctuation">)</span>
-<span class="token keyword">for</span> i<span class="token punctuation">,</span> word <span class="token keyword">in</span> enumerate<span class="token punctuation">(</span>word2vec<span class="token punctuation">.</span>wv<span class="token punctuation">.</span>vocab<span class="token punctuation">.</span>keys<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    embedding<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> word2vec<span class="token punctuation">[</span>word<span class="token punctuation">]</span>
-
-<span class="token comment" spellcheck="true"># write labels </span>
-<span class="token keyword">with</span> open<span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>log_dir<span class="token punctuation">,</span> metadata_name<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
-    <span class="token keyword">for</span> word <span class="token keyword">in</span> word2vec<span class="token punctuation">.</span>wv<span class="token punctuation">.</span>vocab<span class="token punctuation">.</span>keys<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-        f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>word <span class="token operator">+</span> <span class="token string">'\n'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="4-建立-Tensorboard"><a href="#4-建立-Tensorboard" class="headerlink" title="4.建立 Tensorboard"></a><strong>4.建立 Tensorboard</strong></h3><ul>
-<li>第一部分：設置 session<ul>
-<li>這部分如果已經對 <code>TensorFlow</code> 有初步的瞭解，可以再細部微調更多的東西，如果不懂也沒關係，照抄就好。</li>
-</ul>
-</li>
-<li>第二部分 : 為 <code>projector</code> 投射/視覺化做準備<ul>
-<li>同上，不懂就先照貼就好，名稱與前面的參數一致就行。</li>
-</ul>
-</li>
-</ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># setup a TensorFlow session</span>
-tf<span class="token punctuation">.</span>reset_default_graph<span class="token punctuation">(</span><span class="token punctuation">)</span>
-sess <span class="token operator">=</span> tf<span class="token punctuation">.</span>InteractiveSession<span class="token punctuation">(</span><span class="token punctuation">)</span>
-X <span class="token operator">=</span> tf<span class="token punctuation">.</span>Variable<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'embedding'</span><span class="token punctuation">)</span>
-place <span class="token operator">=</span> tf<span class="token punctuation">.</span>placeholder<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>float32<span class="token punctuation">,</span> shape<span class="token operator">=</span>embedding<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
-set_x <span class="token operator">=</span> tf<span class="token punctuation">.</span>assign<span class="token punctuation">(</span>X<span class="token punctuation">,</span> place<span class="token punctuation">,</span> validate_shape<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
-sess<span class="token punctuation">.</span>run<span class="token punctuation">(</span>tf<span class="token punctuation">.</span>global_variables_initializer<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-sess<span class="token punctuation">.</span>run<span class="token punctuation">(</span>set_x<span class="token punctuation">,</span> feed_dict<span class="token operator">=</span><span class="token punctuation">{</span>place<span class="token punctuation">:</span> embedding<span class="token punctuation">}</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># create a TensorFlow summary writer</span>
-summary_writer <span class="token operator">=</span> tf<span class="token punctuation">.</span>summary<span class="token punctuation">.</span>FileWriter<span class="token punctuation">(</span>log_dir<span class="token punctuation">,</span> sess<span class="token punctuation">.</span>graph<span class="token punctuation">)</span>
-config <span class="token operator">=</span> projector<span class="token punctuation">.</span>ProjectorConfig<span class="token punctuation">(</span><span class="token punctuation">)</span>
-embedding_conf <span class="token operator">=</span> config<span class="token punctuation">.</span>embeddings<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token punctuation">)</span>
-embedding_conf<span class="token punctuation">.</span>tensor_name <span class="token operator">=</span> <span class="token string">'embedding:0'</span>
-embedding_conf<span class="token punctuation">.</span>metadata_path <span class="token operator">=</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>log_dir<span class="token punctuation">,</span> metadata_name<span class="token punctuation">)</span>
-projector<span class="token punctuation">.</span>visualize_embeddings<span class="token punctuation">(</span>summary_writer<span class="token punctuation">,</span> config<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="5-存擋"><a href="#5-存擋" class="headerlink" title="5.存擋"></a><strong>5.存擋</strong></h3><ul>
-<li>將前面處理好的 <code>session</code> 存擋，以利多次使用。 </li>
-</ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># save the model</span>
-saver <span class="token operator">=</span> tf<span class="token punctuation">.</span>train<span class="token punctuation">.</span>Saver<span class="token punctuation">(</span><span class="token punctuation">)</span>
-saver<span class="token punctuation">.</span>save<span class="token punctuation">(</span>sess<span class="token punctuation">,</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>join<span class="token punctuation">(</span>log_dir<span class="token punctuation">,</span> <span class="token string">"model.ckpt"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<pre class="line-numbers language-bash"><code class="language-bash">gcloud dataproc clusters create my-cluster \
+    --metadata <span class="token string">'PIP_PACKAGES=pandas'</span> \
+    --initialization-actions gs://<span class="token variable">$MY_BUCKET</span>/python/pip-install.sh
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="6-啟動-Tensorboard"><a href="#6-啟動-Tensorboard" class="headerlink" title="6.啟動 Tensorboard"></a><strong>6.啟動 Tensorboard</strong></h3><p>最後一步就要大功告成了，請開啟 terminal 輸入下方指令(不是在python環境喔)，將 <code>logdir</code> 指到前面指定的位置。(可以自己的環境需求加上 <code>--port</code>)</p>
-<pre class="line-numbers language-bash"><code class="language-bash">tensorboard --logdir<span class="token operator">=</span><span class="token string">'/home/word2vec_model/embedding_log_demo/'</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="Tensorboard-畫面展示"><a href="#Tensorboard-畫面展示" class="headerlink" title="Tensorboard 畫面展示"></a><strong>Tensorboard 畫面展示</strong></h3><p>等待一下就會出現要輸入的 <code>url</code>，畫面為我自己設定了<code>port 1234</code> 的url，請自行更改 <code>host</code>。</p>
-<p><img src="/medias/post_img/62615_1.png" alt="啟動Tensorboard"></p>
-<p>一開始會進入我們程式建立的 graphic 畫面</p>
-<p><img src="/medias/post_img/62615_2.png" alt="初始畫面"></p>
-<p>選擇右上方下拉選單，點擊 <code>projector</code></p>
-<p><img src="/medias/post_img/62615_3.png" alt="選擇 projector"></p>
-<p>系統將會開始載入，這會花一些時間，如果是在本機嘗試這個專案的朋友們請注意自己機器的 memory 大小，若不夠用可以將自己的 model 切小一點來嘗試</p>
-<p><img src="/medias/post_img/62615_4.png" alt="載入畫面"></p>
-<p>看到一坨藍藍的點點就是成功了</p>
-<p><img src="/medias/post_img/62615_5.png" alt="載入成功"></p>
-<p>維度太多其實很難看到什麼，所以可以利用右側的篩選像是 <code>zoom in</code> 的功能。</p>
-<p>EX:我在 <code>Search</code> 輸入 <code>新北市</code>且選擇 <code>by label</code>後，再點擊 <code>isolate xx point</code>，就可以看到新北市其相關的字詞的距離</p>
-<p><img src="/medias/post_img/62615_6.png" alt="Zoon in 側邊功能"></p>
-<p>其他相關的按鈕與功能我認為蠻直覺的，我就不特別說明了，但如果有需要解釋也請讓我知道！</p>
+<p>上方的 <code>gs://</code> 路徑可以直接指向 google 提供的檔案(<code>gs://dataproc-initialization-actions/python/pip-install.sh</code>)，也可以自己載回來自定義。</p>
+<h3 id="2-指定版本號"><a href="#2-指定版本號" class="headerlink" title="2.指定版本號"></a><strong>2.指定版本號</strong></h3><p>其實跟 <code>pip</code> 要指定版本時蠻像的，只是記得版本號的的等號 <code>==</code> 是兩個喔！</p>
+<pre class="line-numbers language-bash"><code class="language-bash">gcloud dataproc clusters create my-cluster \
+    --metadata <span class="token string">'PIP_PACKAGES=pandas==0.23.0'</span> \
+    --initialization-actions gs://<span class="token variable">$MY_BUCKET</span>/python/pip-install.sh
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-多套件同時安裝"><a href="#3-多套件同時安裝" class="headerlink" title="3.多套件同時安裝"></a><strong>3.多套件同時安裝</strong></h3><p>與上方大同小異，要注意的是套件彼此之間的分隔是用<code>一個空白</code></p>
+<pre class="line-numbers language-bash"><code class="language-bash">gcloud dataproc clusters create my-cluster \
+    --metadata <span class="token string">'PIP_PACKAGES=pandas==0.23.0 scipy==1.1.0'</span> \
+    --initialization-actions gs://<span class="token variable">$MY_BUCKET</span>/python/pip-install.sh
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-另一種方式"><a href="#4-另一種方式" class="headerlink" title="4.另一種方式"></a><strong>4.另一種方式</strong></h3><p>講到這前面其實還蠻簡單的吧，我們剩下一種就是 <code>CONDA_PACKAGES</code> 的方式，不過基本上就是一模一樣，將 <code>PIP_PACKAGES</code> 換掉就好：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">gcloud dataproc clusters create my-cluster \
+    --metadata <span class="token string">'CONDA_PACKAGES=pandas==0.23.0 scipy==1.1.0'</span> \
+    --initialization-actions gs://<span class="token variable">$MY_BUCKET</span>/python/pip-install.sh
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
-<p><a href="https://eliyar.biz/using-pre-trained-gensim-word2vector-in-a-keras-model-and-visualizing/" target="_blank" rel="noopener">https://eliyar.biz/using-pre-trained-gensim-word2vector-in-a-keras-model-and-visualizing/</a></p>
+<p><a href="https://github.com/GoogleCloudPlatform/dataproc-initialization-actions/tree/master/python" target="_blank" rel="noopener">https://github.com/GoogleCloudPlatform/dataproc-initialization-actions/tree/master/python</a></p>
 </blockquote>
 <p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>
 
@@ -528,7 +456,7 @@ saver<span class="token punctuation">.</span>save<span class="token punctuation"
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">C.L.H Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/62615/" class="b-link-green">NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</a>
+                    <a href="/posts/50438/" class="b-link-green">GCP系列-使用 Dataproc initialization actions 安裝 python package</a>
                 </p>
             </div>
         </div>
@@ -549,9 +477,9 @@ saver<span class="token punctuation">.</span>save<span class="token punctuation"
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/62615/';
-        this.page.identifier = '/posts/62615/';
-        this.page.title = 'NLP 系列 - Tensorboard 視覺化 word2vec 詞向量';
+        this.page.url = 'https://chilunhuang.github.io/posts/50438/';
+        this.page.identifier = '/posts/50438/';
+        this.page.title = 'GCP系列-使用 Dataproc initialization actions 安裝 python package';
     };
     let disqus_shortname = 'clhlab';
 
@@ -574,9 +502,63 @@ saver<span class="token punctuation">.</span>save<span class="token punctuation"
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/posts/50438/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="GCP系列-使用 Dataproc initialization actions 安裝 python package">
+                        
+                        <span class="card-title">GCP系列-使用 Dataproc initialization actions 安裝 python package</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">How to use dataproc initialization actions to install python packages on cluser (on all workers)?在 GCP 的 Dataproc 要啟動 py</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-12-09
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/GCP/" class="post-category" target="_blank">
+                                    GCP
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/GCP/" target="_blank">
+                        <span class="chip bg-color">GCP</span>
+                    </a>
+                    
+                    <a href="/tags/Dataproc/" target="_blank">
+                        <span class="chip bg-color">Dataproc</span>
+                    </a>
+                    
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/posts/63500/">
                     <div class="card-image">
@@ -589,9 +571,9 @@ saver<span class="token punctuation">.</span>save<span class="token punctuation"
                 <div class="card-content article-content">
                     <div class="summary">How to serialize keras model and apply to all workers on spark?Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-29
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-29
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -621,64 +603,6 @@ saver<span class="token punctuation">.</span>save<span class="token punctuation"
                     
                     <a href="/tags/spark/" target="_blank">
                         <span class="chip bg-color">spark</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/posts/54688/">
-                    <div class="card-image">
-                        
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="pyspark 系列 - 在 lit 中使用 Array(Arraylist)">
-                        
-                        <span class="card-title">pyspark 系列 - 在 lit 中使用 Array(Arraylist)</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary">How to pass array to pyspark lit function?在本範例你會學到：
-
-如何使用 lit 函式
-將 array 傳給 lit
-解決以下問題
-
-py4j.protocol.Py4JJavaError: An </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-26
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/pyspark/" class="post-category" target="_blank">
-                                    pyspark
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/pyspark/" target="_blank">
-                        <span class="chip bg-color">pyspark</span>
-                    </a>
-                    
-                    <a href="/tags/lit/" target="_blank">
-                        <span class="chip bg-color">lit</span>
-                    </a>
-                    
-                    <a href="/tags/arraylist/" target="_blank">
-                        <span class="chip bg-color">arraylist</span>
                     </a>
                     
                 </div>
