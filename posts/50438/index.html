@@ -403,6 +403,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <ul>
 <li>熟知 dataproc 基本語法</li>
 <li>有使用 GCP 服務的經驗</li>
+<li>本範例使用 image 版本為 1.4（文章最後一張會解釋）</li>
 </ul>
 <p><strong>註：由於 gcp 語法改版的的頻率其實不低，可能過幾個月就會長得有點不一樣，請大家斟酌參考(也可以留言告知我)。</strong> </p>
 <h3 id="1-基礎語法介紹"><a href="#1-基礎語法介紹" class="headerlink" title="1.基礎語法介紹"></a><strong>1.基礎語法介紹</strong></h3><p>在過去都需要自己去更改 google 所提供的 initialization 的相關檔案，將 <code>pip install ***</code> 放進去才能安裝自己想要的套件，現在<br> google 將它獨立的出來變成了參數可以使用，就不用頻繁地去更動 <code>sh</code> 檔案了。</p>
@@ -429,6 +430,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     --metadata <span class="token string">'CONDA_PACKAGES=pandas==0.23.0 scipy==1.1.0'</span> \
     --initialization-actions gs://<span class="token variable">$MY_BUCKET</span>/python/pip-install.sh
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-Image版本差異"><a href="#5-Image版本差異" class="headerlink" title="5.Image版本差異"></a><strong>5.Image版本差異</strong></h3><p>這裡要特別注意的是 dataproc 啟動時的 image 版本會影響 <code>python</code> 版本以及 <code>dataproc initialization actions</code> 與法上稍有不同。本文使用的是 <code>--image-version=1.4</code>(啟動時會是 python3)，這個版本下的語法就如前文所述，其他版本請見下方連結參考。</p>
+<blockquote>
+<p><a href="https://cloud.google.com/dataproc/docs/tutorials/python-configuration" target="_blank" rel="noopener">https://cloud.google.com/dataproc/docs/tutorials/python-configuration</a></p>
+</blockquote>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
 <p><a href="https://github.com/GoogleCloudPlatform/dataproc-initialization-actions/tree/master/python" target="_blank" rel="noopener">https://github.com/GoogleCloudPlatform/dataproc-initialization-actions/tree/master/python</a></p>
 </blockquote>
