@@ -402,7 +402,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="How-to-serialize-keras-model-and-apply-to-all-workers-on-spark"><a href="#How-to-serialize-keras-model-and-apply-to-all-workers-on-spark" class="headerlink" title="How to serialize keras model and apply to all workers on spark?"></a>How to serialize keras model and apply to all workers on spark?</h2><p>Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式(ex:broadcast、pickle)，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p>
+                <h1 id="How-to-serialize-keras-model-and-apply-to-all-workers-on-spark"><a href="#How-to-serialize-keras-model-and-apply-to-all-workers-on-spark" class="headerlink" title="How to serialize keras model and apply to all workers on spark?"></a>How to serialize keras model and apply to all workers on spark?</h1><p>Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式(ex:broadcast、pickle)，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p>
 <p><strong>在本範例你會學到：</strong></p>
 <ul>
 <li>各種傳遞檔案給 worker 的方式或套件<ul>
