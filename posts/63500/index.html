@@ -403,17 +403,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<p><ins class="adsbygoogle"
+<ins class="adsbygoogle"
      style="display:block; text-align:center;"
      data-ad-layout="in-article"
      data-ad-format="fluid"
      data-ad-client="ca-pub-6577966333850753"
-     data-ad-slot="5339419372"></ins></p>
+     data-ad-slot="5339419372"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-
-<h1 id="How-to-serialize-keras-model-and-apply-to-all-workers-on-spark"><a href="#How-to-serialize-keras-model-and-apply-to-all-workers-on-spark" class="headerlink" title="How to serialize keras model and apply to all workers on spark?"></a>How to serialize keras model and apply to all workers on spark?</h1><p>Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式(ex:broadcast、pickle)，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p>
+                <h1 id="How-to-serialize-keras-model-and-apply-to-all-workers-on-spark"><a href="#How-to-serialize-keras-model-and-apply-to-all-workers-on-spark" class="headerlink" title="How to serialize keras model and apply to all workers on spark?"></a>How to serialize keras model and apply to all workers on spark?</h1><p>Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式(ex:broadcast、pickle)，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p>
 <p><strong>在本範例你會學到：</strong></p>
 <ul>
 <li>各種傳遞檔案給 worker 的方式或套件<ul>
@@ -533,18 +532,17 @@ final_df <span class="token operator">=</span> transformer<span class="token pun
 <li>也提供目前的解決方式，由於服務都是在 gcp 上面進行，最後採用了gcp 的 <code>AI platform</code> (舊稱為 <code>ml engine</code>)，利用它上面的 <code>GPU</code> 資源來加速運算速度(就是花錢解決問題拉)！</li>
 </ul>
 <p>以上的分享有任何問題或是討論歡迎隨時與我聯絡。</p>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<p><ins class="adsbygoogle"
+
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
      style="display:block; text-align:center;"
      data-ad-layout="in-article"
      data-ad-format="fluid"
      data-ad-client="ca-pub-6577966333850753"
-     data-ad-slot="4984196151"></ins></p>
+     data-ad-slot="4984196151"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-
-
             </div>
             <hr/>
 
@@ -626,13 +624,7 @@ final_df <span class="token operator">=</span> transformer<span class="token pun
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">
-
-
-     (adsbygoogle = window.adsbygoogle || []).push({});
-
-
-How to use dataproc initialization actions to install pytho</div>
+                    <div class="summary">How to use dataproc initialization actions to install python packages on cluser (on all workers)?在 GCP 的 Dataproc 要啟動 py</div>
                     <div class="publish-info">
                         <span class="publish-date">
                             <i class="fa fa-clock-o fa-fw icon-date"></i>2019-12-09
@@ -684,13 +676,7 @@ How to use dataproc initialization actions to install pytho</div>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">
-
-
-     (adsbygoogle = window.adsbygoogle || []).push({});
-
-
-How to use tensorboard(Embedding Projector) to visualize/pr</div>
+                    <div class="summary">How to use tensorboard(Embedding Projector) to visualize/project word2vec model?  word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人</div>
                     <div class="publish-info">
                             <span class="publish-date">
                                 <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-26
@@ -776,21 +762,6 @@ How to use tensorboard(Embedding Projector) to visualize/pr</div>
             <div id="toc-content"></div>
         </div>
     </div>
-</div>
-
-<div class="row">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- 文章最下方廣告 -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6577966333850753"
-     data-ad-slot="3650099032"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
 </div>
 
 
