@@ -398,7 +398,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="How-to-use-dataproc-initialization-actions-to-install-python-packages-on-cluser-on-all-workers"><a href="#How-to-use-dataproc-initialization-actions-to-install-python-packages-on-cluser-on-all-workers" class="headerlink" title="How to use dataproc initialization actions to install python packages on cluser (on all workers)?"></a>How to use dataproc initialization actions to install python packages on cluser (on all workers)?</h1><p>在 GCP 的 Dataproc 要啟動 pyspark 後只會有一些相關預設的 python 套件可以使用，如果要額外的 package 就要事後自行安裝，不過卻<code>只能在 master 安裝</code>(除非大大認真的每台都裝)，所以 gcp 有提供 <code>dataproc initialization actions</code> 方法可以在 launch 機器時就將所有的 package 安裝至每一台 worker 上面，此範例將會有兩種用法：<code>PIP_PACKAGES</code>, <code>CONDA_PACKAGES</code>。</p>
+                <p>&lt;%- partial(‘_ads/ad-artical-top.ejs’) %&gt;</p>
+<h1 id="How-to-use-dataproc-initialization-actions-to-install-python-packages-on-cluser-on-all-workers"><a href="#How-to-use-dataproc-initialization-actions-to-install-python-packages-on-cluser-on-all-workers" class="headerlink" title="How to use dataproc initialization actions to install python packages on cluser (on all workers)?"></a>How to use dataproc initialization actions to install python packages on cluser (on all workers)?</h1><p>在 GCP 的 Dataproc 要啟動 pyspark 後只會有一些相關預設的 python 套件可以使用，如果要額外的 package 就要事後自行安裝，不過卻<code>只能在 master 安裝</code>(除非大大認真的每台都裝)，所以 gcp 有提供 <code>dataproc initialization actions</code> 方法可以在 launch 機器時就將所有的 package 安裝至每一台 worker 上面，此範例將會有兩種用法：<code>PIP_PACKAGES</code>, <code>CONDA_PACKAGES</code>。</p>
 <p><strong>在本範例你會學到：</strong></p>
 <ul>
 <li>如何使用 dataproc initialization actions</li>
@@ -443,6 +444,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <p><a href="https://github.com/GoogleCloudPlatform/dataproc-initialization-actions/tree/master/python" target="_blank" rel="noopener">https://github.com/GoogleCloudPlatform/dataproc-initialization-actions/tree/master/python</a></p>
 </blockquote>
 <p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>
+<p>&lt;%- partial(‘_ads/ad-artical-bottom.ejs’) %&gt;</p>
 
             </div>
             <hr/>
