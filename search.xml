@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>GCP 系列- GCE 的 --metadata-from-file startup-script 沒有被執行</title>
+      <link href="/posts/28859/"/>
+      <url>/posts/28859/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Startup-script-doesn’t-seem-to-work-on-GCE-Google-Compute-Engine"><a href="#Startup-script-doesn’t-seem-to-work-on-GCE-Google-Compute-Engine" class="headerlink" title="Startup script doesn’t seem to work on GCE (Google Compute Engine)."></a>Startup script doesn’t seem to work on GCE (Google Compute Engine).</h1><p> 在 GCP 中的 GCE 建立 VM 時常會有要順便安裝或設置的套件與服務的需求，並將其打包成一個 <code>startup script</code> 送過去，但是時常會發生機器啟動後卻沒有順利地被安裝。最直接的原因就是 script 出錯或是根本沒被執行，本文將提供快速簡單的方法查證自己的 script 到底在哪裡出錯了。</p><p><strong>在本範例你會學到：</strong></p><ul><li>快速排除不明的 startup script 執行失敗</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有 GCP 的帳號</li><li>有使用 GCE 的經驗/需求</li></ul><h3 id="1-簡易的使用-GCE-指令"><a href="#1-簡易的使用-GCE-指令" class="headerlink" title="1.簡易的使用 GCE 指令"></a><strong>1.簡易的使用 GCE 指令</strong></h3><p>在這裡稍微複習一下如何使用指令啟動 GCE 的 VM 指令：</p><ul><li><code>--project</code>: 專案名稱(GCP畫面上方就可以看到)</li><li><code>--address</code>: 是否要指定 IP 位置</li><li><code>--zone</code>: 選擇建立機器的區域</li><li><code>--machine-type</code>: 機器的類型</li><li><code>--network</code>: 網路相關設定</li><li><code>--service-account</code>: 服務帳號</li><li><code>--boot-disk-size</code>: 硬碟容量大小</li><li><code>--boot-disk-type</code>: 硬碟類型</li><li><code>--metadata-from-file startup-script</code>: 啟動機器第一個要執行的 script 位置</li></ul><p>完整的範例如下： </p><pre class="line-numbers language-bash"><code class="language-bash">gcloud compute --project<span class="token operator">=</span>gce-test instances create test-vm \    --address<span class="token operator">=</span>123.123.123.123 \    --zone<span class="token operator">=</span>asia-east1-b \    --machine-type<span class="token operator">=</span>n1-highcpu-4 \    --network<span class="token operator">=</span>default --maintenance-policy<span class="token operator">=</span>MIGRATE \    --service-account<span class="token operator">=</span>your_service_account \    --scopes<span class="token operator">=</span>https://www.googleapis.com/auth/cloud-platform \    --boot-disk-size<span class="token operator">=</span>10GB --boot-disk-type<span class="token operator">=</span>pd-standard     --metadata-from-file startup-script<span class="token operator">=</span>/root/script/startupscript.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><strong>以上為常用的相關指令，其他指令放在下方參考資料請自行選用</strong></p><h3 id="2-查看未執行-startup-script-方式"><a href="#2-查看未執行-startup-script-方式" class="headerlink" title="2.查看未執行 startup-script 方式"></a><strong>2.查看未執行 startup-script 方式</strong></h3><p>如果順利地使用上方的方式啟動機器，並設置好自己要帶過去的 script 後，卻發現安裝的東西或是服務並沒有被啟動或設置，就可以使用以下指令(於啟動的 VM 環境中執行)：</p><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">sudo</span> journalctl -u google-startup-scripts.service<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>這個指令會列出開機執行後所執行的相關指令，如果有相關的錯誤也會寫在上面，就是 log 檔的概念。基本上只要是 script 本身的問題都可以用這個方式找到原因，以上分享。</p><p>有任何問題歡迎與我聯絡，謝謝。</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>更多 GCE 指令請詳見：</p><blockquote><p><a href="https://cloud.google.com/compute/docs/gcloud-compute/" target="_blank" rel="noopener">https://cloud.google.com/compute/docs/gcloud-compute/</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCE </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>pyspark 系列 - collect_list 與 collect_set 實例教學</title>
       <link href="/posts/53705/"/>
       <url>/posts/53705/</url>
