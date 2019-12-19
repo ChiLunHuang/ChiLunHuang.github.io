@@ -413,11 +413,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <ul>
 <li><code>collect_list</code> 使用方式</li>
 <li><code>collect_set</code> 使用方式</li>
-<li><code>array_distinct</code> 使用方式</li>
-<li><code>flatten</code> 使用方式</li>
+<li><code>array_distinct</code>(New in version spark 2.4) 使用方式</li>
+<li><code>flatten</code>(New in version spark 2.4) 使用方式</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
+<li>本範例部份 function 可能只適用於 <code>spark 版本 &gt;= 2.4</code></li>
 <li>歡樂愉快的學習精神</li>
 </ul>
 <p>本文將假設一個簡單的範例，學校相關單位做了一份問券調查，調查關於小學生一天之中早、午、晚餐分別喜歡吃哪些水果，再將這些結果整理與分析再利用。資料集如下：</p>

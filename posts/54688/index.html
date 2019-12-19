@@ -415,6 +415,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <li>解決以下問題</li>
 </ul>
 <pre class="line-numbers language-python"><code class="language-python">py4j<span class="token punctuation">.</span>protocol<span class="token punctuation">.</span>Py4JJavaError<span class="token punctuation">:</span> An error occurred <span class="token keyword">while</span> calling z<span class="token punctuation">:</span>org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>spark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>functions<span class="token punctuation">.</span>lit<span class="token punctuation">.</span><span class="token punctuation">:</span> java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>RuntimeException<span class="token punctuation">:</span> Unsupported literal type <span class="token keyword">class</span> <span class="token class-name">java</span><span class="token punctuation">.</span>util<span class="token punctuation">.</span>ArrayList<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>在本範例你需要先準備好：</strong></p>
+<ul>
+<li>本範例部份function 可能只適用於 <code>spark 版本 &gt;= 2.4</code></li>
+</ul>
 <p><strong>以下目的是為了展示 lit 使用方式，其範例看起來可能有點傻，請見諒</strong></p>
 <h3 id="1-如何使用-lit"><a href="#1-如何使用-lit" class="headerlink" title="1.如何使用 lit"></a><strong>1.如何使用 lit</strong></h3><p>由於 spark 在操作的時候都是以 <code>rdd</code> 或是 <code>dataframe</code> 的形式在使用，若不是這兩個形態是不能互相處理任何事情的，例如：</p>
 <ul>
