@@ -19,8 +19,10 @@
     <meta property="og:description" content="C.L.H 實驗室，不定期分享程式開發、旅遊、生活等等的大小事。" />
     <meta property="og:image" content="/medias/avatar.jpg" />
     <meta property="og:site_name" content="C.L.H Lab" />
-
     <!-- Facebook end-->
+    <!-- Google Search console -->
+    <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
+    <!-- Google Search console end-->
     <title>C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
@@ -41,10 +43,11 @@
 
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <!-- GA & GTM-->
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- GTM - Google Analytics -->
 
 <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -55,6 +58,8 @@
 </script>
 
 
+
+    <!-- GA & GTM END-->
 
 <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
@@ -361,27 +366,6 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
     
     
     <div class="col s12 m6" data-aos="zoom-in-up">
-        <div class="post-card" style="background-image: url('/medias/featureimages/6.jpg')">
-            <div class="post-body">
-                <div class="post-categories">
-                    
-                    <a href="/categories/NLP/" class="category" target="_blank">NLP</a>
-                    
-                </div>
-                <a href="/posts/62615/" target="_blank">
-                    <h3 class="post-title">NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</h3>
-                </a>
-                <p class="post-description">word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。</p>
-                <a href="/posts/62615/" target="_blank"
-                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #EF4DB6 0%, #C643FC 100%)">
-                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    
-    <div class="col s12 m6" data-aos="zoom-in-up">
         <div class="post-card" style="background-image: url('/medias/featureimages/3.jpg')">
             <div class="post-body">
                 <div class="post-categories">
@@ -394,6 +378,27 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 </a>
                 <p class="post-description">Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p>
                 <a href="/posts/63500/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #EF4DB6 0%, #C643FC 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/6.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/NLP/" class="category" target="_blank">NLP</a>
+                    
+                </div>
+                <a href="/posts/62615/" target="_blank">
+                    <h3 class="post-title">NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</h3>
+                </a>
+                <p class="post-description">word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。</p>
+                <a href="/posts/62615/" target="_blank"
                         class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #1AD6FD 0%, #1D62F0 100%)">
                     <i class="icon fa fa-eye fa-fw"></i>閱讀更多
                 </a>

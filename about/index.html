@@ -19,8 +19,10 @@
     <meta property="og:description" content="C.L.H 實驗室，不定期分享程式開發、旅遊、生活等等的大小事。" />
     <meta property="og:image" content="/medias/avatar.jpg" />
     <meta property="og:site_name" content="C.L.H Lab" />
-
     <!-- Facebook end-->
+    <!-- Google Search console -->
+    <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
+    <!-- Google Search console end-->
     <title>關於我 | C.L.H Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
@@ -41,10 +43,11 @@
 
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <!-- GA & GTM-->
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- GTM - Google Analytics -->
 
 <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -55,6 +58,8 @@
 </script>
 
 
+
+    <!-- GA & GTM END-->
 
 <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
@@ -300,7 +305,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
 
 <div class="statis">
     <span class="count"><a href="/categories" target="_blank">6</a></span>
-    <span class="name">所有文章</span>
+    <span class="name">文章類別</span>
 </div>
 
 
@@ -329,7 +334,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
 
 <div class="statis">
     <span class="count"><a href="/categories" target="_blank">6</a></span>
-    <span class="name">所有文章</span>
+    <span class="name">文章類別</span>
 </div>
 
 
@@ -482,11 +487,11 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
         },
         series: [
             {
-                name: '所有文章',
+                name: '文章類別',
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"GCP","value":3},{"name":"GitHub","value":1},{"name":"Jupyterhub","value":1},{"name":"NLP","value":1},{"name":"keras","value":1},{"name":"pyspark","value":3}],
+                data: [{"name":"GCP","value":3},{"name":"GitHub","value":1},{"name":"keras","value":1},{"name":"NLP","value":1},{"name":"Jupyterhub","value":1},{"name":"pyspark","value":3}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -510,7 +515,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
         xAxis: [
             {
                 type: 'category',
-                data: ["pyspark","GCP","Dataproc","GCE","TrackingUI","cpu","memory","github","Deploy keys","jupyterhub"]
+                data: ["pyspark","GCP","Dataproc","GCE","github","Deploy keys","keras","serialize","spark","TrackingUI"]
             }
         ],
         yAxis: [
@@ -744,6 +749,36 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             
             
             
+            <a href="/tags/github/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">github</span>
+            </a>
+            
+            
+            
+            <a href="/tags/Deploy-keys/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">Deploy keys</span>
+            </a>
+            
+            
+            
+            <a href="/tags/keras/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">keras</span>
+            </a>
+            
+            
+            
+            <a href="/tags/serialize/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">serialize</span>
+            </a>
+            
+            
+            
+            <a href="/tags/spark/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">spark</span>
+            </a>
+            
+            
+            
             <a href="/tags/TrackingUI/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">TrackingUI</span>
             </a>
@@ -758,36 +793,6 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             
             <a href="/tags/memory/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">memory</span>
-            </a>
-            
-            
-            
-            <a href="/tags/github/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">github</span>
-            </a>
-            
-            
-            
-            <a href="/tags/Deploy-keys/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">Deploy keys</span>
-            </a>
-            
-            
-            
-            <a href="/tags/jupyterhub/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">jupyterhub</span>
-            </a>
-            
-            
-            
-            <a href="/tags/docker/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">docker</span>
-            </a>
-            
-            
-            
-            <a href="/tags/oauth/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">oauth</span>
             </a>
             
             
@@ -810,20 +815,20 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             
             
             
-            <a href="/tags/keras/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">keras</span>
+            <a href="/tags/jupyterhub/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">jupyterhub</span>
             </a>
             
             
             
-            <a href="/tags/serialize/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">serialize</span>
+            <a href="/tags/docker/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">docker</span>
             </a>
             
             
             
-            <a href="/tags/spark/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">spark</span>
+            <a href="/tags/oauth/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">oauth</span>
             </a>
             
             
