@@ -738,7 +738,7 @@ final_df <span class="token operator">=</span> transformer<span class="token pun
 
         var selection = window.getSelection();
         // if the selection is short let's not annoy our users.
-        if (('' + selection).length < Number.parseInt('200')) {
+        if (('' + selection).length < Number.parseInt('1000')) {
             return;
         }
 
