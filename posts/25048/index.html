@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="flask,error handling,exception,traceback,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="Flask 是相對輕量的架構，寫起來簡單易懂好上手，不過在遇到  exception 的時候，是不是很常發生收到 400,500 等等的 http 代碼卻還是不知道到底錯在哪？本文將會快速的為你示範如何處理flask 的 error han">
+    <meta name="keywords" content="remove commit,remove all history,github, commit,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="本文就來介紹如何快速的刪除一開始錯誤帶入的 config 以及帳號密碼資訊的 commit 並且重新上傳的方法，當什麼事都沒發生過！">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Flask 系列 - Flask error handling 教學(二)" />
-    <meta property="og:description" content="Flask 是相對輕量的架構，寫起來簡單易懂好上手，不過在遇到  exception 的時候，是不是很常發生收到 400,500 等等的 http 代碼卻還是不知道到底錯在哪？本文將會快速的為你示範如何處理flask 的 error han" />
-    <meta property="og:image" content="/medias/featureimages/8.jpg" />
+    <meta property="og:title" content="Github - 如何移除所有 commit 重新 push" />
+    <meta property="og:description" content="本文就來介紹如何快速的刪除一開始錯誤帶入的 config 以及帳號密碼資訊的 commit 並且重新上傳的方法，當什麼事都沒發生過！" />
+    <meta property="og:image" content="/medias/featureimages/0.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>Flask 系列 - Flask error handling 教學(二) | Happy Coding Lab</title>
+    <title>Github - 如何移除所有 commit 重新 push | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        Flask 系列 - Flask error handling 教學(二)
+                        Github - 如何移除所有 commit 重新 push
                     </div>
                 </div>
             </div>
@@ -355,20 +355,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/error-handling/" target="_blank">
-                                <span class="chip bg-color">error handling</span>
+                            <a href="/tags/github/" target="_blank">
+                                <span class="chip bg-color">github</span>
                             </a>
                         
-                            <a href="/tags/flask/" target="_blank">
-                                <span class="chip bg-color">flask</span>
-                            </a>
-                        
-                            <a href="/tags/exception/" target="_blank">
-                                <span class="chip bg-color">exception</span>
-                            </a>
-                        
-                            <a href="/tags/traceback/" target="_blank">
-                                <span class="chip bg-color">traceback</span>
+                            <a href="/tags/commit/" target="_blank">
+                                <span class="chip bg-color">commit</span>
                             </a>
                         
                     </div>
@@ -379,8 +371,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/flask/" class="post-category" target="_blank">
-                                flask
+                            <a href="/categories/GitHub/" class="post-category" target="_blank">
+                                GitHub
                             </a>
                         
                     </div>
@@ -391,7 +383,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-02-19
+                    2020-03-18
                 </div>
 
                 
@@ -417,89 +409,41 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="Example-of-error-handling-in-flask-Part-II"><a href="#Example-of-error-handling-in-flask-Part-II" class="headerlink" title="Example of error handling in flask. (Part II)."></a>Example of error handling in flask. (Part II).</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-remove-all-history-commit-and-push-again"><a href="#How-to-remove-all-history-commit-and-push-again" class="headerlink" title="How to remove all history commit and push again?"></a>How to remove all history commit and push again?</h1><p>大家應該都有一個經驗，在程式或是網頁的檔案都準備就緒，repository 也創好之後，快樂的下了 git push 指令上去 Github，按下 enter 的瞬間就會發現好像忘記加 <code>.gitignore</code> 了，所有的<code>資料庫帳號密碼</code>跟<code>私密的 config</code> 設定都上去了…。本文就來介紹如何快速的刪除一開始的 commit 與重新上傳的方法，當什麼事都沒發生過！</p>
+<p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>簡易的 Flask API 架設 (上篇) </li>
-<li>使用 Flask lib 的 <code>abort</code> 控制錯誤訊息 (下篇)</li>
-<li>使用 <code>traceback</code>、<code>sys</code> 套件追蹤自己想要的訊息 (下篇)</li>
+<li>如何快速修正上傳程式時不小心帶入機密資料的問題，如：<ul>
+<li>database 帳號密碼</li>
+<li>相關服務的 token (slack, sentry) </li>
+<li>網頁 ip 位置</li>
+<li>通訊阜 port</li>
+</ul>
+</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>確認有安裝好 <code>python3</code> 環境(請捨棄 <code>python2</code>)</li>
-<li>安裝 <code>flask</code>，本文使用 <code>flask==1.0.2</code></li>
-<li>有個簡易的 <code>terminal</code> 或是 <code>jupyter</code> 環境</li>
-<li>抱著輕鬆學習的心 </li>
+<li>有基礎的使用 Git 的能力</li>
 </ul>
-<h3 id="4-正常的錯誤訊息"><a href="#4-正常的錯誤訊息" class="headerlink" title="4.正常的錯誤訊息"></a><strong>4.正常的錯誤訊息</strong></h3><p>接續前一篇的的範例，若還不知道如何建立 flask api 的朋友可以先看這篇<br><a href="https://chilunhuang.github.io/posts/34383/">Flask 系列 - Flask error handling 教學(ㄧ)</a> </p>
-<p>以下就用簡單的例子噴錯給大家看，故意在程式裡面要取得清單不存在的 <code>C</code>的長度</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> request<span class="token punctuation">,</span> abort
-
-app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
-
-@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/error_test_500'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token keyword">def</span> <span class="token function">error_test_500</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    post <span class="token operator">=</span> request<span class="token punctuation">.</span>json<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    <span class="token keyword">return</span> len<span class="token punctuation">(</span>post<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'C'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">1234</span><span class="token punctuation">,</span> debug<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>在 terminal 執行打入水果清單：</p>
-<pre><code>curl -d &#39;[{&quot;A&quot;: &quot;apple&quot;,&quot;B&quot;: &quot;banana&quot;}]&#39; -H &quot;Content-Type: application/json&quot; -X POST http://0.0.0.0:1234/error_test_500</code></pre><p>將會乾淨利落的得到 <code>500 Internal Server Error</code></p>
-<p><img src="/medias/post_img/39347_1.jpg" alt="500 Internal Server Error"></p>
-<p>而你的 terminal 會得到正確的錯誤訊息： <code>TypeError: object of type &#39;NoneType&#39; has no len()</code></p>
-<h3 id="5-為錯誤訊息加油添醋"><a href="#5-為錯誤訊息加油添醋" class="headerlink" title="5.為錯誤訊息加油添醋"></a><strong>5.為錯誤訊息加油添醋</strong></h3><p>上面的範例噴錯的問題在實際應用 api 很常見，在 <code>docker</code> 或 <code>VM</code> 環境中我們無法用<code>debug</code>模式盯著，也不能隨便的 access 主機，後端人員突然跟你說噴錯又只拿到500 或 400 根本不知道是哪裡錯誤。</p>
-<p>這時候主事者還要先問前端做了什麼操作來重現情境、再去問後端到底打了什麼給 API，基本上就是用經驗在猜測可能哪裡出錯。</p>
-<p>所以 <code>API</code> 所帶出來的錯誤訊息就相當的重要，好的訊息可以大幅壓縮找蟲的時間啊，以下就教大家用比較簡單的方式獲取錯誤訊。</p>
-<p>接下來壓軸出場的就是<code>traceback</code>、<code>sys</code>了，看字面意思其實也蠻好懂的，他們可以追朔所有的系統錯誤訊息，包含 <code>行數</code>、<code>class</code>、<code>錯誤歷經的所有function</code>、<code>錯誤訊息</code>等等的資訊，相當實用。</p>
-<p>先放上完整範例再來一步一步解釋：</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> request<span class="token punctuation">,</span> abort
-<span class="token keyword">import</span> traceback
-<span class="token keyword">import</span> sys
-
-<span class="token keyword">def</span> <span class="token function">abort_msg</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token triple-quoted-string string">"""500 bad request for exception
-
-    Returns:
-        500 and msg which caused problems
-    """</span>
-    error_class <span class="token operator">=</span> e<span class="token punctuation">.</span>__class__<span class="token punctuation">.</span>__name__ <span class="token comment" spellcheck="true"># 引發錯誤的 class</span>
-    detail <span class="token operator">=</span> e<span class="token punctuation">.</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># 得到詳細的訊息</span>
-    cl<span class="token punctuation">,</span> exc<span class="token punctuation">,</span> tb <span class="token operator">=</span> sys<span class="token punctuation">.</span>exc_info<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true"># 得到錯誤的完整資訊 Call Stack</span>
-    lastCallStack <span class="token operator">=</span> traceback<span class="token punctuation">.</span>extract_tb<span class="token punctuation">(</span>tb<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># 取得做後一行的錯誤訊息</span>
-    fileName <span class="token operator">=</span> lastCallStack<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># 錯誤的檔案位置名稱</span>
-    lineNum <span class="token operator">=</span> lastCallStack<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># 錯誤行數 </span>
-    funcName <span class="token operator">=</span> lastCallStack<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># function 名稱</span>
-    <span class="token comment" spellcheck="true"># generate the error message</span>
-    errMsg <span class="token operator">=</span> <span class="token string">"Exception raise in file: {}, line {}, in {}: [{}] {}. Please contact the member who is the person in charge of project!"</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> lineNum<span class="token punctuation">,</span> funcName<span class="token punctuation">,</span> error_class<span class="token punctuation">,</span> detail<span class="token punctuation">)</span>
-    <span class="token comment" spellcheck="true"># return 500 code</span>
-    abort<span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">,</span> errMsg<span class="token punctuation">)</span>
-
-app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
-
-@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/error_test_500'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token keyword">def</span> <span class="token function">error_test_500</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    post <span class="token operator">=</span> request<span class="token punctuation">.</span>json<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    <span class="token keyword">try</span><span class="token punctuation">:</span>
-        <span class="token keyword">return</span> len<span class="token punctuation">(</span>post<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'C'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token keyword">except</span> Exception <span class="token keyword">as</span> e<span class="token punctuation">:</span>
-        abort_msg<span class="token punctuation">(</span>e<span class="token punctuation">)</span>
-
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">1234</span><span class="token punctuation">,</span> debug<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>基本上主程式是相同的，故意 call 一個不存在的<code>len(post.get(&#39;C&#39;))</code> 讓他錯誤，但是這次加上了<code>try,except</code>，當他噴500時，就執行 <code>abort_msg(e)</code>處理錯誤的 function。</p>
-<p>這個 <code>abort_msg</code> 基本上做了兩件事情：</p>
+<h3 id="1-刪除-git"><a href="#1-刪除-git" class="headerlink" title="1.刪除 .git"></a><strong>1.刪除 .git</strong></h3><p><em>提醒執行此步驟時請確定有對資料進行備份</em></p>
 <ul>
-<li>利用<code>traceback</code>、<code>sys</code>將錯誤資訊完整的抓出來組成字串</li>
-<li>利用 flask 的 <code>abort</code> 方法主動拋出 500錯誤並附加上而外的字串訊息，而不是讓 python自己噴錯，直接看結果圖：</li>
+<li>此步驟會刪除所有的紀錄，請斟酌使用，<code>並不適合針對多個 commit 的某個 commit 刪除</code>，只適合一開始創立的時候。</li>
 </ul>
-<p><img src="/medias/post_img/39347_2.jpg" alt="500 Internal Server Error"></p>
-<p>是不是發現結果不是單純的 500 錯誤了呢！，這次還加上了<code>錯誤的位置、行數、型態、原因</code>等等，甚至還可以加上聯絡人的資訊，是不是相當的一目了然呢！</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>以上為下篇的內容，簡易的分享如何在 API 發生錯誤時，得到更多細節有利於追朔錯誤。</p>
+<pre><code>cat .git/config
+rm -rf .git</code></pre><h3 id="2-重新-commit-正確的檔案"><a href="#2-重新-commit-正確的檔案" class="headerlink" title="2.重新 commit 正確的檔案"></a><strong>2.重新 commit 正確的檔案</strong></h3><ul>
+<li>先確認機密資料的 config 檔已經加到了 <code>.gitignore</code> 中(ex: <code>ini</code>、<code>env</code>檔)</li>
+<li>重新上傳檔案</li>
+</ul>
+<pre><code>git init
+git add .
+git commit -m &quot;Initial commit&quot;</code></pre><h3 id="3-重新-push-檔案"><a href="#3-重新-push-檔案" class="headerlink" title="3.重新 push 檔案"></a><strong>3.重新 push 檔案</strong></h3><ul>
+<li>重新 push</li>
+<li>查看頁面是否有將機密資訊刪除了</li>
+</ul>
+<pre><code>git remote add origin &lt;github-uri&gt;
+git push -u --force origin master</code></pre><p>到這邊就大功告成，之後有空會再分享，已經存在一段時間的專案，真的有需要刪除的 <code>commit</code> 該如何進行，我們下次見！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>本篇參考除了最佳答案以外，也有另外幾個分數也很高的解法，各位也可以嘗試看看。</p>
 <blockquote>
-<p><a href="https://flask-restplus.readthedocs.io/en/stable/errors.html" target="_blank" rel="noopener">https://flask-restplus.readthedocs.io/en/stable/errors.html</a></p>
-</blockquote>
-<blockquote>
-<p><a href="https://dotblogs.com.tw/caubekimo/2018/09/17/145733" target="_blank" rel="noopener">https://dotblogs.com.tw/caubekimo/2018/09/17/145733</a></p>
+<p><a href="https://stackoverflow.com/questions/9683279/make-the-current-commit-the-only-initial-commit-in-a-git-repository" target="_blank" rel="noopener">https://stackoverflow.com/questions/9683279/make-the-current-commit-the-only-initial-commit-in-a-git-repository</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -515,7 +459,7 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/39347/" class="b-link-green">Flask 系列 - Flask error handling 教學(二)</a>
+                    <a href="/posts/25048/" class="b-link-green">Github - 如何移除所有 commit 重新 push</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -556,7 +500,7 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
         repo: 'ChiLunHuang.github.io',
         owner: 'chilunhuang',
         admin: "chilunhuang",
-        id: '2020-02-19T20-11-25',
+        id: '2020-03-18T21-00-34',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -577,9 +521,10 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/posts/25048/">
                     <div class="card-image">
@@ -592,9 +537,9 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
                 <div class="card-content article-content">
                     <div class="summary">How to remove all history commit and push again?大家應該都有一個經驗，在程式或是網頁的檔案都準備就緒，repository 也創好之後，快樂的下了 git push 指令上去 Github，按</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-18
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-18
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -607,6 +552,7 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -629,19 +575,20 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/34383/">
+                <a href="/posts/39347/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="Flask 系列 - Flask error handling 教學(ㄧ)">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="Flask 系列 - Flask error handling 教學(二)">
                         
-                        <span class="card-title">Flask 系列 - Flask error handling 教學(ㄧ)</span>
+                        <span class="card-title">Flask 系列 - Flask error handling 教學(二)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">Example of error handling in flask. (Part I).在本範例你會學到：
+                    <div class="summary">Example of error handling in flask. (Part II).在本範例你會學到：
 
-簡易的 Flask API 架設 (上篇) -&gt; 如果已經熟悉 flask 可直接跳下篇
-使用 Flask lib 的 a</div>
+簡易的 Flask API 架設 (上篇) 
+使用 Flask lib 的 abort 控制錯誤訊息 (下篇)
+使用 trac</div>
                     <div class="publish-info">
                             <span class="publish-date">
                                 <i class="fa fa-clock-o fa-fw icon-date"></i>2020-02-19

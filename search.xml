@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>Github - 如何移除所有 commit 重新 push</title>
+      <link href="/posts/25048/"/>
+      <url>/posts/25048/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-remove-all-history-commit-and-push-again"><a href="#How-to-remove-all-history-commit-and-push-again" class="headerlink" title="How to remove all history commit and push again?"></a>How to remove all history commit and push again?</h1><p>大家應該都有一個經驗，在程式或是網頁的檔案都準備就緒，repository 也創好之後，快樂的下了 git push 指令上去 Github，按下 enter 的瞬間就會發現好像忘記加 <code>.gitignore</code> 了，所有的<code>資料庫帳號密碼</code>跟<code>私密的 config</code> 設定都上去了…。本文就來介紹如何快速的刪除一開始的 commit 與重新上傳的方法，當什麼事都沒發生過！</p><p><strong>在本範例你會學到：</strong></p><ul><li>如何快速修正上傳程式時不小心帶入機密資料的問題，如：<ul><li>database 帳號密碼</li><li>相關服務的 token (slack, sentry) </li><li>網頁 ip 位置</li><li>通訊阜 port</li></ul></li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有基礎的使用 Git 的能力</li></ul><h3 id="1-刪除-git"><a href="#1-刪除-git" class="headerlink" title="1.刪除 .git"></a><strong>1.刪除 .git</strong></h3><p><em>提醒執行此步驟時請確定有對資料進行備份</em></p><ul><li>此步驟會刪除所有的紀錄，請斟酌使用，<code>並不適合針對多個 commit 的某個 commit 刪除</code>，只適合一開始創立的時候。</li></ul><pre><code>cat .git/configrm -rf .git</code></pre><h3 id="2-重新-commit-正確的檔案"><a href="#2-重新-commit-正確的檔案" class="headerlink" title="2.重新 commit 正確的檔案"></a><strong>2.重新 commit 正確的檔案</strong></h3><ul><li>先確認機密資料的 config 檔已經加到了 <code>.gitignore</code> 中(ex: <code>ini</code>、<code>env</code>檔)</li><li>重新上傳檔案</li></ul><pre><code>git initgit add .git commit -m &quot;Initial commit&quot;</code></pre><h3 id="3-重新-push-檔案"><a href="#3-重新-push-檔案" class="headerlink" title="3.重新 push 檔案"></a><strong>3.重新 push 檔案</strong></h3><ul><li>重新 push</li><li>查看頁面是否有將機密資訊刪除了</li></ul><pre><code>git remote add origin &lt;github-uri&gt;git push -u --force origin master</code></pre><p>到這邊就大功告成，之後有空會再分享，已經存在一段時間的專案，真的有需要刪除的 <code>commit</code> 該如何進行，我們下次見！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>本篇參考除了最佳答案以外，也有另外幾個分數也很高的解法，各位也可以嘗試看看。</p><blockquote><p><a href="https://stackoverflow.com/questions/9683279/make-the-current-commit-the-only-initial-commit-in-a-git-repository" target="_blank" rel="noopener">https://stackoverflow.com/questions/9683279/make-the-current-commit-the-only-initial-commit-in-a-git-repository</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GitHub </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> github </tag>
+            
+            <tag> commit </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Flask 系列 - Flask error handling 教學(二)</title>
       <link href="/posts/39347/"/>
       <url>/posts/39347/</url>
