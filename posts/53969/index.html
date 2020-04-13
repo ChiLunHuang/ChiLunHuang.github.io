@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="remove commit,rebase,github,commit,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="本文目的為快速的使用 rebase 移除做壞的或是後悔的某筆 commit，並強制讓該 commit 消失在 GitHub 上。">
+    <meta name="keywords" content="seo,lazyload,image lazy load,延遲載入,performance,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="網頁的速度常常會是 seo 及判斷網頁好壞的重要因素之一。擁有大量圖片的網頁在這個分數上總是會很吃虧，光是載圖片進來就不知道輸人家多少秒了，本文就來介紹一個實用的好方法，lazyload。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)" />
-    <meta property="og:description" content="本文目的為快速的使用 rebase 移除做壞的或是後悔的某筆 commit，並強制讓該 commit 消失在 GitHub 上。" />
-    <meta property="og:image" content="/medias/featureimages/1.jpg" />
+    <meta property="og:title" content="seo系列 - Image Lazy Load 延遲載入圖片" />
+    <meta property="og:description" content="網頁的速度常常會是 seo 及判斷網頁好壞的重要因素之一。擁有大量圖片的網頁在這個分數上總是會很吃虧，光是載圖片進來就不知道輸人家多少秒了，本文就來介紹一個實用的好方法，lazyload。" />
+    <meta property="og:image" content="/medias/featureimages/3.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>Github - 如何使用rebase移除GitHub上最新或特定的 commit(二) | Happy Coding Lab</title>
+    <title>seo系列 - Image Lazy Load 延遲載入圖片 | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)
+                        seo系列 - Image Lazy Load 延遲載入圖片
                     </div>
                 </div>
             </div>
@@ -355,16 +355,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/github/" target="_blank">
-                                <span class="chip bg-color">github</span>
+                            <a href="/tags/seo/" target="_blank">
+                                <span class="chip bg-color">seo</span>
                             </a>
                         
-                            <a href="/tags/commit/" target="_blank">
-                                <span class="chip bg-color">commit</span>
-                            </a>
-                        
-                            <a href="/tags/rebase/" target="_blank">
-                                <span class="chip bg-color">rebase</span>
+                            <a href="/tags/lazyload/" target="_blank">
+                                <span class="chip bg-color">lazyload</span>
                             </a>
                         
                     </div>
@@ -375,8 +371,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/GitHub/" class="post-category" target="_blank">
-                                GitHub
+                            <a href="/categories/SEO/" class="post-category" target="_blank">
+                                SEO
                             </a>
                         
                     </div>
@@ -387,7 +383,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-03-22
+                    2020-04-13
                 </div>
 
                 
@@ -413,37 +409,50 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="How-to-remove-the-last-commit-and-froce-push-again"><a href="#How-to-remove-the-last-commit-and-froce-push-again" class="headerlink" title="How to remove the last commit and froce push again?"></a>How to remove the last commit and froce push again?</h1><p>在前一篇 <a href="https://chilunhuang.github.io/posts/25048/">Github - 如何移除GitHub上所有的 commit(一)</a> 的系列文中介紹到了如何完整個將整個 <code>repository</code> 的 commit 刪的一乾二淨，但是該篇方法基本上適用的情況不多，<code>僅適用於自己的測試專案或是分支，千萬不要在 master 上執行</code>，一般專案在管控版本更不應該做那個動作。</p>
-<p>而本篇方法將會教各位如何使用 <code>rebase</code> 刪除最新的 <code>commit</code> 或是 指定的某些 <code>commit</code> 讓他消失(強制刪掉)。個人使用的經驗與情境通常是做壞了或是跟下一個要 commit 的事項基本上可以一起處理時，就會做這個動作。</p>
-<p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>使用 <code>git rebase</code> 刪除 <code>commit</code></li>
+<li>如何用最簡單的方式提升多圖的網頁速度</li>
+<li>使用 <code>image lazy load</code> 改造網頁</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>有基礎的使用 Git 的能力</li>
+<li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li>
+<li>對 <code>html</code> 要有基本的認識 </li>
+<li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li>
 </ul>
-<p><em>註：友善提醒，對 Git 不熟的夥伴請時常備份 code 或是使用分支實驗，請不要隨便針對 master 做這些動作</em></p>
-<h3 id="1-找到想要刪除的-commit"><a href="#1-找到想要刪除的-commit" class="headerlink" title="1.找到想要刪除的 commit"></a><strong>1.找到想要刪除的 commit</strong></h3><ul>
-<li>在 terminal 輸入下列語法，後面的數字<code>2</code>可以自己隨意更改</li>
+<p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p>
+<h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p>
+<p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p>
+<ul>
+<li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p>
+</li>
+<li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p>
+</li>
+<li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p>
+</li>
 </ul>
-<pre><code>git rebase -i HEAD~2</code></pre><ul>
-<li>基本上會進入一個編輯模式，將會列出最新兩筆 commit</li>
+<p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p>
+<p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p>
+<h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p>
+<h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p>
+<ul>
+<li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li>
 </ul>
-<pre><code>pick 600557f test-1001 Add round() to function
-pick c4394fd test-1001 Modified typo error
-</code></pre><h3 id="2-刪除指定-commit-的資訊"><a href="#2-刪除指定-commit-的資訊" class="headerlink" title="2.刪除指定 commit 的資訊"></a><strong>2.刪除指定 commit 的資訊</strong></h3><ul>
-<li>編輯該檔案，將想要刪除的 commit 整句刪掉，越下面的 commit 代表越新</li>
-<li>存檔離開後就會被提醒該檔案被修正了</li>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ul>
+<li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul>
+<li>於 <code>class</code> 加入 <code>lazyload</code></li>
+<li>將 <code>src</code> 改為 <code>data-src</code></li>
 </ul>
-<pre><code>Successfully rebased and updated refs/heads/test-1001. </code></pre><h3 id="3-更新到-GitHub上"><a href="#3-更新到-GitHub上" class="headerlink" title="3.更新到 GitHub上"></a><strong>3.更新到 GitHub上</strong></h3><p>目前所有動作都是在本地端的紀錄，在 GitHub 上的 commit 還是存在的，所以要強制 push 將舊的紀錄蓋掉:</p>
-<pre><code>git push origin yourbranchName --force</code></pre><p>記得換上自己的分支名稱，執行後上 GitHub 頁面有沒有發現少了一個 commit 呢?!</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>網路上有蠻多各種五花八門的方式，我也不能確定哪種方式是最好的，所以選擇了一個相對簡單的方式，如果有更正式或好用的方法歡迎大家留言告訴我。</p>
-<blockquote>
-<p><a href="https://medium.com/micheh/%E7%A7%BB%E9%99%A4-github-%E4%B8%8A%E9%9D%A2%E7%9A%84-commit-91d62ca424a1" target="_blank" rel="noopener">https://medium.com/micheh/%E7%A7%BB%E9%99%A4-github-%E4%B8%8A%E9%9D%A2%E7%9A%84-commit-91d62ca424a1</a></p>
-</blockquote>
-<blockquote>
-<p><a href="https://gist.github.com/CrookedNumber/8964442" target="_blank" rel="noopener">https://gist.github.com/CrookedNumber/8964442</a></p>
+</li>
+</ul>
+<pre class="line-numbers language-html"><code class="language-html"># 原來寫法
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-html"><code class="language-html"># 新方式
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
+<p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -459,7 +468,7 @@ pick c4394fd test-1001 Modified typo error
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/9661/" class="b-link-green">Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)</a>
+                    <a href="/posts/53969/" class="b-link-green">seo系列 - Image Lazy Load 延遲載入圖片</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -500,7 +509,7 @@ pick c4394fd test-1001 Modified typo error
         repo: 'ChiLunHuang.github.io',
         owner: 'chilunhuang',
         admin: "chilunhuang",
-        id: '2020-03-22T17-43-45',
+        id: '2020-04-13T13-43-17',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -525,21 +534,21 @@ pick c4394fd test-1001 Modified typo error
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/53969/">
+                <a href="/posts/12526/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="seo系列 - Image Lazy Load 延遲載入圖片">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="seo系列 - Enable text compression on Nginx">
                         
-                        <span class="card-title">seo系列 - Image Lazy Load 延遲載入圖片</span>
+                        <span class="card-title">seo系列 - Enable text compression on Nginx</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to use image lazy load to speed up performance of website?在本範例你會學到：
+                    <div class="summary">Enable GZIP for CSS and JS files on NGINX server.在本範例你會學到：
 
-如何用最簡單的方式提升多圖的網頁速度
-使用 image lazy load 改造網頁
+如何評分自己網頁的 seo 是否及格
+在 nginx 實現GZIP壓縮 css 與 js 來達成加速網頁載入
 
-在本範</div>
+在本範例</div>
                     <div class="publish-info">
                         <span class="publish-date">
                             <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
@@ -563,8 +572,20 @@ pick c4394fd test-1001 Modified typo error
                         <span class="chip bg-color">seo</span>
                     </a>
                     
-                    <a href="/tags/lazyload/" target="_blank">
-                        <span class="chip bg-color">lazyload</span>
+                    <a href="/tags/text-compression/" target="_blank">
+                        <span class="chip bg-color">text compression</span>
+                    </a>
+                    
+                    <a href="/tags/GZIP/" target="_blank">
+                        <span class="chip bg-color">GZIP</span>
+                    </a>
+                    
+                    <a href="/tags/nginx/" target="_blank">
+                        <span class="chip bg-color">nginx</span>
+                    </a>
+                    
+                    <a href="/tags/django/" target="_blank">
+                        <span class="chip bg-color">django</span>
                     </a>
                     
                 </div>
@@ -578,19 +599,19 @@ pick c4394fd test-1001 Modified typo error
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/25048/">
+                <a href="/posts/9661/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Github - 如何刪除GitHub上所有的 commit(一)">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)">
                         
-                        <span class="card-title">Github - 如何刪除GitHub上所有的 commit(一)</span>
+                        <span class="card-title">Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to remove all history commit and push again?大家應該都有一個經驗，在程式或是網頁的檔案都準備就緒，repository 也創好之後，快樂的下了 git push 指令上去 Github，按</div>
+                    <div class="summary">How to remove the last commit and froce push again?在前一篇 Github - 如何移除GitHub上所有的 commit(一) 的系列文中介紹到了如何完整個將整個 repository 的</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-18
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-22
                             </span>
                         <span class="publish-author">
                             
@@ -613,6 +634,10 @@ pick c4394fd test-1001 Modified typo error
                     
                     <a href="/tags/commit/" target="_blank">
                         <span class="chip bg-color">commit</span>
+                    </a>
+                    
+                    <a href="/tags/rebase/" target="_blank">
+                        <span class="chip bg-color">rebase</span>
                     </a>
                     
                 </div>
