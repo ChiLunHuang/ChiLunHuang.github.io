@@ -445,7 +445,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     --metadata <span class="token string">'PIP_PACKAGES=pandas==0.23.0 scipy==1.1.0'</span> \
     --initialization-actions gs://<span class="token variable">$MY_BUCKET</span>/python/pip-install.sh
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="4-另一種方式"><a href="#4-另一種方式" class="headerlink" title="4.另一種方式"></a><strong>4.另一種方式</strong></h3><p>講到這前面其實還蠻簡單的吧，我們剩下一種就是 <code>CONDA_PACKAGES</code> 的方式，不過基本上就是一模一樣，將 <code>PIP_PACKAGES</code> 換掉就好，要注意的點是版本號的等號 <code>=</code> 是一個喔！：</p>
+<h3 id="4-另一種方式"><a href="#4-另一種方式" class="headerlink" title="4.另一種方式"></a><strong>4.另一種方式</strong></h3><p>講到這前面其實還蠻簡單的吧，我們剩下一種就是 <code>CONDA_PACKAGES</code> 的方式，不過基本上就是一模一樣，將 <code>PIP_PACKAGES</code> 換掉就好，要注意的點是版本號的等號 <code>=</code> 是一個喔！<strong>(2020/04/14補充：經過實測單個或兩個等號都不會出錯，不知道之後會不會變動)</strong>：</p>
 <pre class="line-numbers language-bash"><code class="language-bash">gcloud dataproc clusters create my-cluster \
     --metadata <span class="token string">'CONDA_PACKAGES=pandas=0.23.0 scipy=1.1.0'</span> \
     --initialization-actions gs://<span class="token variable">$MY_BUCKET</span>/python/conda-install.sh
