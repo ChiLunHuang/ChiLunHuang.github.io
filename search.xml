@@ -345,11 +345,11 @@
       
         <tags>
             
-            <tag> pyspark </tag>
-            
             <tag> keras </tag>
             
             <tag> serialize </tag>
+            
+            <tag> pyspark </tag>
             
             <tag> spark </tag>
             
