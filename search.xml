@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>seo-移除未使用的 css (purify css)</title>
+      <link href="/posts/43991/"/>
+      <url>/posts/43991/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Remove-unused-CSS-code-from-stylesheets"><a href="#Remove-unused-CSS-code-from-stylesheets" class="headerlink" title="Remove unused CSS code from stylesheets."></a>Remove unused CSS code from stylesheets.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>快速的的解決肥大的 css 造成的效能問題</li><li>purify css</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>一個正在跑的網頁</li><li>一個你覺得很肥的 css，而且有用在前一項的網頁</li></ul><h3 id="1-回憶過去"><a href="#1-回憶過去" class="headerlink" title="1. 回憶過去"></a><strong>1. 回憶過去</strong></h3><p>seo 系列介紹了相當多的優化方法：</p><p><a href="https://chilunhuang.github.io/posts/12526/">seo系列 - Enable text compression on Nginx</a></p><p><a href="https://chilunhuang.github.io/posts/53969/">seo系列 - Image Lazy Load 延遲載入圖片</a></p><p><a href="https://chilunhuang.github.io/posts/17948/">seo系列 - 使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</a></p><p>以上包含了 nginx server 端的<code>文字壓縮(text compression)</code>與瀏覽器的<code>緩存機制(Cache-Control)</code>以及<code>圖片的延遲載入(Lazy Load)</code>來提升網頁的 performance、seo等等的分數其實已經相當的足夠了，本篇介紹的方式筆者認為是一個小偏方，他有可能會造成一些非預期的錯誤，不過當你優化進入到撞牆期時，不妨可以試試看喔！</p><h3 id="2-為何需要-purify-css"><a href="#2-為何需要-purify-css" class="headerlink" title="2. 為何需要 purify css"></a><strong>2. 為何需要 purify css</strong></h3><p>網頁開發的套件樣板真的是百百款，學也學不完，不過大家應該都有使用過一個相當方便我個人也相當喜愛的<code>Bootstrap</code><a href="https://getbootstrap.com/" target="_blank" rel="noopener">(官網)</a> 開源前端框架，可以輕鬆的支援與調整想要的 <code>自適應網頁</code>或是稱為<code>響應式網頁 (RWD)</code>，殊不知這是我在優化網頁效能時的一大惡夢，它的優點成為了他的缺點。</p><p>Bootstrap 的 css 包實在是太過巨大了，而且是整個網頁框架都是使用它，所以相關的壓縮、緩存、延遲載入其實效果都很有限，因為他在一開始網頁載入的時候就一定會用到了，我也有參照 Google 的檢測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>的建議來調整<a href="https://web.dev/extract-critical-css/" target="_blank" rel="noopener">同步與異步載入css</a>的方式，不過效果不大，有興趣的朋友可以參考一下原文，或許有幫助。</p><p>所以跟 Google 大神討教一番之後，找到了一個治標不治本的方式<code>purifycss</code>，譯為:</p><blockquote><p>當他太肥的時候，就幫他減肥囉！</p></blockquote><h3 id="2-使用-purify-css"><a href="#2-使用-purify-css" class="headerlink" title="2. 使用 purify css"></a><strong>2. 使用 purify css</strong></h3><p>其實網路上有各種相關的套件可以使用，比較常看到的是：</p><ul><li>npm i -D purify-css <a href="https://github.com/purifycss/purifycss" target="_blank" rel="noopener">(參考)</a></li></ul><p>熟悉 <code>npm</code> 的朋友就自己玩玩吧，我不是很熟，所以就簡單的介紹一個網頁版的給大家囉！</p><h4 id="PurifyCSS-Online"><a href="#PurifyCSS-Online" class="headerlink" title="PurifyCSS Online"></a>PurifyCSS Online</h4><p>網頁：<a href="https://purifycss.online/" target="_blank" rel="noopener">https://purifycss.online/</a></p><p>他就是一個簡單的網頁，基本上就是兩個步驟:</p><ul><li>左邊輸入你的網頁原始碼的 <code>html</code> </li><li>右邊輸入你想要減肥的 <code>css</code> </li></ul><p><img src="/medias/post_img/43991_1.jpg" alt="示意圖"></p><p>我的 css 是放 <code>bootstrap.min.css</code> 的檔案內容，都複製上去後按下開始減肥(Clean up CSS)就可以得到結果。</p><p><img src="/medias/post_img/43991_2.jpg" alt="減肥後的效果"></p><p>下面秀出的新視窗是減肥過後的 css 代碼，可以複製出來另取名稱再套用，以上看得出來我有 <code>33.05%</code>的 code 根本沒用到，拿掉之後可以省下 <code>45.49 KB</code> 的傳輸大小，是不是還蠻不錯的！</p><p>但為何我會說這是個小偏方呢，因為他是以當下的網頁原始碼去做掃描的動作，當你某些html是必須在點擊或是相關動作後才會顯現時，他就會認為這個程式碼並沒有被使用到，就會被刪掉喔！所以使用此方法有一定的風險的，使用前要先再確認有沒有功能因為刪減css而壞掉了，找到之後再把他補上去即可！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://purifycss.online/" target="_blank" rel="noopener">https://purifycss.online/</a></p></blockquote><blockquote><p><a href="https://web.dev/extract-critical-css/" target="_blank" rel="noopener">https://web.dev/extract-critical-css/</a></p></blockquote><blockquote><p><a href="https://github.com/purifycss/purifycss" target="_blank" rel="noopener">https://github.com/purifycss/purifycss</a> </p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> purifycss </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</title>
       <link href="/posts/17948/"/>
       <url>/posts/17948/</url>
@@ -25,6 +54,8 @@
             <tag> nginx </tag>
             
             <tag> django </tag>
+            
+            <tag> performance </tag>
             
             <tag> Cache-Control </tag>
             
@@ -61,6 +92,8 @@
             
             <tag> django </tag>
             
+            <tag> performance </tag>
+            
         </tags>
       
     </entry>
@@ -85,6 +118,8 @@
         <tags>
             
             <tag> seo </tag>
+            
+            <tag> performance </tag>
             
             <tag> lazyload </tag>
             
