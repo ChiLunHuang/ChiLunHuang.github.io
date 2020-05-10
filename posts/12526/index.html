@@ -527,31 +527,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     
-        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
-<link rel="stylesheet" href="/css/my-gitalk.css">
 
-<div class="card gitalk-card" data-aos="fade-up">
-    <div id="gitalk-container" class="card-content"></div>
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+    </div>
 </div>
 
-<script src="/libs/gitalk/gitalk.min.js"></script>
-<script>
-    let gitalk = new Gitalk({
-        clientID: '414c0c335a81958b0c2d',
-        clientSecret: '7f1f55f81a6e37aaab79012221ba61e0abc2f3c2',
-        repo: 'ChiLunHuang.github.io',
-        owner: 'chilunhuang',
-        admin: "chilunhuang",
-        id: '2020-04-13T13-43-17',
-        distractionFreeMode: false  // Facebook-like distraction free mode
-    });
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'https://chilunhuang.github.io/posts/12526/';
+        this.page.identifier = '/posts/12526/';
+        this.page.title = 'seo系列 - Enable text compression on Nginx';
+    };
+    let disqus_shortname = 'clhlab';
 
-    gitalk.render('gitalk-container');
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-    
-
-    
-
     
 
     
@@ -563,30 +566,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
-            </div>
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/12526/">
+                <a href="/posts/17948/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="seo系列 - Enable text compression on Nginx">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題">
                         
-                        <span class="card-title">seo系列 - Enable text compression on Nginx</span>
+                        <span class="card-title">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">Enable GZIP for CSS and JS files on NGINX server.在本範例你會學到：
+                    <div class="summary">Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control.在本範例你會學到：
 
-如何評分自己網頁的 seo 是否及格
-在 nginx 實現GZIP壓縮 css 與 js 來達成加速網頁載入
-
-在本範例</div>
+在 nginx 中設定緩存參數
+seo 的</div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
-                            </span>
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-10
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -599,20 +599,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
                     <a href="/tags/seo/" target="_blank">
                         <span class="chip bg-color">seo</span>
-                    </a>
-                    
-                    <a href="/tags/text-compression/" target="_blank">
-                        <span class="chip bg-color">text compression</span>
-                    </a>
-                    
-                    <a href="/tags/GZIP/" target="_blank">
-                        <span class="chip bg-color">GZIP</span>
                     </a>
                     
                     <a href="/tags/nginx/" target="_blank">
@@ -621,6 +612,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <a href="/tags/django/" target="_blank">
                         <span class="chip bg-color">django</span>
+                    </a>
+                    
+                    <a href="/tags/Cache-Control/" target="_blank">
+                        <span class="chip bg-color">Cache-Control</span>
                     </a>
                     
                 </div>

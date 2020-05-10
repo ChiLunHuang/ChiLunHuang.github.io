@@ -431,31 +431,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     
-        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
-<link rel="stylesheet" href="/css/my-gitalk.css">
 
-<div class="card gitalk-card" data-aos="fade-up">
-    <div id="gitalk-container" class="card-content"></div>
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+    </div>
 </div>
 
-<script src="/libs/gitalk/gitalk.min.js"></script>
-<script>
-    let gitalk = new Gitalk({
-        clientID: '414c0c335a81958b0c2d',
-        clientSecret: '7f1f55f81a6e37aaab79012221ba61e0abc2f3c2',
-        repo: 'ChiLunHuang.github.io',
-        owner: 'chilunhuang',
-        admin: "chilunhuang",
-        id: '2019-11-13T22-28-49',
-        distractionFreeMode: false  // Facebook-like distraction free mode
-    });
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'https://chilunhuang.github.io/contact/index.html';
+        this.page.identifier = '/contact/index.html';
+        this.page.title = 'contact';
+    };
+    let disqus_shortname = 'clhlab';
 
-    gitalk.render('gitalk-container');
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
 </script>
-    
-
-    
-
     
 
     
