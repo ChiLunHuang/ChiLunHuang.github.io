@@ -4,6 +4,39 @@
   
     
     <entry>
+      <title>GCP &amp; letsencrypt 的 ssl憑證申請與續期</title>
+      <link href="/posts/51659/"/>
+      <url>/posts/51659/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Auto-renew-letsencrypt-by-certbot-in-GCP"><a href="#Auto-renew-letsencrypt-by-certbot-in-GCP" class="headerlink" title="Auto renew letsencrypt by certbot in GCP."></a>Auto renew letsencrypt by certbot in GCP.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>手動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)</li><li>自動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)</li><li>將不安全網頁(http)變成綠色小鎖頭(https)</li><li>使用 <code>certbot</code></li><li>使用 <code>certbot-dns-google</code></li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有使用 Cloud DNS 將 GCP 的機器與其他第三方網域(ex:GoDaddy)供應商進行綁定</li><li>對 GCP 有一定熟悉程度</li><li>需要 https 將網頁變成安全的網頁的需求</li><li>所有設定都在 <code>CentOS</code> 與 <code>python3</code> 環境完成</li></ul><h3 id="1-簡介"><a href="#1-簡介" class="headerlink" title="1.簡介"></a><strong>1.簡介</strong></h3><p>大家在開發網頁的時候基本上一開始一定都還是使用 http 的網址作為開頭使用，不過現在 Google 大神會將 <code>http 開頭的網頁視為不安全的網頁</code>，當然基本上不會特別直接影響到網頁的速度、效能以及其他功能，依然可以正常使用，不過長時間以來是會影響 <code>seo</code> 排名的喔！所以本教學就來告訴大家如何將 http 變成 https 的綠色小鎖頭吧！</p><p><img src="/medias/post_img/51659_1.jpg" alt="憑證的綠色小鎖頭"></p><p>要變成綠色小鎖頭就必須要有憑證，而憑證又該如何取得呢，有兩種方式：</p><ul><li>付錢</li><li>免費的 letsencrypt (<code>每三個月必須更新憑證</code>)</li></ul><p>本教程將會記錄如何將 <code>免費letsencrypt 的憑證自動續約</code>，這樣就可以免去手動更新的麻煩了！</p><p>看到這踏家或許有些疑問為什麼我一直要特別強調 DNS 呢？因為這個方法只適用於<code>有使用 GCP Cloud DNS 才能使用喔</code>。如果是正常的方式網路上已經超級多方法了(這也是我一直沒發現用錯方法的原因)，我這邊就不特別在寫一篇了，不過基本上語法都是一樣的，到官網上看稍微修改也是可以使用的。</p><h3 id="2-手動申請與續約"><a href="#2-手動申請與續約" class="headerlink" title="2.手動申請與續約"></a><strong>2.手動申請與續約</strong></h3><p>這邊還是稍微講述一下簡單的手動模式，給不需要自動更新或是單純測試的夥伴們可以先用這個方法測試喔！！</p><p>先安裝套件：</p><pre><code>pip install certbot</code></pre><p>直接進入主題下語法：</p><ul><li>–dry-run: 代表不會真的執行，試跑與法有沒有錯誤可以使用</li><li>-d: 有多少個 domain 就寫幾個</li><li>–server: 照抄就好</li></ul><p>要特別注意這邊是使用 <code>dns</code>喔！</p><pre><code>certbot certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns  -d test.com.tw -d www.test.com.tw --dry-run</code></pre><p>接下來就是比較麻煩也可能會出錯的地方：</p><ul><li>按下 enter 後直接到 GCP Cloud DNS 頁面(<a href="https://chilunhuang.github.io/posts/22148/">不知道我在講什麼請看這篇</a>)選擇目前要使用的區域(domain)</li><li>按下<code>新增紀錄集</code>，並依照剛剛 enter 後 terminal 的指示新增<code>資源記錄類型</code>中的<code>TXT</code>，並將 terminal 中的序號填入<code>TXT 資料</code>並按下建立，並等待至少30秒，讓它生效(此步驟需要等待時間生效，直接繼續在 terminal 按 enter 可能會設定失敗)</li><li>等待秒數過後可以繼續新增下一個 domain，一樣再到 GCP 頁面新增序號，直到沒有網域需要新增就結束</li></ul><p>以上步驟如果有訊息說失敗，可以再試一次，有可能是等待時間不夠長，不過依據經驗30秒是足夠的。</p><p>設定完成就會見到以下訊息：</p><pre><code>IMPORTANT NOTES: - Congratulations! Your certificate and chain have been saved at:   /etc/letsencrypt/live/test.com.tw/fullchain.pem   Your key file has been saved at:   /etc/letsencrypt/live/test.com.tw/privkey.pem   Your cert will expire on 2020-06-29. To obtain a new or tweaked   version of this certificate in the future, simply run certbot   again. To non-interactively renew *all* of your certificates, run   &quot;certbot renew&quot; - If you like Certbot, please consider supporting our work by:   Donating to ISRG / Let&#39;s Encrypt:   https://letsencrypt.org/donate   Donating to EFF:                    https://eff.org/donate-le</code></pre><p>該訊息基本上包含兩件事：</p><ul><li>該憑證的到期日，三個月後就會作廢</li><li>該憑證的產生位置(<code>*.pem</code>)，可以依需求放到自己相對應的伺服器位置(Nginx or Apache)</li></ul><p>若是需要手動續約，也非常簡單 (正式的時候要把<code>--dry-run</code>拿掉喔！)：</p><pre><code>sudo certbot renew --dry-run</code></pre><h3 id="3-自動更新"><a href="#3-自動更新" class="headerlink" title="3.自動更新"></a><strong>3.自動更新</strong></h3><p>網路上有非常多手動/自動更新的方法，小弟在使用每一篇文章都會看到的 <code>sudo certbot renew</code> 從來都沒有成功過，一直都抱一樣的錯誤訊息，所以非常苦惱，不想要三個月就手動一次，後來才發現原來 Google 有相對應的套件可以使用啊！！</p><p>直接切入主題：</p><p>1.安裝</p><pre><code>pip install certbot-dns-google</code></pre><p>2.設定 Google Credentials，取得金鑰 json</p><p><strong>每次都有的貼心小提醒：GCP頁面變動相當的大，可能短短幾個月步驟就不一樣了，請大家多注意！</strong></p><ul><li>於 GCP 導覽列中找到 <code>API 和服務</code>選擇<code>憑證</code></li><li>按下建立憑證選擇服務帳戶 (找不到看下圖)</li></ul><p><img src="/medias/post_img/51659_2.jpg" alt="設定步驟"></p><ul><li>輸入名稱</li><li>進入<code>將專案存取權授予這個服務帳戶</code>要進行角色選擇，可以<a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">依照官網自己決定</a>，或是可以跟著本篇設定即可，這裡可能要花點時間找到想要的角色:</li></ul><pre><code>dns.changes.createdns.changes.getdns.managedZones.listdns.resourceRecordSets.createdns.resourceRecordSets.deletedns.resourceRecordSets.listdns.resourceRecordSets.update</code></pre><ul><li>最後一步驟有一個建立金鑰，按下去選擇 <code>json</code> 並下載</li><li>得到金鑰後，將剛剛的金鑰 json 檔放到網頁伺服器的(vm)的相對應位置(自行決定)，並輸入下列語法：<ul><li><code>-d</code>: 更改網域位置</li><li><code>--dns-google-credentials</code> 位置為 json 檔路徑</li></ul></li></ul><pre><code>certbot certonly --dns-google --dns-google-credentials /etc/letsencrypt/renewal/fabled-mystery-264984-6tg78hcd467.json -d www.test.com.tw. -d test.com.tw. --dry-run</code></pre><p>基本上會跟上方手動很像，不過這個的好處就是不用自己輸入 <code>TXT</code> 金鑰囉！！執行指令後可以在 <code>GCP Cloud DNS</code>頁面看到它運作的情況，會自動幫你新增，沒收到任何錯誤訊息就是成功囉，如果有遇到錯誤可以先在執行一次看看，通常就會解決了。</p><p>3.將 ssl 憑證放入相對應位置</p><p>這個步驟跟上方的手動設定基本上功能一樣，完成後將剛剛產生的 <code>fullchain.pem</code>、<code>privkey.pem</code>放到伺服器相對位置下，以<code>Nginx</code>為例子，將下列設定加入設定檔 <code>/etc/nginx/nginx.conf</code>中：</p><pre><code>ssl_certificate /etc/letsencrypt/live/test.com.tw/fullchain.pem;ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><p>4.更新憑證</p><p>基本上上面都沒問題，這步驟也會順利：</p><p><code>certbot renew --dry-run</code></p><h3 id="4-確認憑證狀態"><a href="#4-確認憑證狀態" class="headerlink" title="4.確認憑證狀態"></a><strong>4.確認憑證狀態</strong></h3><p>這步驟就是簡單地使用網頁去驗證剛剛產生的憑證是否狀態正常且生效:</p><ul><li>將下列的 <code>www.test.com.tw</code> 換成自己的網址即可使用</li></ul><pre><code>https://www.ssllabs.com/ssltest/analyze.html?d=www.test.com.tw&amp;latest</code></pre><ul><li>若沒問題就會看到以下畫面</li></ul><p><img src="/medias/post_img/51659_3.jpg" alt="成功畫面"></p><p>在主機上也可測試剛剛申請的是否成功與狀態顯示：</p><pre><code>sudo certbot certificates</code></pre><h3 id="5-自動更新憑證"><a href="#5-自動更新憑證" class="headerlink" title="5.自動更新憑證"></a><strong>5.自動更新憑證</strong></h3><p>最後的重點就是不想要三個月就執行以上的步驟一次，所以在主機上設定 <code>cron job</code>讓他自己去更新：</p><p>進入主機並輸入(不同OS方法有所差異，請斟酌參考)</p><pre><code>crontab -e</code></pre><p>輸入相對應的更新日期以及月份就大功告成囉，若不懂怎麼設定可以參考下方參考資料的連結！請記得正式的情況<code>--dry-run</code>要拿掉喔！</p><p>以上都完成後，就可以去看看有沒有變成綠色小鎖頭了(https)。</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>特別感謝作者<code>tn710617</code>在憑證設定部分給予大大的幫助</p><blockquote><p><a href="https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials" target="_blank" rel="noopener">https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials</a></p></blockquote><p>排程設定教學</p><blockquote><p><a href="https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/" target="_blank" rel="noopener">https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/</a></p></blockquote><blockquote><p><a href="https://andyyou.github.io/2019/04/13/how-to-use-certbot/" target="_blank" rel="noopener">https://andyyou.github.io/2019/04/13/how-to-use-certbot/</a></p></blockquote><p>certbot-dns-google 詳細設定</p><blockquote><p><a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">https://certbot-dns-google.readthedocs.io/en/stable/</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCP </tag>
+            
+            <tag> SSL </tag>
+            
+            <tag> certbot </tag>
+            
+            <tag> letsencrypt </tag>
+            
+            <tag> DNS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>GCP系列-將 GoDaddy 網域與 Google DNS進行綁定</title>
       <link href="/posts/22148/"/>
       <url>/posts/22148/</url>
@@ -51,9 +84,9 @@
             
             <tag> seo </tag>
             
-            <tag> purifycss </tag>
-            
             <tag> performance </tag>
+            
+            <tag> purifycss </tag>
             
         </tags>
       
@@ -80,13 +113,48 @@
             
             <tag> seo </tag>
             
+            <tag> nginx </tag>
+            
+            <tag> django </tag>
+            
             <tag> performance </tag>
+            
+            <tag> Cache-Control </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Enable text compression on Nginx</title>
+      <link href="/posts/12526/"/>
+      <url>/posts/12526/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何評分自己網頁的 <code>seo</code> 是否及格</li><li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>nginx 服務</li><li>自己架設的網頁</li></ul><p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p><h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p><p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p><p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p><pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p><p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p><h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p><p>找到 nginx server 的設定檔，沒意外預設會放在：</p><pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p><blockquote><p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p></blockquote><pre><code># Enable Gzip     gzip on;     gzip_http_version 1.0;     gzip_comp_level 2;     gzip_min_length 1100;     gzip_buffers  4 8k;     gzip_proxied any;     gzip_types     # text/html is always compressed by HttpGzipModule     text/css     text/javascript     text/xml     text/plain     text/x-component     application/javascript     application/json     application/xml     application/rss+xml     font/truetype     font/opentype     application/vnd.ms-fontobject     image/svg+xml;     gzip_static on;     gzip_proxied  expired no-cache no-store private auth;     gzip_disable  &quot;MSIE [1-6]\.&quot;;     gzip_vary   on; </code></pre><p>內容基本上就是：</p><ul><li>啟動 gzip 壓縮</li><li>設定要被壓縮的類型(css、javascript 等等)</li></ul><p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p><pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p><p>進步超級多，壓縮效果是不是相當的驚人呢！</p><p>有機會再與大家分享更多 seo 更多經驗！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p></blockquote><blockquote><p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> text compression </tag>
+            
+            <tag> GZIP </tag>
             
             <tag> nginx </tag>
             
             <tag> django </tag>
             
-            <tag> Cache-Control </tag>
+            <tag> performance </tag>
             
         </tags>
       
@@ -116,41 +184,6 @@
             <tag> performance </tag>
             
             <tag> lazyload </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Enable text compression on Nginx</title>
-      <link href="/posts/12526/"/>
-      <url>/posts/12526/</url>
-      
-        <content type="html"><![CDATA[<h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何評分自己網頁的 <code>seo</code> 是否及格</li><li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>nginx 服務</li><li>自己架設的網頁</li></ul><p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p><h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p><p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p><p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p><pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p><p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p><h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p><p>找到 nginx server 的設定檔，沒意外預設會放在：</p><pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p><blockquote><p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p></blockquote><pre><code># Enable Gzip     gzip on;     gzip_http_version 1.0;     gzip_comp_level 2;     gzip_min_length 1100;     gzip_buffers  4 8k;     gzip_proxied any;     gzip_types     # text/html is always compressed by HttpGzipModule     text/css     text/javascript     text/xml     text/plain     text/x-component     application/javascript     application/json     application/xml     application/rss+xml     font/truetype     font/opentype     application/vnd.ms-fontobject     image/svg+xml;     gzip_static on;     gzip_proxied  expired no-cache no-store private auth;     gzip_disable  &quot;MSIE [1-6]\.&quot;;     gzip_vary   on; </code></pre><p>內容基本上就是：</p><ul><li>啟動 gzip 壓縮</li><li>設定要被壓縮的類型(css、javascript 等等)</li></ul><p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p><pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p><p>進步超級多，壓縮效果是不是相當的驚人呢！</p><p>有機會再與大家分享更多 seo 更多經驗！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p></blockquote><blockquote><p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> performance </tag>
-            
-            <tag> text compression </tag>
-            
-            <tag> GZIP </tag>
-            
-            <tag> nginx </tag>
-            
-            <tag> django </tag>
             
         </tags>
       
