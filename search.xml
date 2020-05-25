@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title>GCP &amp; letsencrypt 的 ssl憑證申請與續期</title>
+      <title>GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期</title>
       <link href="/posts/51659/"/>
       <url>/posts/51659/</url>
       
@@ -113,48 +113,13 @@
             
             <tag> seo </tag>
             
+            <tag> performance </tag>
+            
             <tag> nginx </tag>
             
             <tag> django </tag>
-            
-            <tag> performance </tag>
             
             <tag> Cache-Control </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Enable text compression on Nginx</title>
-      <link href="/posts/12526/"/>
-      <url>/posts/12526/</url>
-      
-        <content type="html"><![CDATA[<h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何評分自己網頁的 <code>seo</code> 是否及格</li><li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>nginx 服務</li><li>自己架設的網頁</li></ul><p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p><h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p><p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p><p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p><pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p><p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p><h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p><p>找到 nginx server 的設定檔，沒意外預設會放在：</p><pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p><blockquote><p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p></blockquote><pre><code># Enable Gzip     gzip on;     gzip_http_version 1.0;     gzip_comp_level 2;     gzip_min_length 1100;     gzip_buffers  4 8k;     gzip_proxied any;     gzip_types     # text/html is always compressed by HttpGzipModule     text/css     text/javascript     text/xml     text/plain     text/x-component     application/javascript     application/json     application/xml     application/rss+xml     font/truetype     font/opentype     application/vnd.ms-fontobject     image/svg+xml;     gzip_static on;     gzip_proxied  expired no-cache no-store private auth;     gzip_disable  &quot;MSIE [1-6]\.&quot;;     gzip_vary   on; </code></pre><p>內容基本上就是：</p><ul><li>啟動 gzip 壓縮</li><li>設定要被壓縮的類型(css、javascript 等等)</li></ul><p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p><pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p><p>進步超級多，壓縮效果是不是相當的驚人呢！</p><p>有機會再與大家分享更多 seo 更多經驗！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p></blockquote><blockquote><p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> text compression </tag>
-            
-            <tag> GZIP </tag>
-            
-            <tag> nginx </tag>
-            
-            <tag> django </tag>
-            
-            <tag> performance </tag>
             
         </tags>
       
@@ -181,9 +146,44 @@
             
             <tag> seo </tag>
             
+            <tag> lazyload </tag>
+            
             <tag> performance </tag>
             
-            <tag> lazyload </tag>
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Enable text compression on Nginx</title>
+      <link href="/posts/12526/"/>
+      <url>/posts/12526/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何評分自己網頁的 <code>seo</code> 是否及格</li><li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>nginx 服務</li><li>自己架設的網頁</li></ul><p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p><h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p><p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p><p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p><pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p><p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p><h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p><p>找到 nginx server 的設定檔，沒意外預設會放在：</p><pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p><blockquote><p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p></blockquote><pre><code># Enable Gzip     gzip on;     gzip_http_version 1.0;     gzip_comp_level 2;     gzip_min_length 1100;     gzip_buffers  4 8k;     gzip_proxied any;     gzip_types     # text/html is always compressed by HttpGzipModule     text/css     text/javascript     text/xml     text/plain     text/x-component     application/javascript     application/json     application/xml     application/rss+xml     font/truetype     font/opentype     application/vnd.ms-fontobject     image/svg+xml;     gzip_static on;     gzip_proxied  expired no-cache no-store private auth;     gzip_disable  &quot;MSIE [1-6]\.&quot;;     gzip_vary   on; </code></pre><p>內容基本上就是：</p><ul><li>啟動 gzip 壓縮</li><li>設定要被壓縮的類型(css、javascript 等等)</li></ul><p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p><pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p><p>進步超級多，壓縮效果是不是相當的驚人呢！</p><p>有機會再與大家分享更多 seo 更多經驗！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p></blockquote><blockquote><p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> text compression </tag>
+            
+            <tag> GZIP </tag>
+            
+            <tag> nginx </tag>
+            
+            <tag> django </tag>
             
         </tags>
       
