@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="seo,purifycss,performance,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="網頁的效能優化到最後可能會進入一個撞牆期，當該壓縮的都壓縮了，該緩存的也緩存了，但是 performance 還是不完美，這時還能做什麼呢？本篇就來告訴你一個小技巧，purify css！">
+    <meta name="keywords" content="pyspark,to_date,unix_timestamp,string,datetime,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="本範例將會示範如何在 pyspark 中使用 to_date 方法將時間字串轉成 datetime 格式以及 unix_timestamp 方法轉 timestamp 格式。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="seo-移除未使用的 css (purify css)" />
-    <meta property="og:description" content="網頁的效能優化到最後可能會進入一個撞牆期，當該壓縮的都壓縮了，該緩存的也緩存了，但是 performance 還是不完美，這時還能做什麼呢？本篇就來告訴你一個小技巧，purify css！" />
-    <meta property="og:image" content="/medias/featureimages/5.jpg" />
+    <meta property="og:title" content="pyspark系列-字串轉時間格式 string to datetime or timestamp" />
+    <meta property="og:description" content="本範例將會示範如何在 pyspark 中使用 to_date 方法將時間字串轉成 datetime 格式以及 unix_timestamp 方法轉 timestamp 格式。" />
+    <meta property="og:image" content="/medias/featureimages/1.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>seo-移除未使用的 css (purify css) | Happy Coding Lab</title>
+    <title>pyspark系列-字串轉時間格式 string to datetime or timestamp | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        seo-移除未使用的 css (purify css)
+                        pyspark系列-字串轉時間格式 string to datetime or timestamp
                     </div>
                 </div>
             </div>
@@ -355,16 +355,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/seo/" target="_blank">
-                                <span class="chip bg-color">seo</span>
-                            </a>
-                        
-                            <a href="/tags/performance/" target="_blank">
-                                <span class="chip bg-color">performance</span>
-                            </a>
-                        
-                            <a href="/tags/purifycss/" target="_blank">
-                                <span class="chip bg-color">purifycss</span>
+                            <a href="/tags/pyspark/" target="_blank">
+                                <span class="chip bg-color">pyspark</span>
                             </a>
                         
                     </div>
@@ -375,8 +367,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                SEO
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                pyspark
                             </a>
                         
                     </div>
@@ -387,7 +379,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-05-10
+                    2020-06-04
                 </div>
 
                 
@@ -413,53 +405,50 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="Remove-unused-CSS-code-from-stylesheets"><a href="#Remove-unused-CSS-code-from-stylesheets" class="headerlink" title="Remove unused CSS code from stylesheets."></a>Remove unused CSS code from stylesheets.</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-convert-pyspark-string-to-datetime"><a href="#How-to-convert-pyspark-string-to-datetime" class="headerlink" title="How to convert pyspark string to datetime?"></a>How to convert pyspark string to datetime?</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>快速的的解決肥大的 css 造成的效能問題</li>
-<li>purify css</li>
+<li><code>to_date</code> 使用方式 (<code>New in version 2.2</code>)</li>
+<li><code>unix_timestamp</code> 使用方式</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>一個正在跑的網頁</li>
-<li>一個你覺得很肥的 css，而且有用在前一項的網頁</li>
+<li>本範例環境是 <code>pyspark 版本 &gt;= 2.4</code></li>
+<li>歡樂愉快的學習精神</li>
 </ul>
-<h3 id="1-回憶過去"><a href="#1-回憶過去" class="headerlink" title="1. 回憶過去"></a><strong>1. 回憶過去</strong></h3><p>seo 系列介紹了相當多的優化方法：</p>
-<p><a href="https://chilunhuang.github.io/posts/12526/">seo系列 - Enable text compression on Nginx</a></p>
-<p><a href="https://chilunhuang.github.io/posts/53969/">seo系列 - Image Lazy Load 延遲載入圖片</a></p>
-<p><a href="https://chilunhuang.github.io/posts/17948/">seo系列 - 使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</a></p>
-<p>以上包含了 nginx server 端的<code>文字壓縮(text compression)</code>與瀏覽器的<code>緩存機制(Cache-Control)</code>以及<code>圖片的延遲載入(Lazy Load)</code>來提升網頁的 performance、seo等等的分數其實已經相當的足夠了，本篇介紹的方式筆者認為是一個小偏方，他有可能會造成一些非預期的錯誤，不過當你優化進入到撞牆期時，不妨可以試試看喔！</p>
-<h3 id="2-為何需要-purify-css"><a href="#2-為何需要-purify-css" class="headerlink" title="2. 為何需要 purify css"></a><strong>2. 為何需要 purify css</strong></h3><p>網頁開發的套件樣板真的是百百款，學也學不完，不過大家應該都有使用過一個相當方便我個人也相當喜愛的<code>Bootstrap</code><a href="https://getbootstrap.com/" target="_blank" rel="noopener">(官網)</a> 開源前端框架，可以輕鬆的支援與調整想要的 <code>自適應網頁</code>或是稱為<code>響應式網頁 (RWD)</code>，殊不知這是我在優化網頁效能時的一大惡夢，它的優點成為了他的缺點。</p>
-<p>Bootstrap 的 css 包實在是太過巨大了，而且是整個網頁框架都是使用它，所以相關的壓縮、緩存、延遲載入其實效果都很有限，因為他在一開始網頁載入的時候就一定會用到了，我也有參照 Google 的檢測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>的建議來調整<a href="https://web.dev/extract-critical-css/" target="_blank" rel="noopener">同步與異步載入css</a>的方式，不過效果不大，有興趣的朋友可以參考一下原文，或許有幫助。</p>
-<p>所以跟 Google 大神討教一番之後，找到了一個治標不治本的方式<code>purifycss</code>，譯為:</p>
+<h3 id="1-Create-Dataframe"><a href="#1-Create-Dataframe" class="headerlink" title="1.Create Dataframe"></a><strong>1.Create Dataframe</strong></h3><p>建立一個簡單的水果清單以及進貨日期，一開始日期是 <code>string</code>：</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true">#!/usr/bin/env python</span>
+<span class="token comment" spellcheck="true"># -*- coding: utf-8 -*-</span>
+<span class="token keyword">from</span> pyspark <span class="token keyword">import</span> SparkConf<span class="token punctuation">,</span> SparkContext
+<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql <span class="token keyword">import</span> SparkSession
+<span class="token keyword">import</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>functions <span class="token keyword">as</span> F
+<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>types <span class="token keyword">import</span> <span class="token operator">*</span>
+
+spark <span class="token operator">=</span> SparkSession<span class="token punctuation">.</span>builder<span class="token punctuation">.</span>appName<span class="token punctuation">(</span><span class="token string">'date_process'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>getOrCreate<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true"># Create dataset</span>
+df <span class="token operator">=</span> spark<span class="token punctuation">.</span>createDataFrame<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token string">"bell fruit"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/26"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
+                                <span class="token punctuation">(</span><span class="token string">"bell fruit"</span><span class="token punctuation">,</span> <span class="token string">"banana"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/27"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
+                                <span class="token punctuation">(</span><span class="token string">"banana"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/28"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
+                                <span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">"fruit_1"</span><span class="token punctuation">,</span> <span class="token string">"fruit_2"</span><span class="token punctuation">,</span> <span class="token string">"date"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/medias/post_img/9025_1.jpg" alt="創建資料"></p>
+<h3 id="2-轉換-date-格式"><a href="#2-轉換-date-格式" class="headerlink" title="2.轉換 date 格式"></a><strong>2.轉換 date 格式</strong></h3><p>非常簡單的方法，使用 <code>to_date</code>，前面的 <code>F</code> 是在前面 import 時取的新名稱 <code>import pyspark.sql.functions as F</code>，後面的 <code>yyyy/MM/dd</code> 格式為原始字串的格式，如果原始字串是 <code>2020-05-27</code> 就要改成 <code>yyyy-MM-dd</code></p>
+<p><strong><em>要注意的是這個方法是在 <code>spark 2.2 版本</code> 中才新增的喔！！</em></strong></p>
+<pre class="line-numbers language-python"><code class="language-python">df_todate <span class="token operator">=</span> df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">"date"</span><span class="token punctuation">,</span> F<span class="token punctuation">.</span>to_date<span class="token punctuation">(</span>F<span class="token punctuation">.</span>col<span class="token punctuation">(</span><span class="token string">"date"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'yyyy/MM/dd'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>執行後就會看到資料的格式已經從 <code>string</code> 轉成 <code>date</code> 型態了！</p>
+<p><img src="/medias/post_img/9025_2.jpg" alt="字串格式變成 date"></p>
+<h3 id="3-轉換-timestamp-格式"><a href="#3-轉換-timestamp-格式" class="headerlink" title="3.轉換 timestamp 格式"></a><strong>3.轉換 timestamp 格式</strong></h3><p>這裡也相當的簡單，如果需要將時間格式轉成 timestamp，只要使用 <code>unix_timestamp</code> 就可以了，跟上面的 <code>F.to_date</code> 使用方法是一模一樣的喔！</p>
+<pre class="line-numbers language-python"><code class="language-python">df_timestamp <span class="token operator">=</span> df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'timestamp'</span><span class="token punctuation">,</span>F<span class="token punctuation">.</span>unix_timestamp<span class="token punctuation">(</span>F<span class="token punctuation">.</span>col<span class="token punctuation">(</span><span class="token string">'date'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string">'yy/MM/dd'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以看到新增了一個 timestamp 欄位，型態為 <code>int</code></p>
+<p><img src="/medias/post_img/9025_3.jpg" alt="字串格式變成 timestamp"></p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
+<p>在 <code>pyspark.sql.functions</code> 其實有許多好用的小 function 可以直接使用，也不用再自己辛苦的寫 <code>udf</code>(User Defined function)，在之後的介紹會再慢慢帶給大家。下方為今天介紹的兩種好用的小function。</p>
 <blockquote>
-<p>當他太肥的時候，就幫他減肥囉！</p>
-</blockquote>
-<h3 id="2-使用-purify-css"><a href="#2-使用-purify-css" class="headerlink" title="2. 使用 purify css"></a><strong>2. 使用 purify css</strong></h3><p>其實網路上有各種相關的套件可以使用，比較常看到的是：</p>
-<ul>
-<li>npm i -D purify-css <a href="https://github.com/purifycss/purifycss" target="_blank" rel="noopener">(參考)</a></li>
-</ul>
-<p>熟悉 <code>npm</code> 的朋友就自己玩玩吧，我不是很熟，所以就簡單的介紹一個網頁版的給大家囉！</p>
-<h4 id="PurifyCSS-Online"><a href="#PurifyCSS-Online" class="headerlink" title="PurifyCSS Online"></a>PurifyCSS Online</h4><p>網頁：<a href="https://purifycss.online/" target="_blank" rel="noopener">https://purifycss.online/</a></p>
-<p>他就是一個簡單的網頁，基本上就是兩個步驟:</p>
-<ul>
-<li>左邊輸入你的網頁原始碼的 <code>html</code> </li>
-<li>右邊輸入你想要減肥的 <code>css</code> </li>
-</ul>
-<p><img src="/medias/post_img/43991_1.jpg" alt="示意圖"></p>
-<p>我的 css 是放 <code>bootstrap.min.css</code> 的檔案內容，都複製上去後按下開始減肥(Clean up CSS)就可以得到結果。</p>
-<p><img src="/medias/post_img/43991_2.jpg" alt="減肥後的效果"></p>
-<p>下面秀出的新視窗是減肥過後的 css 代碼，可以複製出來另取名稱再套用，以上看得出來我有 <code>33.05%</code>的 code 根本沒用到，拿掉之後可以省下 <code>45.49 KB</code> 的傳輸大小，是不是還蠻不錯的！</p>
-<p>但為何我會說這是個小偏方呢，因為他是以當下的網頁原始碼去做掃描的動作，當你某些html是必須在點擊或是相關動作後才會顯現時，他就會認為這個程式碼並沒有被使用到，就會被刪掉喔！所以使用此方法有一定的風險的，使用前要先再確認有沒有功能因為刪減css而壞掉了，找到之後再把他補上去即可！</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
-<p><a href="https://purifycss.online/" target="_blank" rel="noopener">https://purifycss.online/</a></p>
-</blockquote>
-<blockquote>
-<p><a href="https://web.dev/extract-critical-css/" target="_blank" rel="noopener">https://web.dev/extract-critical-css/</a></p>
+<p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.to_date" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.to_date</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://github.com/purifycss/purifycss" target="_blank" rel="noopener">https://github.com/purifycss/purifycss</a> </p>
+<p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.unix_timestamp" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.unix_timestamp</a></p>
 </blockquote>
-<p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
             </div>
             <hr/>
@@ -473,7 +462,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/43991/" class="b-link-green">seo-移除未使用的 css (purify css)</a>
+                    <a href="/posts/9025/" class="b-link-green">pyspark系列-字串轉時間格式 string to datetime or timestamp</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -513,9 +502,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/43991/';
-        this.page.identifier = '/posts/43991/';
-        this.page.title = 'seo-移除未使用的 css (purify css)';
+        this.page.url = 'https://chilunhuang.github.io/posts/9025/';
+        this.page.identifier = '/posts/9025/';
+        this.page.title = 'pyspark系列-字串轉時間格式 string to datetime or timestamp';
     };
     let disqus_shortname = 'clhlab';
 
@@ -538,27 +527,78 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/posts/22148/">
+                <a href="/posts/9025/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="GCP系列-將 GoDaddy 網域與 Google DNS進行綁定">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="pyspark系列-字串轉時間格式 string to datetime or timestamp">
                         
-                        <span class="card-title">GCP系列-將 GoDaddy 網域與 Google DNS進行綁定</span>
+                        <span class="card-title">pyspark系列-字串轉時間格式 string to datetime or timestamp</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to connect domain of GoDaddy with GCP Cloud DNS?在本範例你會學到：
+                    <div class="summary">How to convert pyspark string to datetime?在本範例你會學到：
 
-使用 GCP 服務的 Cloud DNS
-GoDaddy domain 與 GCP Cloud DNS 的代管綁定</div>
+to_date 使用方式 (New in version 2.2)
+unix_timestamp 使用方式
+
+在本範例你需要先準備好：</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-23
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
+                                </a>
+                            
+                            
                         </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/posts/51659/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="GCP Cloud DNS & letsencrypt 的 ssl 憑證申請與續期">
+                        
+                        <span class="card-title">GCP Cloud DNS & letsencrypt 的 ssl 憑證申請與續期</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">Auto renew letsencrypt by certbot in GCP.在本範例你會學到：
+
+手動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)
+自動更新 letsencrypt 的 ssl 憑證 (</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-25
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -578,75 +618,20 @@ GoDaddy domain 與 GCP Cloud DNS 的代管綁定</div>
                         <span class="chip bg-color">GCP</span>
                     </a>
                     
+                    <a href="/tags/SSL/" target="_blank">
+                        <span class="chip bg-color">SSL</span>
+                    </a>
+                    
+                    <a href="/tags/certbot/" target="_blank">
+                        <span class="chip bg-color">certbot</span>
+                    </a>
+                    
+                    <a href="/tags/letsencrypt/" target="_blank">
+                        <span class="chip bg-color">letsencrypt</span>
+                    </a>
+                    
                     <a href="/tags/DNS/" target="_blank">
                         <span class="chip bg-color">DNS</span>
-                    </a>
-                    
-                    <a href="/tags/GoDaddy/" target="_blank">
-                        <span class="chip bg-color">GoDaddy</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/posts/17948/">
-                    <div class="card-image">
-                        
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題">
-                        
-                        <span class="card-title">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary">Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control.在本範例你會學到：
-
-在 nginx 中設定緩存參數
-seo 的</div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-10
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
-                    </a>
-                    
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
-                    </a>
-                    
-                    <a href="/tags/nginx/" target="_blank">
-                        <span class="chip bg-color">nginx</span>
-                    </a>
-                    
-                    <a href="/tags/django/" target="_blank">
-                        <span class="chip bg-color">django</span>
-                    </a>
-                    
-                    <a href="/tags/Cache-Control/" target="_blank">
-                        <span class="chip bg-color">Cache-Control</span>
                     </a>
                     
                 </div>
