@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>pyspark系列-如何於 dataframe 增加索引(index)值?</title>
+      <link href="/posts/29655/"/>
+      <url>/posts/29655/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-add-a-index-column-in-pyspark-dataframe"><a href="#How-to-add-a-index-column-in-pyspark-dataframe" class="headerlink" title="How to add a index column in pyspark dataframe?"></a>How to add a index column in pyspark dataframe?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>常見的 function <code>monotonically_increasing_id ()</code></li><li>本範例重點 <code>row_number</code> function</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>本範例環境是 <code>pyspark 版本 &gt;= 2.4</code></li><li>歡樂愉快的學習精神</li></ul><h3 id="1-常見的新增-index-方法"><a href="#1-常見的新增-index-方法" class="headerlink" title="1.常見的新增 index 方法"></a><strong>1.常見的新增 index 方法</strong></h3><p>在網路上搜尋建立 index 索引的相關方法，一定會搜索到 <code>monotonically_increasing_id</code> 這個方法，但是若沒有仔細看文件，有可能會無法達到預期的效果喔！！</p><p>根據文件(<a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id" target="_blank" rel="noopener">官網連結</a>)有三個重點：</p><blockquote><p>The generated ID is guaranteed to be monotonically increasing and unique, but not consecutive. </p></blockquote><blockquote><p>The current implementation puts the partition ID in the upper 31 bits, and the record number within each partition in the lower 33 bits. </p></blockquote><blockquote><p>The assumption is that the dataframe has less than 1 billion partitions, and each partition has less than 8 billion records.</p></blockquote><ul><li>此方法保證 id 是唯一的，但是<code>不會是一個連續號碼</code></li><li>編排號碼的方式會與 <code>partition id</code>有直接的關係</li><li>編排號碼的方式會與 <code>partition 筆數</code>有一定的關係</li></ul><p>綜合以上說法，簡單來說，如果你想要的效果是一個連續的索引號碼，<code>1, 2, 3......100</code>，此方法就不符合需求，他是會跳號的！但如果是單純的需要產生一個唯一的 id，不在意號碼產生方式，那此方法就會相當的合適。</p><h3 id="2-row-number-新增-index-方法"><a href="#2-row-number-新增-index-方法" class="headerlink" title="2.row_number 新增 index 方法"></a><strong>2.row_number 新增 index 方法</strong></h3><p>第二種方法之於第一種的不同就是，<code>row_number</code>可以依照自己所需要的條件進行排序，也可以依照不同的 <code>key</code> 來排序(同時有很多個1,2,3…)</p><p>我們來定義一個簡單的範例，搭配 <code>Window()</code> 的方法會有更多的變化：</p><pre class="line-numbers language-python"><code class="language-python"> <span class="token comment" spellcheck="true">#!/usr/bin/env python</span><span class="token comment" spellcheck="true"># -*- coding: utf-8 -*-</span><span class="token keyword">from</span> pyspark <span class="token keyword">import</span> SparkConf<span class="token punctuation">,</span> SparkContext<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql <span class="token keyword">import</span> SparkSession<span class="token keyword">import</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>functions <span class="token keyword">as</span> F<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>types <span class="token keyword">import</span> <span class="token operator">*</span><span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql <span class="token keyword">import</span> Windowspark <span class="token operator">=</span> SparkSession<span class="token punctuation">.</span>builder<span class="token punctuation">.</span>appName<span class="token punctuation">(</span><span class="token string">'index_num'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>getOrCreate<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true"># Create dataset</span>df <span class="token operator">=</span> spark<span class="token punctuation">.</span>createDataFrame<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token string">"Jolin"</span><span class="token punctuation">,</span> <span class="token string">"bell fruit"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/26"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \        <span class="token punctuation">(</span><span class="token string">"John"</span><span class="token punctuation">,</span> <span class="token string">"bell fruit"</span><span class="token punctuation">,</span> <span class="token string">"banana"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/27"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \        <span class="token punctuation">(</span><span class="token string">"Lisa"</span><span class="token punctuation">,</span> <span class="token string">"banana"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/28"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \        <span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">"name"</span><span class="token punctuation">,</span> <span class="token string">"fruit_1"</span><span class="token punctuation">,</span> <span class="token string">"fruit_2"</span><span class="token punctuation">,</span> <span class="token string">"date"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>首先，我使用 <code>w = Window().orderBy(F.lit(&quot;name&quot;))</code>來定義一個編碼的 slide window ，且使用 <code>name</code> 這個 column 進行排序。</p><p>接下來針對 df 進行 <code>orderBy</code> 的動作，寫新增一個 id 欄位給索引值(index)，裡面的直將會依照條件 <code>F.row_number().over(w)</code> 填入號碼 1,2,3…</p><pre class="line-numbers language-python"><code class="language-python">w <span class="token operator">=</span> Window<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>orderBy<span class="token punctuation">(</span>F<span class="token punctuation">.</span>lit<span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>df_order <span class="token operator">=</span> df<span class="token punctuation">.</span>orderBy<span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">,</span> ascending<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">,</span> F<span class="token punctuation">.</span>row_number<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>over<span class="token punctuation">(</span>w<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>而得到最後的結果如下：</p><p><img src="/medias/post_img/29655_1.jpg" alt="排序結果"></p><p>這是個相對簡單的範例，個人最常使用的情境是處理 <code>session</code> 問題時，要<code>排序使用者不同 session 中的瀏覽順序</code>就可以用此方法簡單的完成 dataframe 的 index 排序，而且是可以針對不同 key 值的條件新增，而不會是單純的從頭 1,2,3…到尾，而是可以像下面的例子：</p><pre><code>----------------------| session| url| index|----------------------|   scfer|   A|     1||   scfer|   B|     2||   scfer|   C|     3||   tuikg|   B|     1||   tuikg|   C|     2||   redcv|   B|     1||   redcv|   C|     2||   redcv|   D|     3|----------------------</code></pre><p>以上就是簡單的介紹！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p><p>在 <code>pyspark.sql.functions</code> 其實有許多好用的小 function 可以直接使用，也不用再自己辛苦的寫 <code>udf</code>(User Defined function)，在之後的介紹會再慢慢帶給大家。下方為今天介紹的兩種好用的小function。</p><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id</a></p></blockquote><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.row_number" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.row_number</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>pyspark系列-字串轉時間格式 string to datetime or timestamp</title>
       <link href="/posts/9025/"/>
       <url>/posts/9025/</url>
@@ -138,42 +163,13 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> nginx </tag>
             
             <tag> django </tag>
             
-            <tag> Cache-Control </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
-      <link href="/posts/53969/"/>
-      <url>/posts/53969/</url>
-      
-        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> lazyload </tag>
-            
             <tag> performance </tag>
+            
+            <tag> Cache-Control </tag>
             
         </tags>
       
@@ -200,8 +196,6 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
@@ -209,6 +203,37 @@
             <tag> nginx </tag>
             
             <tag> django </tag>
+            
+            <tag> performance </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
+      <link href="/posts/53969/"/>
+      <url>/posts/53969/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> lazyload </tag>
             
         </tags>
       
