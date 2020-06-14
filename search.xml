@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件.</title>
+      <link href="/posts/14115/"/>
+      <url>/posts/14115/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-launch-create-Dataproc-clusters-with-multi-properties-jars-packages"><a href="#How-to-launch-create-Dataproc-clusters-with-multi-properties-jars-packages" class="headerlink" title="How to launch/create Dataproc clusters with multi properties (jars, packages)?"></a>How to launch/create Dataproc clusters with multi properties (jars, packages)?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何在 GCP Dataproc properties 中帶入多個需要安裝的套件，本範例將會示範：<ul><li>kafka(<code>Prefix:spark</code>)</li><li>stackdriver(<code>Prefix:dataproc</code>)</li><li>clickhouse(<code>Prefix:spark</code>)</li></ul></li></ul><p><strong><em>上方所列的 <code>Prefix</code>將會在下方說明。</em></strong></p><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 GCP (Google Cloud Platform) 有基礎認識</li><li>有需要在 cluster 使用多種套件的需求</li></ul><h3 id="1-一般使用方式"><a href="#1-一般使用方式" class="headerlink" title="1.一般使用方式"></a><strong>1.一般使用方式</strong></h3><p>根據 <a href="https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties" target="_blank" rel="noopener">Google 官方文件</a>，有定義了可以帶入的相關套件的<code>Prefix</code>，ex: Spark,  pig, hdfs等等的項目，更詳細的定義請見文件。</p><p>在網路上其實有相當多的使用方式，也看得眼花撩亂，其實官方文件最近已經把它定義的很清楚了，讓我來帶大家一探究竟：</p><p>懶得聽我廢話也可以自己看：</p><blockquote><p><a href="https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties" target="_blank" rel="noopener">https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties</a></p></blockquote><p>基礎定義：</p><pre><code>file_prefix1:property1=value1,file_prefix2:property2=value2,...</code></pre><ul><li>此定義的前提是沒有重複使用到<code>相同的 prefix 中的不同套件</code></li><li>兩個 <code>prefix</code> 之間是用逗號隔開</li><li>prefix 後會接一個冒號(<code>:</code>)，再接 <code>property</code>名稱，再接(<code>=</code>)來放入值</li></ul><p>是不是沒有很懂，來簡單示範一次：</p><ul><li>第一個要使用的套件<code>dataproc:dataproc.monitoring.stackdriver.enable=true</code></li><li>第二個要使用的套件 <code>spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2</code></li><li>接起來的方式就是簡單用逗號(<code>,</code>)分開</li></ul><pre><code>--properties spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><p>大家可能會注意到，剛剛官網不是說只有三個符號，<code>冒號、等號跟逗號</code>而已嗎？怎麼上面例子一大堆符號，這就來拿 <code>clickhouse</code> 的套件來簡單說明一下：</p><pre><code># 這個 clickhouse 例子等號後面又有兩個冒號spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2</code></pre><p>某些套件本身就已經有定義好他的名稱了，其中可能包含版本號碼，只要是等號後面的可以就當成一串 string 代表是某個套件名稱的組合喔，其中的標點符後就照抄官網上的就好！ 上方範例等號後面 <code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code> 的字串就代表<code>套件名稱與版本號</code>！不屬於 properties 本身的結構喔！</p><h3 id="2-需要使用相同-prefix-的方式"><a href="#2-需要使用相同-prefix-的方式" class="headerlink" title="2.需要使用相同 prefix 的方式"></a><strong>2.需要使用相同 prefix 的方式</strong></h3><p>大家可能會覺得，這跟 <code>prefix</code> 一不一樣有什麼關係，沒錯，我一開始也是這樣想的，所以延續上方的例子，我要再加入一個 <code>kafka</code> 的套件(也是來自 prefix:spark)的時候，第一直覺會這樣寫：</p><pre><code>--properties spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true,spark:org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2</code></pre><p>延續上面例子直接用<code>,</code>在分開第三個套件就好了，是不是很直覺。真的去啟動 dataproc 的時候也不會有任何錯誤，但在 submit job 的時候就會發現，同一個 <code>prefix</code> 他只會認得一個喔，而且他會認得最後一個，也就是我最後只會成功帶入 <code>stackdriver</code> 與 <code>kafka</code>，<code>clickhouse</code>是會安裝失敗的！</p><p>對此狀況官網也有提出相對應的撰寫格式：</p><pre><code>--properties ^#^file_prefix1:property1=part1,part2#file_prefix2:property2=value2</code></pre><p>觀察一下整句語法，多了兩種符號的寫法:</p><ul><li><code>^#^</code>:當遇到會使用相同 prefix 時的開頭寫法 </li><li>中間的 <code>#</code>：分隔兩個不同的 prefix</li><li><code>=part1,part2</code>: 剛剛上方講到的同套件問題，就可以直接用<code>逗號</code>解決囉!</li></ul><p>我們把剛剛錯誤的用法來稍微修正一下：</p><pre><code>--properties ^#^spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2#dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><p>第一次看到的人應該還是會覺得很亂，不過懂了官方定義的格式其實就很明瞭了，相同共用 spark prefix 的 clickhouse 及 kafka 就在<code>等號</code>後面用<code>逗號</code>分隔，而不同prefix之間就用<code>井字號</code>分隔。</p><h3 id="3-完整寫法"><a href="#3-完整寫法" class="headerlink" title="3.完整寫法"></a><strong>3.完整寫法</strong></h3><pre><code>gcloud dataproc clusters create test-cluster \    --region=global \    --master-machine-type n1-highmem-4  \    --master-boot-disk-size 100GB \    --num-workers 2 \    --worker-boot-disk-size 500GB  \    --worker-machine-type n1-highmem-4  \    --zone asia-east1-b  \    --image-version=1.4 \    --properties ^#^spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2#dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p><code>properties</code> 其實還有相當多的功用，此篇就著重於額外套件的使用，以後有機會再跟大家分享其他有趣的功能！</p><blockquote><p>官方文件：<a href="https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties" target="_blank" rel="noopener">https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties</a></p></blockquote><blockquote><p>properties格式定義 <a href="https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties" target="_blank" rel="noopener">https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCP </tag>
+            
+            <tag> Dataproc </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>pyspark系列-如何於 dataframe 增加索引(index)值或 row number</title>
       <link href="/posts/29655/"/>
       <url>/posts/29655/</url>
@@ -163,42 +190,13 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> nginx </tag>
             
             <tag> django </tag>
             
-            <tag> Cache-Control </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
-      <link href="/posts/53969/"/>
-      <url>/posts/53969/</url>
-      
-        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> lazyload </tag>
-            
             <tag> performance </tag>
+            
+            <tag> Cache-Control </tag>
             
         </tags>
       
@@ -225,8 +223,6 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
@@ -234,6 +230,37 @@
             <tag> nginx </tag>
             
             <tag> django </tag>
+            
+            <tag> performance </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
+      <link href="/posts/53969/"/>
+      <url>/posts/53969/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> lazyload </tag>
             
         </tags>
       

@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="seo,nginx,Cache-Control,緩存,css,js,django, performance,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="seo 改進的後期關鍵基本上都是想辦提昇網頁的整體載入效能，本文將分享使用 nginx 作為 server 時如何快速的將平常使用的 css, js 緩存，讓網頁讀取更快速，也不會造成server負擔。">
+    <meta name="keywords" content="gcp,dataproc,cluster,properties, prefix,spark,jars,packages,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="本範例將會簡單示範如何在啟動 Dataproc cluster 語法中的`properties` 參數帶入多個不同套件，例如同時需要使用監控的 `stackdriver`、`kafka`以及`clickhouse`三個不同的套件，在 sub">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題" />
-    <meta property="og:description" content="seo 改進的後期關鍵基本上都是想辦提昇網頁的整體載入效能，本文將分享使用 nginx 作為 server 時如何快速的將平常使用的 css, js 緩存，讓網頁讀取更快速，也不會造成server負擔。" />
-    <meta property="og:image" content="/medias/featureimages/4.jpg" />
+    <meta property="og:title" content="GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件." />
+    <meta property="og:description" content="本範例將會簡單示範如何在啟動 Dataproc cluster 語法中的`properties` 參數帶入多個不同套件，例如同時需要使用監控的 `stackdriver`、`kafka`以及`clickhouse`三個不同的套件，在 sub" />
+    <meta property="og:image" content="/medias/featureimages/2.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題 | Happy Coding Lab</title>
+    <title>GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件. | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題
+                        GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件.
                     </div>
                 </div>
             </div>
@@ -355,24 +355,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/seo/" target="_blank">
-                                <span class="chip bg-color">seo</span>
+                            <a href="/tags/GCP/" target="_blank">
+                                <span class="chip bg-color">GCP</span>
                             </a>
                         
-                            <a href="/tags/nginx/" target="_blank">
-                                <span class="chip bg-color">nginx</span>
-                            </a>
-                        
-                            <a href="/tags/django/" target="_blank">
-                                <span class="chip bg-color">django</span>
-                            </a>
-                        
-                            <a href="/tags/performance/" target="_blank">
-                                <span class="chip bg-color">performance</span>
-                            </a>
-                        
-                            <a href="/tags/Cache-Control/" target="_blank">
-                                <span class="chip bg-color">Cache-Control</span>
+                            <a href="/tags/Dataproc/" target="_blank">
+                                <span class="chip bg-color">Dataproc</span>
                             </a>
                         
                     </div>
@@ -383,8 +371,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                SEO
+                            <a href="/categories/GCP/" class="post-category" target="_blank">
+                                GCP
                             </a>
                         
                     </div>
@@ -395,7 +383,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-05-10
+                    2020-06-14
                 </div>
 
                 
@@ -421,72 +409,68 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="Solve-“Serve-static-assects-with-an-efficient-cache-policy”-on-nginx-with-Cache-Control"><a href="#Solve-“Serve-static-assects-with-an-efficient-cache-policy”-on-nginx-with-Cache-Control" class="headerlink" title="Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control."></a>Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control.</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-launch-create-Dataproc-clusters-with-multi-properties-jars-packages"><a href="#How-to-launch-create-Dataproc-clusters-with-multi-properties-jars-packages" class="headerlink" title="How to launch/create Dataproc clusters with multi properties (jars, packages)?"></a>How to launch/create Dataproc clusters with multi properties (jars, packages)?</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>在 nginx 中設定緩存參數</li>
-<li>seo 的相關小知識</li>
+<li>如何在 GCP Dataproc properties 中帶入多個需要安裝的套件，本範例將會示範：<ul>
+<li>kafka(<code>Prefix:spark</code>)</li>
+<li>stackdriver(<code>Prefix:dataproc</code>)</li>
+<li>clickhouse(<code>Prefix:spark</code>)</li>
 </ul>
+</li>
+</ul>
+<p><strong><em>上方所列的 <code>Prefix</code>將會在下方說明。</em></strong></p>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>有使用 nginx 作為網頁的 server，若不是的話還是可以理解 <code>Cache-Control</code>觀念喔，基本上都是差不多的只是設定不一樣</li>
+<li>對 GCP (Google Cloud Platform) 有基礎認識</li>
+<li>有需要在 cluster 使用多種套件的需求</li>
 </ul>
-<h3 id="1-seo-相關改進方法複習"><a href="#1-seo-相關改進方法複習" class="headerlink" title="1. seo 相關改進方法複習"></a><strong>1. seo 相關改進方法複習</strong></h3><p>在其他幾篇基本上都有提過 Google 的檢測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，基本上他會列出相關問題讓你有修改的空間，本文也是依照相關提示慢慢修改而成，大家可以對自己的網站健康檢查一下喔！</p>
-<p><img src="/medias/post_img/17948_2.jpg" alt="web.dev 的相關提示與建議"></p>
-<p>可以順便複習一下前兩篇：</p>
+<h3 id="1-一般使用方式"><a href="#1-一般使用方式" class="headerlink" title="1.一般使用方式"></a><strong>1.一般使用方式</strong></h3><p>根據 <a href="https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties" target="_blank" rel="noopener">Google 官方文件</a>，有定義了可以帶入的相關套件的<code>Prefix</code>，ex: Spark,  pig, hdfs等等的項目，更詳細的定義請見文件。</p>
+<p>在網路上其實有相當多的使用方式，也看得眼花撩亂，其實官方文件最近已經把它定義的很清楚了，讓我來帶大家一探究竟：</p>
+<p>懶得聽我廢話也可以自己看：</p>
+<blockquote>
+<p><a href="https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties" target="_blank" rel="noopener">https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties</a></p>
+</blockquote>
+<p>基礎定義：</p>
+<pre><code>file_prefix1:property1=value1,file_prefix2:property2=value2,...</code></pre><ul>
+<li>此定義的前提是沒有重複使用到<code>相同的 prefix 中的不同套件</code></li>
+<li>兩個 <code>prefix</code> 之間是用逗號隔開</li>
+<li>prefix 後會接一個冒號(<code>:</code>)，再接 <code>property</code>名稱，再接(<code>=</code>)來放入值</li>
+</ul>
+<p>是不是沒有很懂，來簡單示範一次：</p>
 <ul>
-<li><a href="https://chilunhuang.github.io/posts/12526/">seo系列 - Enable text compression on Nginx</a></li>
+<li>第一個要使用的套件<code>dataproc:dataproc.monitoring.stackdriver.enable=true</code></li>
+<li>第二個要使用的套件 <code>spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2</code></li>
+<li>接起來的方式就是簡單用逗號(<code>,</code>)分開</li>
 </ul>
-<p>此篇說明了如何針對 nginx server 送往前端前的文字資料進行壓縮，例如 <code>css</code> 與 <code>js</code> 檔，節省傳送的負載量。</p>
+<pre><code>--properties spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><p>大家可能會注意到，剛剛官網不是說只有三個符號，<code>冒號、等號跟逗號</code>而已嗎？怎麼上面例子一大堆符號，這就來拿 <code>clickhouse</code> 的套件來簡單說明一下：</p>
+<pre><code># 這個 clickhouse 例子等號後面又有兩個冒號
+spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2</code></pre><p>某些套件本身就已經有定義好他的名稱了，其中可能包含版本號碼，只要是等號後面的可以就當成一串 string 代表是某個套件名稱的組合喔，其中的標點符後就照抄官網上的就好！ 上方範例等號後面 <code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code> 的字串就代表<code>套件名稱與版本號</code>！不屬於 properties 本身的結構喔！</p>
+<h3 id="2-需要使用相同-prefix-的方式"><a href="#2-需要使用相同-prefix-的方式" class="headerlink" title="2.需要使用相同 prefix 的方式"></a><strong>2.需要使用相同 prefix 的方式</strong></h3><p>大家可能會覺得，這跟 <code>prefix</code> 一不一樣有什麼關係，沒錯，我一開始也是這樣想的，所以延續上方的例子，我要再加入一個 <code>kafka</code> 的套件(也是來自 prefix:spark)的時候，第一直覺會這樣寫：</p>
+<pre><code>--properties spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true,spark:org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2</code></pre><p>延續上面例子直接用<code>,</code>在分開第三個套件就好了，是不是很直覺。真的去啟動 dataproc 的時候也不會有任何錯誤，但在 submit job 的時候就會發現，同一個 <code>prefix</code> 他只會認得一個喔，而且他會認得最後一個，也就是我最後只會成功帶入 <code>stackdriver</code> 與 <code>kafka</code>，<code>clickhouse</code>是會安裝失敗的！</p>
+<p>對此狀況官網也有提出相對應的撰寫格式：</p>
+<pre><code>--properties ^#^file_prefix1:property1=part1,part2#file_prefix2:property2=value2</code></pre><p>觀察一下整句語法，多了兩種符號的寫法:</p>
 <ul>
-<li><a href="https://chilunhuang.github.io/posts/53969/">seo系列 - Image Lazy Load 延遲載入圖片</a></li>
+<li><code>^#^</code>:當遇到會使用相同 prefix 時的開頭寫法 </li>
+<li>中間的 <code>#</code>：分隔兩個不同的 prefix</li>
+<li><code>=part1,part2</code>: 剛剛上方講到的同套件問題，就可以直接用<code>逗號</code>解決囉!</li>
 </ul>
-<p>而此篇則著重於將圖片壓縮，改進整體網頁效能。</p>
-<h3 id="2-瀏覽器中的-cache-簡單觀念"><a href="#2-瀏覽器中的-cache-簡單觀念" class="headerlink" title="2. 瀏覽器中的 cache 簡單觀念"></a><strong>2. 瀏覽器中的 cache 簡單觀念</strong></h3><p>有在開發網頁的大大們應該很常使用<code>檢視網頁原始碼</code>以及<code>檢查</code>這兩個功能，而在檢查功能中的 <code>Network</code>頁籤，我們可以看到網頁載入的相關 css、js 等等檔案的狀態與大小，可以很清楚的知道：</p>
-<ul>
-<li>載入檔案的大小 (Size)</li>
-<li>載入的時間 (Time)</li>
-</ul>
-<p>可以從中觀察到網頁變慢的瓶頸在哪？或許很多人不會注意到， <code>Size</code>的這個欄位除了會寫出檔案的大小以外，基本上還會看到兩種標籤(若該網頁的伺服器有設定)，一個是 <code>disk cache</code>與<code>memory cache</code>:</p>
-<p><img src="/medias/post_img/17948_1.jpg" alt="disk cache &amp; memory cache"></p>
-<p>圖中可以清楚地看到載入時間是 <code>0</code>，這代表著使用者第一次載入之後，就cache 在瀏覽器上了，下次再進來的時候，就不用再跟server要一次囉！</p>
-<h3 id="3-瀏覽器中的-cache-的三種屬性"><a href="#3-瀏覽器中的-cache-的三種屬性" class="headerlink" title="3. 瀏覽器中的 cache 的三種屬性"></a><strong>3. 瀏覽器中的 cache 的三種屬性</strong></h3><p>這邊我不是專家，我就簡的說明一下網路上查的相關文章，有興趣可到參考連結參閱。在瀏覽器中有分三種 <code>cache</code> 方式，這三個屬性是可以同時設置的，不過優先權順序為 <code>Cache-Control &gt; Expires</code>，而 <code>Last-Modified</code> 會與前兩個者自搭配使用：</p>
-<h4 id="1-Cache-Control"><a href="#1-Cache-Control" class="headerlink" title="1. Cache-Control:"></a>1. Cache-Control:</h4><p><code>Cache-Control</code>當中有<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control" target="_blank" rel="noopener">相當多的參數</a>可以使用，例如：</p>
-<ul>
-<li><code>no-cach</code>:代表檔案不會被瀏覽器記住，每次 refresh 後都會重新與 server 要一次資料</li>
-<li><code>max-age</code>:以秒為單位，當超過 cache 時間 ，refresh 後會重新與 server 要一次資料</li>
-</ul>
-<h4 id="2-Expires"><a href="#2-Expires" class="headerlink" title="2. Expires"></a>2. Expires</h4><p><code>Expires</code> 顧名思義就是 cache 過期失效的設定，在還沒過期前，使用者怎麼 refresh 都不會重新與 server 要一次資料。這的確會讓 server 壓力大大的下降，但大家或許會看出個問題，假設我設定了 365 天的 Expires，當 server 端的檔案更新但使用者卻要一年之後才會更新怎麼辦？這時第三個主角就要出現了，我們繼續看下去！</p>
-<h4 id="3-Last-Modified"><a href="#3-Last-Modified" class="headerlink" title="3. Last-Modified"></a>3. Last-Modified</h4><p>當設定此參數之後，每次使用者 refresh 頁面後，其實都會偷偷地向 server 下一個請求(非常非常小)，基本上就是確定檔案有沒有被更新過，如果沒有就什麼都不做，如果有就更新！</p>
-<h3 id="4-於-nginx-中設定"><a href="#4-於-nginx-中設定" class="headerlink" title="4. 於 nginx 中設定"></a><strong>4. 於 nginx 中設定</strong></h3><p>講這麼多終於切入正題，直接來看如何設定吧，以下將列出三種範例，大家可以依照需求搭配使用：</p>
-<ul>
-<li>進入網頁 nginx server 的 <code>nginx.conf</code>，每個人習慣不一樣，在此不贅述</li>
-</ul>
-<pre><code>vim /etc/nginx/nginx.conf
-</code></pre><ul>
-<li>如果想要緩存所有 static 下的檔案 (css, js 檔案都在其中)，可以這樣設定：</li>
-</ul>
-<pre><code>location /static { 
-    alias /你的專案路徑/static; 
-    # for keep static file(css) in server 
-    add_header Cache-Control &quot;public, max-age=31536000&quot;; }</code></pre><p>max-age 單位為秒數，在此設定 365 天</p>
-<ul>
-<li>如果想要 <code>Expires</code> 所有 static 下的檔案 (css, js 檔案都在其中)，可以這樣設定：</li>
-</ul>
-<pre><code>location /static { 
-    alias /你的專案路徑/static; 
-    # for keep static file(css) in server 
-    expires 10d; }</code></pre><p><code>expires 10d</code> 代表著 10 天就會過期，重新要資料。</p>
-<ul>
-<li>如果只想要緩存部分類型的檔案則可以這樣設定：</li>
-</ul>
-<pre><code>location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
-expires 365d;
-}</code></pre><p>是不是相當容易呢？設定之後記得要<code>重啟 nginx 喔</code>！</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
-<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control</a></p>
+<p>我們把剛剛錯誤的用法來稍微修正一下：</p>
+<pre><code>--properties ^#^spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2#dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><p>第一次看到的人應該還是會覺得很亂，不過懂了官方定義的格式其實就很明瞭了，相同共用 spark prefix 的 clickhouse 及 kafka 就在<code>等號</code>後面用<code>逗號</code>分隔，而不同prefix之間就用<code>井字號</code>分隔。</p>
+<h3 id="3-完整寫法"><a href="#3-完整寫法" class="headerlink" title="3.完整寫法"></a><strong>3.完整寫法</strong></h3><pre><code>gcloud dataproc clusters create test-cluster \
+    --region=global \
+    --master-machine-type n1-highmem-4  \
+    --master-boot-disk-size 100GB \
+    --num-workers 2 \
+    --worker-boot-disk-size 500GB  \
+    --worker-machine-type n1-highmem-4  \
+    --zone asia-east1-b  \
+    --image-version=1.4 \
+    --properties ^#^spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2#dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p><code>properties</code> 其實還有相當多的功用，此篇就著重於額外套件的使用，以後有機會再跟大家分享其他有趣的功能！</p>
+<blockquote>
+<p>官方文件：<a href="https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties" target="_blank" rel="noopener">https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://www.cnblogs.com/kevingrace/p/10459429.html" target="_blank" rel="noopener">https://www.cnblogs.com/kevingrace/p/10459429.html</a></p>
+<p>properties格式定義 <a href="https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties" target="_blank" rel="noopener">https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -502,7 +486,7 @@ expires 365d;
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/17948/" class="b-link-green">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</a>
+                    <a href="/posts/14115/" class="b-link-green">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件.</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -542,9 +526,9 @@ expires 365d;
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/17948/';
-        this.page.identifier = '/posts/17948/';
-        this.page.title = 'seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題';
+        this.page.url = 'https://chilunhuang.github.io/posts/14115/';
+        this.page.identifier = '/posts/14115/';
+        this.page.title = 'GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件.';
     };
     let disqus_shortname = 'clhlab';
 
@@ -567,57 +551,49 @@ expires 365d;
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/posts/43991/">
+                <a href="/posts/14115/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="seo-移除未使用的 css (purify css)">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件.">
                         
-                        <span class="card-title">seo-移除未使用的 css (purify css)</span>
+                        <span class="card-title">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件.</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">Remove unused CSS code from stylesheets.在本範例你會學到：
+                    <div class="summary">How to launch/create Dataproc clusters with multi properties (jars, packages)?在本範例你會學到：
 
-快速的的解決肥大的 css 造成的效能問題
-purify css
-
-在本範例你需要先準備好：
-
-一個正在跑的網頁
-一個你覺得很肥的 css</div>
+如何在 GCP Dataproc properties 中帶入</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-14
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
+                            <a href="/categories/GCP/" class="post-category" target="_blank">
+                                    GCP
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
+                    <a href="/tags/GCP/" target="_blank">
+                        <span class="chip bg-color">GCP</span>
                     </a>
                     
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
-                    </a>
-                    
-                    <a href="/tags/purifycss/" target="_blank">
-                        <span class="chip bg-color">purifycss</span>
+                    <a href="/tags/Dataproc/" target="_blank">
+                        <span class="chip bg-color">Dataproc</span>
                     </a>
                     
                 </div>
@@ -631,31 +607,29 @@ purify css
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/12526/">
+                <a href="/posts/29655/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="seo系列 - Enable text compression on Nginx">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="pyspark系列-如何於 dataframe 增加索引(index)值或 row number">
                         
-                        <span class="card-title">seo系列 - Enable text compression on Nginx</span>
+                        <span class="card-title">pyspark系列-如何於 dataframe 增加索引(index)值或 row number</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">Enable GZIP for CSS and JS files on NGINX server.在本範例你會學到：
+                    <div class="summary">How to add a index number column in pyspark dataframe?在本範例你會學到：
 
-如何評分自己網頁的 seo 是否及格
-在 nginx 實現GZIP壓縮 css 與 js 來達成加速網頁載入
-
-在本範例</div>
+常見的 function monotonically_increasing_id ()
+本範例重點 row_n</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-04
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
                                 </a>
                             
                             
@@ -665,28 +639,8 @@ purify css
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
-                    </a>
-                    
-                    <a href="/tags/text-compression/" target="_blank">
-                        <span class="chip bg-color">text compression</span>
-                    </a>
-                    
-                    <a href="/tags/GZIP/" target="_blank">
-                        <span class="chip bg-color">GZIP</span>
-                    </a>
-                    
-                    <a href="/tags/nginx/" target="_blank">
-                        <span class="chip bg-color">nginx</span>
-                    </a>
-                    
-                    <a href="/tags/django/" target="_blank">
-                        <span class="chip bg-color">django</span>
-                    </a>
-                    
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
                     </a>
                     
                 </div>
