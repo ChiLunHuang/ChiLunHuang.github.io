@@ -442,11 +442,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <li>第二個要使用的套件 <code>spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2</code></li>
 <li>接起來的方式就是簡單用逗號(<code>,</code>)分開</li>
 </ul>
-<pre><code>--properties spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><p>大家可能會注意到，剛剛官網不是說只有三個符號，<code>冒號、等號跟逗號</code>而已嗎？怎麼上面例子一大堆符號，這就來拿 <code>clickhouse</code> 的套件來簡單說明一下：</p>
+<pre><code>--properties &#39;spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true&#39;</code></pre><p>大家可能會注意到，剛剛官網不是說只有三個符號，<code>冒號、等號跟逗號</code>而已嗎？怎麼上面例子一大堆符號，這就來拿 <code>clickhouse</code> 的套件來簡單說明一下：</p>
 <pre><code># 這個 clickhouse 例子等號後面又有兩個冒號
 spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2</code></pre><p>某些套件本身就已經有定義好他的名稱了，其中可能包含版本號碼，只要是等號後面的可以就當成一串 string 代表是某個套件名稱的組合喔，其中的標點符後就照抄官網上的就好！ 上方範例等號後面 <code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code> 的字串就代表<code>套件名稱與版本號</code>！不屬於 properties 本身的結構喔！</p>
 <h3 id="2-需要使用相同-prefix-的方式"><a href="#2-需要使用相同-prefix-的方式" class="headerlink" title="2.需要使用相同 prefix 的方式"></a><strong>2.需要使用相同 prefix 的方式</strong></h3><p>大家可能會覺得，這跟 <code>prefix</code> 一不一樣有什麼關係，沒錯，我一開始也是這樣想的，所以延續上方的例子，我要再加入一個 <code>kafka</code> 的套件(也是來自 prefix:spark)的時候，第一直覺會這樣寫：</p>
-<pre><code>--properties spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true,spark:org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2</code></pre><p>延續上面例子直接用<code>,</code>在分開第三個套件就好了，是不是很直覺。真的去啟動 dataproc 的時候也不會有任何錯誤，但在 submit job 的時候就會發現，同一個 <code>prefix</code> 他只會認得一個喔，而且他會認得最後一個，也就是我最後只會成功帶入 <code>stackdriver</code> 與 <code>kafka</code>，<code>clickhouse</code>是會安裝失敗的！</p>
+<pre><code>--properties &#39;spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true,spark:org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2&#39;</code></pre><p>延續上面例子直接用<code>,</code>在分開第三個套件就好了，是不是很直覺。真的去啟動 dataproc 的時候也不會有任何錯誤，但在 submit job 的時候就會發現，同一個 <code>prefix</code> 他只會認得一個喔，而且他會認得最後一個，也就是我最後只會成功帶入 <code>stackdriver</code> 與 <code>kafka</code>，<code>clickhouse</code>是會安裝失敗的！</p>
 <p>對此狀況官網也有提出相對應的撰寫格式：</p>
 <pre><code>--properties ^#^file_prefix1:property1=part1,part2#file_prefix2:property2=value2</code></pre><p>觀察一下整句語法，多了兩種符號的寫法:</p>
 <ul>
