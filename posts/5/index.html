@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="seo,GZIP,nginx,django, performance,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="網頁架設的後期就會開始使用相關的工具來增進 seo ，其中容易被警告的一個項目就是 js 與 css 或是網頁內容應該要被壓縮，本文將會教授如何在 Nginx 中輕鬆設定完成 GZIP 壓縮、加快載入速度。">
+    <meta name="keywords" content="django,current url,url,path,build_absolute_uri, referrer,view.py,template,HttpRequest.META,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="在 Django 中常常有獲取當下頁或是前一頁面網址 (url)的需求，例如輸入表單後的頁面重導、404頁面的重導。這個部分在 template 中以及 view.py 中都可以靠著 request 獲取資訊，我們就來看下去吧！">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="seo系列 - Enable text compression on Nginx" />
-    <meta property="og:description" content="網頁架設的後期就會開始使用相關的工具來增進 seo ，其中容易被警告的一個項目就是 js 與 css 或是網頁內容應該要被壓縮，本文將會教授如何在 Nginx 中輕鬆設定完成 GZIP 壓縮、加快載入速度。" />
-    <meta property="og:image" content="/medias/featureimages/1.jpg" />
+    <meta property="og:title" content="Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?" />
+    <meta property="og:description" content="在 Django 中常常有獲取當下頁或是前一頁面網址 (url)的需求，例如輸入表單後的頁面重導、404頁面的重導。這個部分在 template 中以及 view.py 中都可以靠著 request 獲取資訊，我們就來看下去吧！" />
+    <meta property="og:image" content="/medias/featureimages/2.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>seo系列 - Enable text compression on Nginx | Happy Coding Lab</title>
+    <title>Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url? | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        seo系列 - Enable text compression on Nginx
+                        Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?
                     </div>
                 </div>
             </div>
@@ -359,26 +359,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <span class="chip bg-color">django</span>
                             </a>
                         
-                            <a href="/tags/seo/" target="_blank">
-                                <span class="chip bg-color">seo</span>
-                            </a>
-                        
-                            <a href="/tags/text-compression/" target="_blank">
-                                <span class="chip bg-color">text compression</span>
-                            </a>
-                        
-                            <a href="/tags/GZIP/" target="_blank">
-                                <span class="chip bg-color">GZIP</span>
-                            </a>
-                        
-                            <a href="/tags/nginx/" target="_blank">
-                                <span class="chip bg-color">nginx</span>
-                            </a>
-                        
-                            <a href="/tags/performance/" target="_blank">
-                                <span class="chip bg-color">performance</span>
-                            </a>
-                        
                     </div>
                     
                 </div>
@@ -387,8 +367,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                SEO
+                            <a href="/categories/Django/" class="post-category" target="_blank">
+                                Django
                             </a>
                         
                     </div>
@@ -399,7 +379,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-04-13
+                    2020-08-23
                 </div>
 
                 
@@ -425,73 +405,70 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-get-current-url-in-template-or-view-py"><a href="#How-to-get-current-url-in-template-or-view-py" class="headerlink" title="How to get current url in template or view.py?"></a>How to get current url in template or view.py?</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>如何評分自己網頁的 <code>seo</code> 是否及格</li>
-<li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li>
+<li>如何獲取當下頁面的 url</li>
+<li>如何獲取前一頁面的 url (referrer)</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>nginx 服務</li>
-<li>自己架設的網頁</li>
+<li>可以使用 Django的環境或簡單範例</li>
+<li>本環境測試使用 <code>Django==3.0.7</code> 以上(含) </li>
 </ul>
-<p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p>
-<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p>
-<h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p>
-<p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p>
-<p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p>
-<pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p>
-<p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p>
-<h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p>
-<p>找到 nginx server 的設定檔，沒意外預設會放在：</p>
-<pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p>
+<h3 id="1-在-template-中"><a href="#1-在-template-中" class="headerlink" title="1.在 template 中"></a><strong>1.在 template 中</strong></h3><p>在 template 裡面有基本的三種使用方式，要依照網頁架構跟需求使用：</p>
+<p>假設以本站的某一篇文章為例子：</p>
+<p><code>https://chilunhuang.github.io/posts/52152/#toc-heading-5</code></p>
+<p>第一種去頭去尾(拿掉 http/https 以及 get 相關參數)：</p>
+<pre><code>{{request.path}}</code></pre><p>結果為：</p>
 <blockquote>
-<p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p>
+<p>/posts/52152/</p>
 </blockquote>
-<pre><code># Enable Gzip 
-    gzip on; 
-    gzip_http_version 1.0; 
-    gzip_comp_level 2; 
-    gzip_min_length 1100; 
-    gzip_buffers  4 8k; 
-    gzip_proxied any; 
-    gzip_types 
-    # text/html is always compressed by HttpGzipModule 
-    text/css 
-    text/javascript 
-    text/xml 
-    text/plain 
-    text/x-component 
-    application/javascript 
-    application/json 
-    application/xml 
-    application/rss+xml 
-    font/truetype 
-    font/opentype 
-    application/vnd.ms-fontobject 
-    image/svg+xml; 
-
-    gzip_static on; 
-    gzip_proxied  expired no-cache no-store private auth; 
-    gzip_disable  &quot;MSIE [1-6]\.&quot;; 
-    gzip_vary   on; </code></pre><p>內容基本上就是：</p>
+<p>第二種去頭(拿掉 http/https)：</p>
+<pre><code>{{request.get_full_path}}</code></pre><p>結果為：</p>
+<blockquote>
+<p>/posts/52152/#toc-heading-5</p>
+</blockquote>
+<p>第三種完整 url：</p>
+<pre><code>{{request.build_absolute_uri}}</code></pre><p>結果為：</p>
+<blockquote>
+<p><a href="https://chilunhuang.github.io/posts/52152/#toc-heading-5">https://chilunhuang.github.io/posts/52152/#toc-heading-5</a></p>
+</blockquote>
+<h3 id="2-在-view-py-中"><a href="#2-在-view-py-中" class="headerlink" title="2.在 view.py 中"></a><strong>2.在 view.py 中</strong></h3><p>其實基本上剛剛上面 template 的例子全部也都可以直接使用在 view.py 當中喔，只要把 <code>{{}}</code> 拿掉就可以使用了，<code>request</code> 大家應該也相對的很熟悉了，每一段 function 都要使用啊！</p>
+<p>就像下面判斷 GET/POST 的小範例一樣的用法：</p>
+<pre><code>if request.method == &#39;GET&#39;:
+    do_something()
+elif request.method == &#39;POST&#39;:
+    do_something_else()
+</code></pre><p>獲取方式就是下面這樣：</p>
+<pre><code>request.build_absolute_uri</code></pre><h3 id="3-取得前一頁網址-referrer"><a href="#3-取得前一頁網址-referrer" class="headerlink" title="3.取得前一頁網址(referrer)"></a><strong>3.取得前一頁網址(referrer)</strong></h3><p>這一段要介紹一個別東西： <code>HttpRequest.META</code><br>這個 library 可以獲取很多額外的資訊，例如：</p>
 <ul>
-<li>啟動 gzip 壓縮</li>
-<li>設定要被壓縮的類型(css、javascript 等等)</li>
+<li>client’s user-agent  </li>
+<li>The IP address of the client.</li>
+<li>The hostname of the client.</li>
+<li>…</li>
 </ul>
-<p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p>
-<pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p>
-<p>進步超級多，壓縮效果是不是相當的驚人呢！</p>
-<p>有機會再與大家分享更多 seo 更多經驗！</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
-<p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p>
-</blockquote>
+<p>更多功能請見官網：</p>
 <blockquote>
-<p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p>
+<p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META</a></p>
 </blockquote>
-<p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
+<p>這裡就示範我最常用的導回前一頁的功能，大家可能會想怎麼會有這個需求呢？通常填完表單就讓他再回到表單頁就好，那就簡單的 redirect 到  <code>request.build_absolute_uri</code> 就好，幹嘛需要 <code>referrer</code>？</p>
+<p>這麼做的原因是有些表單填完送出後是沒有真實頁面存在的，他就直接 call view.py 去執行相關的動作後就會結束，如果我倒回原來的頁面，網址其實是不對的，是不是很抽象？我來舉個例子：</p>
+<p>假設我在 <code>https://chilunhuang.github.io/</code> 有個表單，該表單是讓大家寄信問問題，送出後就會直接寄信給我以及 user，但該表單並沒有一個獨立頁面，而是嵌在 <code>https://chilunhuang.github.io/</code>，當表單送出時會導向一個頁面(<code>send_gmail/</code>)，以及執行已經在 view.py 中定義的 func(<code>send_gmail</code>)</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># 在 urls.py 中</span>
+path<span class="token punctuation">(</span><span class="token string">'send_gmail/'</span><span class="token punctuation">,</span> send_gmail<span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'send_gmail'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>執行完畢後直接使用 <code>request.build_absolute_uri</code> 回到該頁面就會導向 <code>send_gmail/</code> 這個不存在的頁面去！所以才會有導向 <code>referrer</code> 的需求，那該如何是好呢？可以使用以下的語法(<code>HTTP_REFERER</code>)：</p>
+<pre class="line-numbers language-python"><code class="language-python">HttpResponseRedirect<span class="token punctuation">(</span>request<span class="token punctuation">.</span>META<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'HTTP_REFERER'</span><span class="token punctuation">,</span> <span class="token string">'/'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用上面的這個方法就可以直接回到 <code>send_gmail/</code> 前一頁的 <code>https://chilunhuang.github.io/</code>！</p>
+<p>以上為簡單的與 url path 相關的一些語法介紹，這裡面的水其實蠻深的，也有很多有趣的東西，有興趣的讀者可以自己好好的玩玩！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>官方文件：</p>
+<blockquote>
+<p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/</a></p>
+</blockquote>
+<p>stackoverflow：</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template" target="_blank" rel="noopener">https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template</a></p>
+</blockquote>
+<p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我<code>隨便點個廣告</code>，謝謝。</p>
 
             </div>
             <hr/>
@@ -505,7 +482,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/12526/" class="b-link-green">seo系列 - Enable text compression on Nginx</a>
+                    <a href="/posts/5/" class="b-link-green">Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -545,9 +522,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/12526/';
-        this.page.identifier = '/posts/12526/';
-        this.page.title = 'seo系列 - Enable text compression on Nginx';
+        this.page.url = 'https://chilunhuang.github.io/posts/5/';
+        this.page.identifier = '/posts/5/';
+        this.page.title = 'Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?';
     };
     let disqus_shortname = 'clhlab';
 
@@ -570,60 +547,50 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/posts/17948/">
+                <a href="/posts/5/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?">
                         
-                        <span class="card-title">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</span>
+                        <span class="card-title">Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control.在本範例你會學到：
+                    <div class="summary">How to get current url in template or view.py?在本範例你會學到：
 
-在 nginx 中設定緩存參數
-seo 的</div>
+如何獲取當下頁面的 url
+如何獲取前一頁面的 url (referrer)
+
+在本範例你需要先準備好：
+
+可以使用 Djan</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-08-23
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
+                            <a href="/categories/Django/" class="post-category" target="_blank">
+                                    Django
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
                     <a href="/tags/django/" target="_blank">
                         <span class="chip bg-color">django</span>
-                    </a>
-                    
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
-                    </a>
-                    
-                    <a href="/tags/nginx/" target="_blank">
-                        <span class="chip bg-color">nginx</span>
-                    </a>
-                    
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
-                    </a>
-                    
-                    <a href="/tags/Cache-Control/" target="_blank">
-                        <span class="chip bg-color">Cache-Control</span>
                     </a>
                     
                 </div>
@@ -637,31 +604,30 @@ seo 的</div>
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/53969/">
+                <a href="/posts/52152/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="seo系列 - Image Lazy Load 延遲載入圖片">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?">
                         
-                        <span class="card-title">seo系列 - Image Lazy Load 延遲載入圖片</span>
+                        <span class="card-title">Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to use image lazy load to speed up performance of website?在本範例你會學到：
+                    <div class="summary">How to use truncate filter to  slice text of Django template tag?在本範例你會學到：
 
-如何用最簡單的方式提升多圖的網頁速度
-使用 image lazy load 改造網頁
-
-在本範</div>
+部落格或網誌的文章清單中簡短顯示內容
+Django filters(過濾器) 的使用
+t</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-08-23
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
+                            <a href="/categories/Django/" class="post-category" target="_blank">
+                                    Django
                                 </a>
                             
                             
@@ -671,16 +637,12 @@ seo 的</div>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
+                    <a href="/tags/django/" target="_blank">
+                        <span class="chip bg-color">django</span>
                     </a>
                     
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
-                    </a>
-                    
-                    <a href="/tags/lazyload/" target="_blank">
-                        <span class="chip bg-color">lazyload</span>
+                    <a href="/tags/filters/" target="_blank">
+                        <span class="chip bg-color">filters</span>
                     </a>
                     
                 </div>

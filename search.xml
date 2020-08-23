@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?</title>
+      <link href="/posts/5/"/>
+      <url>/posts/5/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-get-current-url-in-template-or-view-py"><a href="#How-to-get-current-url-in-template-or-view-py" class="headerlink" title="How to get current url in template or view.py?"></a>How to get current url in template or view.py?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何獲取當下頁面的 url</li><li>如何獲取前一頁面的 url (referrer)</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>可以使用 Django的環境或簡單範例</li><li>本環境測試使用 <code>Django==3.0.7</code> 以上(含) </li></ul><h3 id="1-在-template-中"><a href="#1-在-template-中" class="headerlink" title="1.在 template 中"></a><strong>1.在 template 中</strong></h3><p>在 template 裡面有基本的三種使用方式，要依照網頁架構跟需求使用：</p><p>假設以本站的某一篇文章為例子：</p><p><code>https://chilunhuang.github.io/posts/52152/#toc-heading-5</code></p><p>第一種去頭去尾(拿掉 http/https 以及 get 相關參數)：</p><pre><code>{{request.path}}</code></pre><p>結果為：</p><blockquote><p>/posts/52152/</p></blockquote><p>第二種去頭(拿掉 http/https)：</p><pre><code>{{request.get_full_path}}</code></pre><p>結果為：</p><blockquote><p>/posts/52152/#toc-heading-5</p></blockquote><p>第三種完整 url：</p><pre><code>{{request.build_absolute_uri}}</code></pre><p>結果為：</p><blockquote><p><a href="https://chilunhuang.github.io/posts/52152/#toc-heading-5">https://chilunhuang.github.io/posts/52152/#toc-heading-5</a></p></blockquote><h3 id="2-在-view-py-中"><a href="#2-在-view-py-中" class="headerlink" title="2.在 view.py 中"></a><strong>2.在 view.py 中</strong></h3><p>其實基本上剛剛上面 template 的例子全部也都可以直接使用在 view.py 當中喔，只要把 <code>{{}}</code> 拿掉就可以使用了，<code>request</code> 大家應該也相對的很熟悉了，每一段 function 都要使用啊！</p><p>就像下面判斷 GET/POST 的小範例一樣的用法：</p><pre><code>if request.method == &#39;GET&#39;:    do_something()elif request.method == &#39;POST&#39;:    do_something_else()</code></pre><p>獲取方式就是下面這樣：</p><pre><code>request.build_absolute_uri</code></pre><h3 id="3-取得前一頁網址-referrer"><a href="#3-取得前一頁網址-referrer" class="headerlink" title="3.取得前一頁網址(referrer)"></a><strong>3.取得前一頁網址(referrer)</strong></h3><p>這一段要介紹一個別東西： <code>HttpRequest.META</code><br>這個 library 可以獲取很多額外的資訊，例如：</p><ul><li>client’s user-agent  </li><li>The IP address of the client.</li><li>The hostname of the client.</li><li>…</li></ul><p>更多功能請見官網：</p><blockquote><p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META</a></p></blockquote><p>這裡就示範我最常用的導回前一頁的功能，大家可能會想怎麼會有這個需求呢？通常填完表單就讓他再回到表單頁就好，那就簡單的 redirect 到  <code>request.build_absolute_uri</code> 就好，幹嘛需要 <code>referrer</code>？</p><p>這麼做的原因是有些表單填完送出後是沒有真實頁面存在的，他就直接 call view.py 去執行相關的動作後就會結束，如果我倒回原來的頁面，網址其實是不對的，是不是很抽象？我來舉個例子：</p><p>假設我在 <code>https://chilunhuang.github.io/</code> 有個表單，該表單是讓大家寄信問問題，送出後就會直接寄信給我以及 user，但該表單並沒有一個獨立頁面，而是嵌在 <code>https://chilunhuang.github.io/</code>，當表單送出時會導向一個頁面(<code>send_gmail/</code>)，以及執行已經在 view.py 中定義的 func(<code>send_gmail</code>)</p><pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># 在 urls.py 中</span>path<span class="token punctuation">(</span><span class="token string">'send_gmail/'</span><span class="token punctuation">,</span> send_gmail<span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'send_gmail'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>執行完畢後直接使用 <code>request.build_absolute_uri</code> 回到該頁面就會導向 <code>send_gmail/</code> 這個不存在的頁面去！所以才會有導向 <code>referrer</code> 的需求，那該如何是好呢？可以使用以下的語法(<code>HTTP_REFERER</code>)：</p><pre class="line-numbers language-python"><code class="language-python">HttpResponseRedirect<span class="token punctuation">(</span>request<span class="token punctuation">.</span>META<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'HTTP_REFERER'</span><span class="token punctuation">,</span> <span class="token string">'/'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>使用上面的這個方法就可以直接回到 <code>send_gmail/</code> 前一頁的 <code>https://chilunhuang.github.io/</code>！</p><p>以上為簡單的與 url path 相關的一些語法介紹，這裡面的水其實蠻深的，也有很多有趣的東西，有興趣的讀者可以自己好好的玩玩！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>官方文件：</p><blockquote><p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/</a></p></blockquote><p>stackoverflow：</p><blockquote><p><a href="https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template" target="_blank" rel="noopener">https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我<code>隨便點個廣告</code>，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Django </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> django </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?</title>
       <link href="/posts/52152/"/>
       <url>/posts/52152/</url>
@@ -248,40 +273,11 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> nginx </tag>
             
-            <tag> Cache-Control </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
-      <link href="/posts/53969/"/>
-      <url>/posts/53969/</url>
-      
-        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> lazyload </tag>
-            
             <tag> performance </tag>
+            
+            <tag> Cache-Control </tag>
             
         </tags>
       
@@ -310,13 +306,42 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
             
             <tag> nginx </tag>
+            
+            <tag> performance </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
+      <link href="/posts/53969/"/>
+      <url>/posts/53969/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> lazyload </tag>
             
         </tags>
       
