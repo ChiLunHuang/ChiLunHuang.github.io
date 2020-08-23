@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?</title>
+      <link href="/posts/52152/"/>
+      <url>/posts/52152/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-truncate-filter-to-slice-text-of-Django-template-tag"><a href="#How-to-use-truncate-filter-to-slice-text-of-Django-template-tag" class="headerlink" title="How to use truncate filter to  slice text of Django template tag?"></a>How to use truncate filter to  slice text of Django template tag?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>部落格或網誌的文章清單中簡短顯示內容</li><li>Django filters(過濾器) 的使用<ul><li><code>truncatechars</code></li><li><code>truncatechars_html</code></li><li><code>truncatewords</code></li><li>附贈 <code>slice</code></li></ul></li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>可以使用 Django的環境或簡單範例</li><li>本環境測試使用 <code>Django==3.0.7</code> 以上(含)</li></ul><p>在官方文件中也解釋得蠻清楚的，我就簡單的帶過所有可以使用的相關語法：</p><h3 id="1-truncatechars"><a href="#1-truncatechars" class="headerlink" title="1. truncatechars"></a><strong>1. truncatechars</strong></h3><p><code>truncatechars</code>從字面上的意思也很好理解，使用方式如下：</p><pre><code>{{ value|truncatechars:7 }}</code></pre><p>結果如下圖，可以看出他秀出了六個字<code>&lt;p&gt;這是一…</code>，這個例子可以看出兩個小結論：</p><ul><li>Filters 後面所寫的數字會自動 <code>-1</code>，我是填 7，但只出現 6 個</li><li>如果文章儲存的方式是直接存入整個 <code>html</code>，這樣其他 tag 也會被算入</li><li>使用這個體系的 filters 會自動地在結尾上面加上 <code>...</code></li></ul><p>針對第二點，<code>Django filters</code> 也有相對應的解決方式，請繼續看下去！ </p><p><img src="/medias/post_img/52152_1.jpg" alt="結果"></p><h3 id="2-truncatechars-html"><a href="#2-truncatechars-html" class="headerlink" title="2. truncatechars_html"></a><strong>2. truncatechars_html</strong></h3><p>直接上範例：</p><pre><code>{{ value| truncatechars_html:7 }}</code></pre><p>這時候大家應該有發現，這次 filter 自動忽略了 tag <code>&lt;p&gt;...&lt;/p&gt;</code>，直接抓取了中間的六個文字！</p><blockquote><p>小提醒：如果不想要顯示 html 出現在頁面上，在要語法後面加上<code>safe</code>:</p></blockquote><pre><code>{{ value| truncatechars_html:7|safe }}</code></pre><p><img src="/medias/post_img/52152_2.jpg" alt="結果"></p><h3 id="3-truncatewords-中文不適用"><a href="#3-truncatewords-中文不適用" class="headerlink" title="3. truncatewords(中文不適用)"></a><strong>3. truncatewords(中文不適用)</strong></h3><p>這個字面上看起來好理解，但他卻<code>不適用在中文</code>上面喔！他會針對句子中的標點符號或是空白來斷字，這個方式對英語系的才會有效果，中文會變得非常奇怪，變成整段字都會回傳！</p><h3 id="4-truncatewords-html-中文不適用"><a href="#4-truncatewords-html-中文不適用" class="headerlink" title="4. truncatewords_html(中文不適用)"></a><strong>4. truncatewords_html(中文不適用)</strong></h3><p>與 <code>truncatewords</code>相同，不適用於中文，與上面的差別就是 html tag 會被忽略計算。</p><h3 id="5-同場加碼-slice"><a href="#5-同場加碼-slice" class="headerlink" title="5. 同場加碼 slice"></a><strong>5. 同場加碼 slice</strong></h3><p><code>slice</code>這個方法是我還沒發現 <code>truncat</code> 體系時最常使用切割字串的方式，不過他就不會自動加上 <code>...</code>了。</p><p>他比較特別的是有點像 python List [:] 的用法，可以指定前後的位置：</p><pre><code>{{ some_list|slice:"0:2" }}</code></pre><p><strong><em>特別的是他與 python 相同，是從 0 開始計算位置，但不能使用 -1</em></strong></p><p><img src="/medias/post_img/52152_3.jpg" alt="結果"></p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p>truncatechars: <a href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#truncatechars" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#truncatechars</a></p></blockquote><blockquote><p>slice: <a href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#slice" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#slice</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Django </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> django </tag>
+            
+            <tag> filters </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Python 系列- 如何乾淨移除網址url中的追蹤碼?</title>
       <link href="/posts/24518/"/>
       <url>/posts/24518/</url>
@@ -217,50 +244,15 @@
       
         <tags>
             
-            <tag> seo </tag>
-            
-            <tag> nginx </tag>
-            
             <tag> django </tag>
             
+            <tag> seo </tag>
+            
             <tag> performance </tag>
+            
+            <tag> nginx </tag>
             
             <tag> Cache-Control </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Enable text compression on Nginx</title>
-      <link href="/posts/12526/"/>
-      <url>/posts/12526/</url>
-      
-        <content type="html"><![CDATA[<h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何評分自己網頁的 <code>seo</code> 是否及格</li><li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>nginx 服務</li><li>自己架設的網頁</li></ul><p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p><h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p><p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p><p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p><pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p><p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p><h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p><p>找到 nginx server 的設定檔，沒意外預設會放在：</p><pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p><blockquote><p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p></blockquote><pre><code># Enable Gzip     gzip on;     gzip_http_version 1.0;     gzip_comp_level 2;     gzip_min_length 1100;     gzip_buffers  4 8k;     gzip_proxied any;     gzip_types     # text/html is always compressed by HttpGzipModule     text/css     text/javascript     text/xml     text/plain     text/x-component     application/javascript     application/json     application/xml     application/rss+xml     font/truetype     font/opentype     application/vnd.ms-fontobject     image/svg+xml;     gzip_static on;     gzip_proxied  expired no-cache no-store private auth;     gzip_disable  &quot;MSIE [1-6]\.&quot;;     gzip_vary   on; </code></pre><p>內容基本上就是：</p><ul><li>啟動 gzip 壓縮</li><li>設定要被壓縮的類型(css、javascript 等等)</li></ul><p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p><pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p><p>進步超級多，壓縮效果是不是相當的驚人呢！</p><p>有機會再與大家分享更多 seo 更多經驗！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p></blockquote><blockquote><p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> text compression </tag>
-            
-            <tag> GZIP </tag>
-            
-            <tag> nginx </tag>
-            
-            <tag> django </tag>
-            
-            <tag> performance </tag>
             
         </tags>
       
@@ -287,9 +279,44 @@
             
             <tag> seo </tag>
             
+            <tag> lazyload </tag>
+            
             <tag> performance </tag>
             
-            <tag> lazyload </tag>
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Enable text compression on Nginx</title>
+      <link href="/posts/12526/"/>
+      <url>/posts/12526/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何評分自己網頁的 <code>seo</code> 是否及格</li><li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>nginx 服務</li><li>自己架設的網頁</li></ul><p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p><h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p><p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p><p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p><pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p><p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p><h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p><p>找到 nginx server 的設定檔，沒意外預設會放在：</p><pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p><blockquote><p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p></blockquote><pre><code># Enable Gzip     gzip on;     gzip_http_version 1.0;     gzip_comp_level 2;     gzip_min_length 1100;     gzip_buffers  4 8k;     gzip_proxied any;     gzip_types     # text/html is always compressed by HttpGzipModule     text/css     text/javascript     text/xml     text/plain     text/x-component     application/javascript     application/json     application/xml     application/rss+xml     font/truetype     font/opentype     application/vnd.ms-fontobject     image/svg+xml;     gzip_static on;     gzip_proxied  expired no-cache no-store private auth;     gzip_disable  &quot;MSIE [1-6]\.&quot;;     gzip_vary   on; </code></pre><p>內容基本上就是：</p><ul><li>啟動 gzip 壓縮</li><li>設定要被壓縮的類型(css、javascript 等等)</li></ul><p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p><pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p><p>進步超級多，壓縮效果是不是相當的驚人呢！</p><p>有機會再與大家分享更多 seo 更多經驗！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p></blockquote><blockquote><p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> django </tag>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> text compression </tag>
+            
+            <tag> GZIP </tag>
+            
+            <tag> nginx </tag>
             
         </tags>
       
