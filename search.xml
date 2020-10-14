@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>pyspark系列-如何使用pyspark連結clickhouse教學</title>
+      <link href="/posts/36151/"/>
+      <url>/posts/36151/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-pyspark-connect-with-cilckhouse-to-read"><a href="#How-to-use-pyspark-connect-with-cilckhouse-to-read" class="headerlink" title="How to use pyspark connect with cilckhouse to read?"></a>How to use pyspark connect with cilckhouse to read?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>於 <code>GCP Dataproc</code> 環境中加入<code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code> 的 jar 檔</li><li>於 pyspark 中對 clickhouse 進行讀取</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>熟悉 gcp 環境</li><li>一個以使用的 clickhouse 環境</li></ul><h3 id="1-引入-jar-檔"><a href="#1-引入-jar-檔" class="headerlink" title="1.引入 jar 檔"></a><strong>1.引入 jar 檔</strong></h3><p>基本上在 spark 環境都會引入各種需要的 jar 檔來完成很多事，clickhouse 也不例外，這裡要使用的是 <code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code>，相關版本號請自行依需求微調：<a href="https://mvnrepository.com/artifact/ru.yandex.clickhouse/clickhouse-jdbc" target="_blank" rel="noopener">版本列表</a>！決定好版本後我們就開始吧～</p><h3 id="2-啟動-Dataproc"><a href="#2-啟動-Dataproc" class="headerlink" title="2.啟動 Dataproc"></a><strong>2.啟動 Dataproc</strong></h3><p>這邊我就不贅述了，就是把 jar 檔案加入 <code>--properties</code> 中即可，其中的格式寫法可參考稍早之前的文章 <a href="https://chilunhuang.github.io/posts/14115/">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件</a>，其他參數就依照自己需求調整！</p><pre><code>gcloud dataproc clusters create clickhouse-pyspark \    --region=global \    --bucket my-bucket \    --master-boot-disk-size 100GB \    --num-workers 2 \    --worker-boot-disk-size 500GB  \    --worker-machine-type n1-standard-4 \    --zone asia-east1-b  \    --labels pro=report,user=test  \    --image-version=1.4 \    --metadata &#39;PIP_PACKAGES=configparser==4.0.2 PyMySQL==0.9.3&#39;\    --initialization-actions gs://dataproc-initialization-actions/python/pip-install.sh \        --properties &#39;spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true&#39;</code></pre><h3 id="3-pyspark-read-data-from-clickhouse"><a href="#3-pyspark-read-data-from-clickhouse" class="headerlink" title="3.pyspark read data from clickhouse"></a><strong>3.pyspark read data from clickhouse</strong></h3><p>這邊必須要填入 clickhouse 的 <code>url</code> 與 <code>登入資訊</code>等等資料，都查到這篇了我就預設大家手上都已經有可以正常登入的 clickhouse！</p><pre class="line-numbers language-python"><code class="language-python">df <span class="token operator">=</span> spark<span class="token punctuation">.</span>read<span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"jdbc"</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"driver"</span><span class="token punctuation">,</span> <span class="token string">"ru.yandex.clickhouse.ClickHouseDriver"</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"url"</span><span class="token punctuation">,</span><span class="token string">"jdbc:clickhouse://自行填入位置"</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"user"</span><span class="token punctuation">,</span><span class="token string">"帳號"</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">,</span><span class="token string">"密碼"</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"dbtable"</span><span class="token punctuation">,</span>SQL語法<span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"partitionColumn"</span><span class="token punctuation">,</span> <span class="token string">"product_id"</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"fetchsize"</span><span class="token punctuation">,</span> <span class="token number">25000</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"lowerBound"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"upperBound"</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"numPartitions"</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"queryTimeout"</span><span class="token punctuation">,</span> <span class="token number">600</span><span class="token punctuation">)</span>\    <span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>上面範例的其他參數就自行所需來微調了！</p><p>今天就介紹到這吧！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p><code>properties</code> 格式的用法請參照：</p><blockquote><p><a href="https://chilunhuang.github.io/posts/14115/">https://chilunhuang.github.io/posts/14115/</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>pyspark系列-如何使用pyspark連結kafka教學</title>
       <link href="/posts/26469/"/>
       <url>/posts/26469/</url>
@@ -325,40 +350,11 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> nginx </tag>
             
-            <tag> Cache-Control </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
-      <link href="/posts/53969/"/>
-      <url>/posts/53969/</url>
-      
-        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> lazyload </tag>
-            
             <tag> performance </tag>
+            
+            <tag> Cache-Control </tag>
             
         </tags>
       
@@ -387,13 +383,42 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
             
             <tag> nginx </tag>
+            
+            <tag> performance </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
+      <link href="/posts/53969/"/>
+      <url>/posts/53969/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> lazyload </tag>
             
         </tags>
       

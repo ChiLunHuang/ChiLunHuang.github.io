@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="seo,GZIP,nginx,django, performance,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="網頁架設的後期就會開始使用相關的工具來增進 seo ，其中容易被警告的一個項目就是 js 與 css 或是網頁內容應該要被壓縮，本文將會教授如何在 Nginx 中輕鬆設定完成 GZIP 壓縮、加快載入速度。">
+    <meta name="keywords" content="pyspark,clickhouse,gcp,dataproc,jdbc,ru.yandex,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="本文將簡單的示範如何在 pyspark 中對 clickhouse 進行讀取的動作。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="seo系列 - Enable text compression on Nginx" />
-    <meta property="og:description" content="網頁架設的後期就會開始使用相關的工具來增進 seo ，其中容易被警告的一個項目就是 js 與 css 或是網頁內容應該要被壓縮，本文將會教授如何在 Nginx 中輕鬆設定完成 GZIP 壓縮、加快載入速度。" />
-    <meta property="og:image" content="/medias/featureimages/1.jpg" />
+    <meta property="og:title" content="pyspark系列-如何使用pyspark連結clickhouse教學" />
+    <meta property="og:description" content="本文將簡單的示範如何在 pyspark 中對 clickhouse 進行讀取的動作。" />
+    <meta property="og:image" content="/medias/featureimages/4.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>seo系列 - Enable text compression on Nginx | Happy Coding Lab</title>
+    <title>pyspark系列-如何使用pyspark連結clickhouse教學 | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        seo系列 - Enable text compression on Nginx
+                        pyspark系列-如何使用pyspark連結clickhouse教學
                     </div>
                 </div>
             </div>
@@ -355,28 +355,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/django/" target="_blank">
-                                <span class="chip bg-color">django</span>
-                            </a>
-                        
-                            <a href="/tags/seo/" target="_blank">
-                                <span class="chip bg-color">seo</span>
-                            </a>
-                        
-                            <a href="/tags/text-compression/" target="_blank">
-                                <span class="chip bg-color">text compression</span>
-                            </a>
-                        
-                            <a href="/tags/GZIP/" target="_blank">
-                                <span class="chip bg-color">GZIP</span>
-                            </a>
-                        
-                            <a href="/tags/nginx/" target="_blank">
-                                <span class="chip bg-color">nginx</span>
-                            </a>
-                        
-                            <a href="/tags/performance/" target="_blank">
-                                <span class="chip bg-color">performance</span>
+                            <a href="/tags/pyspark/" target="_blank">
+                                <span class="chip bg-color">pyspark</span>
                             </a>
                         
                     </div>
@@ -387,8 +367,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                SEO
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                pyspark
                             </a>
                         
                     </div>
@@ -399,7 +379,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-04-13
+                    2020-10-14
                 </div>
 
                 
@@ -425,72 +405,52 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-use-pyspark-connect-with-cilckhouse-to-read"><a href="#How-to-use-pyspark-connect-with-cilckhouse-to-read" class="headerlink" title="How to use pyspark connect with cilckhouse to read?"></a>How to use pyspark connect with cilckhouse to read?</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>如何評分自己網頁的 <code>seo</code> 是否及格</li>
-<li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li>
+<li>於 <code>GCP Dataproc</code> 環境中加入<code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code> 的 jar 檔</li>
+<li>於 pyspark 中對 clickhouse 進行讀取</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>nginx 服務</li>
-<li>自己架設的網頁</li>
+<li>熟悉 gcp 環境</li>
+<li>一個以使用的 clickhouse 環境</li>
 </ul>
-<p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p>
-<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p>
-<h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p>
-<p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p>
-<p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p>
-<pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p>
-<p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p>
-<h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p>
-<p>找到 nginx server 的設定檔，沒意外預設會放在：</p>
-<pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p>
+<h3 id="1-引入-jar-檔"><a href="#1-引入-jar-檔" class="headerlink" title="1.引入 jar 檔"></a><strong>1.引入 jar 檔</strong></h3><p>基本上在 spark 環境都會引入各種需要的 jar 檔來完成很多事，clickhouse 也不例外，這裡要使用的是 <code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code>，相關版本號請自行依需求微調：<a href="https://mvnrepository.com/artifact/ru.yandex.clickhouse/clickhouse-jdbc" target="_blank" rel="noopener">版本列表</a>！決定好版本後我們就開始吧～</p>
+<h3 id="2-啟動-Dataproc"><a href="#2-啟動-Dataproc" class="headerlink" title="2.啟動 Dataproc"></a><strong>2.啟動 Dataproc</strong></h3><p>這邊我就不贅述了，就是把 jar 檔案加入 <code>--properties</code> 中即可，其中的格式寫法可參考稍早之前的文章 <a href="https://chilunhuang.github.io/posts/14115/">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件</a>，其他參數就依照自己需求調整！</p>
+<pre><code>gcloud dataproc clusters create clickhouse-pyspark \
+    --region=global \
+    --bucket my-bucket \
+    --master-boot-disk-size 100GB \
+    --num-workers 2 \
+    --worker-boot-disk-size 500GB  \
+    --worker-machine-type n1-standard-4 \
+    --zone asia-east1-b  \
+    --labels pro=report,user=test  \
+    --image-version=1.4 \
+    --metadata &#39;PIP_PACKAGES=configparser==4.0.2 PyMySQL==0.9.3&#39;\
+    --initialization-actions gs://dataproc-initialization-actions/python/pip-install.sh \    
+    --properties &#39;spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true&#39;
+</code></pre><h3 id="3-pyspark-read-data-from-clickhouse"><a href="#3-pyspark-read-data-from-clickhouse" class="headerlink" title="3.pyspark read data from clickhouse"></a><strong>3.pyspark read data from clickhouse</strong></h3><p>這邊必須要填入 clickhouse 的 <code>url</code> 與 <code>登入資訊</code>等等資料，都查到這篇了我就預設大家手上都已經有可以正常登入的 clickhouse！</p>
+<pre class="line-numbers language-python"><code class="language-python">df <span class="token operator">=</span> spark<span class="token punctuation">.</span>read<span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"jdbc"</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"driver"</span><span class="token punctuation">,</span> <span class="token string">"ru.yandex.clickhouse.ClickHouseDriver"</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"url"</span><span class="token punctuation">,</span><span class="token string">"jdbc:clickhouse://自行填入位置"</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"user"</span><span class="token punctuation">,</span><span class="token string">"帳號"</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">,</span><span class="token string">"密碼"</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"dbtable"</span><span class="token punctuation">,</span>SQL語法<span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"partitionColumn"</span><span class="token punctuation">,</span> <span class="token string">"product_id"</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"fetchsize"</span><span class="token punctuation">,</span> <span class="token number">25000</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"lowerBound"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"upperBound"</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"numPartitions"</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"queryTimeout"</span><span class="token punctuation">,</span> <span class="token number">600</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面範例的其他參數就自行所需來微調了！</p>
+<p>今天就介紹到這吧！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p><code>properties</code> 格式的用法請參照：</p>
 <blockquote>
-<p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p>
+<p><a href="https://chilunhuang.github.io/posts/14115/">https://chilunhuang.github.io/posts/14115/</a></p>
 </blockquote>
-<pre><code># Enable Gzip 
-    gzip on; 
-    gzip_http_version 1.0; 
-    gzip_comp_level 2; 
-    gzip_min_length 1100; 
-    gzip_buffers  4 8k; 
-    gzip_proxied any; 
-    gzip_types 
-    # text/html is always compressed by HttpGzipModule 
-    text/css 
-    text/javascript 
-    text/xml 
-    text/plain 
-    text/x-component 
-    application/javascript 
-    application/json 
-    application/xml 
-    application/rss+xml 
-    font/truetype 
-    font/opentype 
-    application/vnd.ms-fontobject 
-    image/svg+xml; 
-
-    gzip_static on; 
-    gzip_proxied  expired no-cache no-store private auth; 
-    gzip_disable  &quot;MSIE [1-6]\.&quot;; 
-    gzip_vary   on; </code></pre><p>內容基本上就是：</p>
-<ul>
-<li>啟動 gzip 壓縮</li>
-<li>設定要被壓縮的類型(css、javascript 等等)</li>
-</ul>
-<p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p>
-<pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p>
-<p>進步超級多，壓縮效果是不是相當的驚人呢！</p>
-<p>有機會再與大家分享更多 seo 更多經驗！</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
-<p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p>
-</blockquote>
-<blockquote>
-<p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p>
-</blockquote>
+<p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
             </div>
@@ -505,7 +465,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/12526/" class="b-link-green">seo系列 - Enable text compression on Nginx</a>
+                    <a href="/posts/36151/" class="b-link-green">pyspark系列-如何使用pyspark連結clickhouse教學</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -545,9 +505,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/12526/';
-        this.page.identifier = '/posts/12526/';
-        this.page.title = 'seo系列 - Enable text compression on Nginx';
+        this.page.url = 'https://chilunhuang.github.io/posts/36151/';
+        this.page.identifier = '/posts/36151/';
+        this.page.title = 'pyspark系列-如何使用pyspark連結clickhouse教學';
     };
     let disqus_shortname = 'clhlab';
 
@@ -570,60 +530,45 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/posts/17948/">
+                <a href="/posts/36151/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="pyspark系列-如何使用pyspark連結clickhouse教學">
                         
-                        <span class="card-title">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</span>
+                        <span class="card-title">pyspark系列-如何使用pyspark連結clickhouse教學</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control.在本範例你會學到：
+                    <div class="summary">How to use pyspark connect with cilckhouse to read?在本範例你會學到：
 
-在 nginx 中設定緩存參數
-seo 的</div>
+於 GCP Dataproc 環境中加入ru.yandex.clickhouse:clickhouse-jdbc:0</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-14
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/django/" target="_blank">
-                        <span class="chip bg-color">django</span>
-                    </a>
-                    
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
-                    </a>
-                    
-                    <a href="/tags/nginx/" target="_blank">
-                        <span class="chip bg-color">nginx</span>
-                    </a>
-                    
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
-                    </a>
-                    
-                    <a href="/tags/Cache-Control/" target="_blank">
-                        <span class="chip bg-color">Cache-Control</span>
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
                     </a>
                     
                 </div>
@@ -637,31 +582,29 @@ seo 的</div>
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/53969/">
+                <a href="/posts/26469/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="seo系列 - Image Lazy Load 延遲載入圖片">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="pyspark系列-如何使用pyspark連結kafka教學">
                         
-                        <span class="card-title">seo系列 - Image Lazy Load 延遲載入圖片</span>
+                        <span class="card-title">pyspark系列-如何使用pyspark連結kafka教學</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to use image lazy load to speed up performance of website?在本範例你會學到：
+                    <div class="summary">How to use pyspark connect with kafka to write and read?在本範例你會學到：
 
-如何用最簡單的方式提升多圖的網頁速度
-使用 image lazy load 改造網頁
-
-在本範</div>
+於 GCP Dataproc 環境中加入spark-sql-kafka 的 jar 檔
+於 pyspark</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-14
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
                                 </a>
                             
                             
@@ -671,16 +614,8 @@ seo 的</div>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
-                    </a>
-                    
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
-                    </a>
-                    
-                    <a href="/tags/lazyload/" target="_blank">
-                        <span class="chip bg-color">lazyload</span>
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
                     </a>
                     
                 </div>
