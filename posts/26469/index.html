@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="玉山單攻,玉山主峰,玉山一日單攻,玉山,單攻,交通,東埔山莊,公車,客運,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="登上玉山的計畫從2020/03就開始了，但一路上可以的時間都一直抽不到簽，超級沒有籤運，與排雲山莊非常的沒有緣分，後來就開始改抽單攻，很幸運的在8月改制後(先搶先贏改成電腦選)就中籤了，由於當初在網路上很多資料其實有點舊了，所以希望寫一篇來">
+    <meta name="keywords" content="pyspark,kafka,gcp,dataproc,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="本文將簡單的示範如何在 pyspark 中對 kafka 進行讀取與寫入的動作。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="登山系列- 玉山一日單攻(主峰)攻略&amp;紀錄" />
-    <meta property="og:description" content="登上玉山的計畫從2020/03就開始了，但一路上可以的時間都一直抽不到簽，超級沒有籤運，與排雲山莊非常的沒有緣分，後來就開始改抽單攻，很幸運的在8月改制後(先搶先贏改成電腦選)就中籤了，由於當初在網路上很多資料其實有點舊了，所以希望寫一篇來" />
-    <meta property="og:image" content="/medias/featureimages/8.jpg" />
+    <meta property="og:title" content="pyspark系列-如何使用pyspark連結kafka教學" />
+    <meta property="og:description" content="本文將簡單的示範如何在 pyspark 中對 kafka 進行讀取與寫入的動作。" />
+    <meta property="og:image" content="/medias/featureimages/3.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>登山系列- 玉山一日單攻(主峰)攻略&amp;紀錄 | Happy Coding Lab</title>
+    <title>pyspark系列-如何使用pyspark連結kafka教學 | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        登山系列- 玉山一日單攻(主峰)攻略&amp;紀錄
+                        pyspark系列-如何使用pyspark連結kafka教學
                     </div>
                 </div>
             </div>
@@ -355,12 +355,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E7%8E%89%E5%B1%B1%E5%96%AE%E6%94%BB/" target="_blank">
-                                <span class="chip bg-color">玉山單攻</span>
-                            </a>
-                        
-                            <a href="/tags/%E7%99%BB%E5%B1%B1/" target="_blank">
-                                <span class="chip bg-color">登山</span>
+                            <a href="/tags/pyspark/" target="_blank">
+                                <span class="chip bg-color">pyspark</span>
                             </a>
                         
                     </div>
@@ -371,8 +367,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E7%99%BB%E5%B1%B1%E7%B3%BB%E5%88%97/" class="post-category" target="_blank">
-                                登山系列
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                pyspark
                             </a>
                         
                     </div>
@@ -383,7 +379,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-10-08
+                    2020-10-14
                 </div>
 
                 
@@ -409,102 +405,63 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="玉山一日單攻-主峰-攻略-amp-紀錄"><a href="#玉山一日單攻-主峰-攻略-amp-紀錄" class="headerlink" title="玉山一日單攻(主峰)攻略&amp;紀錄"></a>玉山一日單攻(主峰)攻略&amp;紀錄</h1><p>登上玉山的計畫從 2020/03 就開始了，但是可以的時間都一直抽不到簽，超級沒有籤運QQ，與排雲山莊非常的沒有緣分，只好開始改抽單攻。很幸運的在8月改制後(<code>先搶先贏改成電腦選</code>)就中籤了，順利在 9月完攻。這次準備上比較麻煩也花比較多時間查資料的就是交通了，由於沒有自駕車，所以都要靠高鐵、客運、公車來解決，今天就來分享一下準備的路線！</p>
-<p><strong>上山會檢查的文件證件：</strong></p>
-<p>基本上下面列出來的東西最重要，其他就是依照自己需求準備了！</p>
+                <h1 id="How-to-use-pyspark-connect-with-kafka-to-write-and-read"><a href="#How-to-use-pyspark-connect-with-kafka-to-write-and-read" class="headerlink" title="How to use pyspark connect with kafka to write and read?"></a>How to use pyspark connect with kafka to write and read?</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li><strong>身分證 (半夜出發時需要電腦報到掃描身份證)</strong></li>
-<li><strong>入山證 (需要印出來)</strong></li>
-<li><strong>入園證 (可以將電子版存在手機查證即可，節能減碳)</strong></li>
-<li><strong>準備住宿 (本篇是東埔山莊)</strong></li>
-<li><strong>其他證件/文件則依照自己的需求攜帶(健保卡等)</strong></li>
+<li>於 <code>GCP Dataproc</code> 環境中加入<code>spark-sql-kafka</code> 的 jar 檔</li>
+<li>於 pyspark 中對 kafka 進行讀/寫</li>
 </ul>
-<h3 id="1-如何申請"><a href="#1-如何申請" class="headerlink" title="1.如何申請"></a><strong>1.如何申請</strong></h3><p>這部分其實會查到相當多的資料，其實我一開始也是看得亂七八糟。在玉山單日往返部份有四種路線：</p>
+<p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>玉山前峰單日往返(塔塔加 - 玉山前峰 - 塔塔加 )</li>
-<li><code>玉山線單日往返(塔塔加 - 玉山線 - 塔塔加) &lt;- 限制60人</code></li>
-<li>乙女瀑布單日往返(東埔 – 乙女瀑布 – 東埔)</li>
-<li>瓦拉米單日往返(南安 - 瓦拉米 - 南安)</li>
+<li>熟悉 gcp 環境</li>
+<li>kafka 的 <code>broker</code></li>
+<li>kafka 的 <code>Topic</code></li>
 </ul>
-<p>我們要申請的路線就是有限制人數的那一條，<code>玉山線單日往返(塔塔加 - 玉山線 - 塔塔加)</code>，提前決定好日期來申請，由電腦抽籤決定，但如果不興沒中籤又很想趕快爬，就可以在<a href="https://npm.cpami.gov.tw/bed_7.aspx" target="_blank" rel="noopener">官網上</a>看一下哪一天還有餘額可以選，如果平日可以出發的夥伴基本上比較容易有空缺！</p>
-<p>基本上就是進入官網填寫相關基本資料<a href="https://npm.cpami.gov.tw/apply_1_2.aspx?unit=c951cdcd-b75a-46b9-8002-8ef952ec95fd" target="_blank" rel="noopener">(入園申請)</a>，這裡我就不贅述，該寫什麼就寫什麼，主路線部分就選擇 <code>玉山線</code>，次路線就是<code>玉山線單日往返(塔塔加 - 玉山線 - 塔塔加)</code>，都填完之後，就是等消息囉！</p>
-<p>如果雀屏中選，信箱應該會收到一封 <code>YSNP(玉管處)notification－玉山線單日往返中籤通知(你的編號)</code> 為開頭的信，這個時候就可以開始選備後續的事情了！</p>
-<h3 id="2-中籤後該做什麼"><a href="#2-中籤後該做什麼" class="headerlink" title="2.中籤後該做什麼"></a><strong>2.中籤後該做什麼</strong></h3><ul>
-<li><p><strong>預定住宿</strong></p>
-<p>由於是單攻，勢必要在半夜出發，所以上山後到入夜必須有個落腳處，這次就選擇了<a href="http://dongpu.mmweb.tw/?ptype=info" target="_blank" rel="noopener">東埔山莊</a>，他的評價兩極，個人覺得衛生沒有很差，廁所非常乾淨，差的是跟其他山屋一樣很吵睡眠品質很不好就是了，其他尚可接受。</p>
-<p>預約方式就打電話過去，留下相關資料後，於時間內匯款至指定帳戶，匯款成功後要<code>傳真</code>給他們(這裡我真的覺得很不可思議從小到大我還真的沒有傳真過…，最後使用了免費的線上傳真(可以 google 一下))，一人一個晚上 300 元。<code>記得一定要留匯款紀錄的截圖或是紙本紀錄，現場會被再問一次的</code>…</p>
-</li>
-</ul>
-<p><img src="/medias/post_img/17828_2.jpg" alt="東埔山莊"></p>
-<ul>
-<li><strong>安排交通</strong></li>
-</ul>
-<p>就如前面所說，我們沒有自駕車，所以就查了許多資料，基本上都是參考網路上各位大大的資訊：</p>
-<p>我們的上山路線是 ：</p>
-<pre><code>07:55 板橋高鐵站
-09:13 嘉義高鐵站
-09:30 台灣好行 7329A (2號出口7月台)
-11:39 阿里山轉運站 (午餐)
-13:00 員林客運 6739（7-11前）
-13:30 上東埔站
-13:50 東埔山莊
-11:40 起床吃早餐預計起登</code></pre><p><img src="/medias/post_img/17828_1.jpg" alt="台灣好行 7329 (高鐵2號出口7月台)"></p>
-<p><code>台灣好行 7329</code> 直接刷悠遊卡就可以上車，我是不知道車滿了上不去會發生什麼事(是遊覽車)，所以我們有預留下一班的時間，大家要自己斟酌時間的彈性，一定不要把時間算死，影響到下一班最害怕沒搭到的公車 <code>6739</code>。</p>
-<p><code>員林客運 6739(阿里山往日月潭)</code> ，整趟旅程最害怕錯過的公車(小巴)，一天只有兩班(下午一點跟兩點)，部分則需要事先預約<a href="https://www.bustrip.com.tw/memberLogin.action" target="_blank" rel="noopener">(這裡預約)</a>，他會給一組 QR code，不用事先付款，也是上車的時候刷悠遊卡，不過我們上車沒有檢查 QR code，所以沒有很確定整個運作原理是什麼，可能是沒有滿車就不會檢查吧？！(<code>切記下山的公車也是要事先預約的，所以最好下山的也一起訂了！</code>)</p>
-<p>綜合以上兩點，請大家<code>悠遊卡裡面一定要有錢喔</code>！</p>
-<ul>
-<li><strong>等待入園證通過，一鍵申請入山</strong></li>
-</ul>
-<p>基本上單攻的團隊都沒有住在排雲，也不會有繳費問題，除非資料有缺漏，不然什麼都不用做，就是等待<code>入園證</code>通過，通過後在下方會有個可以一鍵申請<code>入山證</code>的鈕，兩個證件都收到之後，基本上就大功告成拉！</p>
-<p>記得入山證要印出來，入園證可以使用電子版的形式存在手機即可！</p>
-<h3 id="3-準備就緒"><a href="#3-準備就緒" class="headerlink" title="3. 準備就緒"></a><strong>3. 準備就緒</strong></h3><p>文件都準備好後，好好睡一覺準備欣賞台灣最高峰的全貌吧！相關行動糧與背包配置我就不多說明了！</p>
-<p>記得出發前要：</p>
-<ul>
-<li>入山證上聯和名冊投入塔塔加小隊前信箱</li>
-<li>用身分證在塔塔加小隊隔壁服務中心自助機前面掃描</li>
-<li>入園證到排雲山莊檢查（6點開始有人）</li>
-<li>單攻隊伍早上<code>10點前</code>一定要過排雲山莊</li>
-<li>玉山登山口至上東埔停車場有100元接駁車（走路約50分鐘，可視情況看是否搭車）</li>
-<li>保登山險 (政府有規定，若被查到是會罰錢的)</li>
-</ul>
-<p><img src="/medias/post_img/17828_3.jpg" alt="入山證上聯和名冊投入塔塔加小隊前信箱"></p>
-<p><img src="/medias/post_img/17828_4.jpg" alt="身分證於自助機前面掃描"></p>
-<h3 id="4-單攻玉山"><a href="#4-單攻玉山" class="headerlink" title="4. 單攻玉山"></a><strong>4. 單攻玉山</strong></h3><p>我們隊伍三人因為要配合交通，所以走得非常快，很怕趕不上車子，基本上看大家的紀錄都是 14~18 小時都有，我們最後完攻回登山口是12小時，如果跟我們一樣沒有自己交通工具的話，可以參考一下我們的數據。</p>
-<p>以下為我們整趟行程的時間點紀錄，給大家參考：</p>
-<p><code>2020/09/21</code></p>
-<pre><code>00:11 東埔山莊出發 (途中走錯方向拍很久的星星)
-00:39 投入山證
-00:42 身分證報到 起登
-01:14 玉山登山口
-01:54 夢祿亭
-02:15 玉山前鋒岔路口
-04:04 距離排雲山莊 2.5k
-04:56 距離排雲山莊 0.5k
-05:12 排雲山莊
-休整與報到入園 (雖然還沒六點，但是此時其實有遇到檢查的大哥，所以提前報到了)
-05:45 出發
-06:18 主峰圓峰山屋岔路口
-07:15 距離主峰 0.4k處
-07:20 風口(主北岔路)
-07:41 登頂玉山主峰
-08:15 拍照完下山
-08:31 風口(主北岔路)
-09:07 主峰圓峰山屋岔路口
-09:38 排雲山莊停機坪
-10:04 距離登山口 8k
-10:15 距離登山口 7.5k
-10:42 玉山大峭壁
-11:05 棧橋編號54
-12:44 玉山登山口</code></pre><p>也還好天氣非常的好，夜爬的時候滿天星斗，還有遇到白面鼯鼠、山羌，這些在白天爬還很難遇到呢！也是因為這好天氣讓我們趕路的很順利！</p>
-<p><img src="/medias/post_img/17828_5.jpg" alt="登頂照"></p>
-<h3 id="5-回程"><a href="#5-回程" class="headerlink" title="5. 回程"></a><strong>5. 回程</strong></h3><p>由於我們回程的時候，剛好有好心的山友有自駕車，願意順便載我們到高鐵站，所以就省下了還要坐公車折騰到日月潭和台中高鐵的過程，不過我們還是有事先查好資料，所以就提供給大家。但以下的資訊就<code>沒有實際搭過了</code>，大家自己斟酌參考囉：</p>
-<p>原本預計下山行程：</p>
-<p><code>記得下山的 員林客運 6739 一樣要先預約喔！！</code></p>
-<pre><code>14:30 塔塔加站 員林客運 6739 (公廁旁)
-16:30 日月潭站
-16:40 台灣好行 6670
-18:00 台中高鐵站回板橋</code></pre><p>以上為單攻的相關紀錄，有任何問題也歡迎發問，玉山真的規劃的相當好也安全，除了過了排雲後的路程稍為有點危險性，只要慢慢走一定都沒問題，大人小孩都一樣，只是單攻要注意到<code>個人的體能狀況</code>，隨時要調整呼吸與注意有沒有誘發高山症喔！山永遠都在，沒爬完下次再來就好，祝大家次次出大景！</p>
-<p>若有任何問題或錯誤與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
+<h3 id="1-引入-jar-檔"><a href="#1-引入-jar-檔" class="headerlink" title="1.引入 jar 檔"></a><strong>1.引入 jar 檔</strong></h3><p>基本上在 spark 環境都會引入各種需要的 jar 檔來完成很多事，kafka 也不例外，這裡要使用的是 <code>spark-sql-kafka-0-10_2.11:2.3.2</code>，相關版本號請自行依需求微調：<a href="https://mvnrepository.com/artifact/org.apache.spark/spark-sql-kafka-0-10_2.11" target="_blank" rel="noopener">版本列表</a>！決定好版本後我們就開始吧～</p>
+<h3 id="2-啟動-Dataproc"><a href="#2-啟動-Dataproc" class="headerlink" title="2.啟動 Dataproc"></a><strong>2.啟動 Dataproc</strong></h3><p>這邊我就不贅述了，就是把 jar 檔案加入 <code>--properties</code> 中即可，其中的格式寫法可參考稍早之前的文章 <a href="https://chilunhuang.github.io/posts/14115/">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件</a>，其他參數就依照自己需求調整！</p>
+<pre><code>gcloud dataproc clusters create kafka-pyspark \
+    --region=global \
+    --bucket my-bucket \
+    --master-boot-disk-size 100GB \
+    --num-workers 2 \
+    --worker-boot-disk-size 500GB  \
+    --worker-machine-type n1-standard-4 \
+    --zone asia-east1-b  \
+    --labels pro=report,user=test  \
+    --image-version=1.4 \
+    --metadata &#39;PIP_PACKAGES=configparser==4.0.2 PyMySQL==0.9.3&#39;\
+    --initialization-actions gs://dataproc-initialization-actions/python/pip-install.sh \    
+    --properties &#39;spark:spark.jars.packages=org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2,dataproc:dataproc.monitoring.stackdriver.enable=true&#39;
+</code></pre><h3 id="3-pyspark-write-data-into-kafka"><a href="#3-pyspark-write-data-into-kafka" class="headerlink" title="3.pyspark write data into kafka"></a><strong>3.pyspark write data into kafka</strong></h3><p>這邊必須要填入 kafka 的 <code>topic</code> 與 <code>broker</code>，都查到這篇了我就預設大家都知道這是要幹嘛的了！</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># 定義 Topic 與 Kafka_brokers(隨便打的範例)</span>
+
+Topic <span class="token operator">=</span> <span class="token string">"test.data.com.tw"</span>
+Kafka_brokers <span class="token operator">=</span>  <span class="token string">"11.242.290.235:9092"</span>
+
+df<span class="token punctuation">.</span>select<span class="token punctuation">(</span>to_json<span class="token punctuation">(</span>struct<span class="token punctuation">(</span><span class="token string">"*"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>alias<span class="token punctuation">(</span><span class="token string">"value"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>write\
+    <span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"kafka"</span><span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"kafka.bootstrap.servers"</span><span class="token punctuation">,</span> Kafka_brokers<span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"topic"</span><span class="token punctuation">,</span> Topic<span class="token punctuation">)</span>\
+    <span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>基本上就是填入兩個參數到相對應的位置即可，簡單易懂！</p>
+<h3 id="4-pyspark-read-data-from-kafka"><a href="#4-pyspark-read-data-from-kafka" class="headerlink" title="4.pyspark read data from kafka"></a><strong>4.pyspark read data from kafka</strong></h3><p>寫的部分都這麼容易了，讀其實也是差不多的：</p>
+<pre class="line-numbers language-python"><code class="language-python">df <span class="token operator">=</span> spark \
+  <span class="token punctuation">.</span>read \
+  <span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"kafka"</span><span class="token punctuation">)</span> \
+  <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"kafka.bootstrap.servers"</span><span class="token punctuation">,</span> Kafka_brokers<span class="token punctuation">)</span> \
+  <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"subscribe"</span><span class="token punctuation">,</span> Topic<span class="token punctuation">)</span> \
+  <span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>今天就介紹到這吧！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>更多的參數與寫法調整，請參考官網：</p>
+<blockquote>
+<p><a href="https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html</a></p>
+</blockquote>
+<p>properties 格式的用法請參照：</p>
+<blockquote>
+<p><a href="https://chilunhuang.github.io/posts/14115/">https://chilunhuang.github.io/posts/14115/</a></p>
+</blockquote>
+<p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
             </div>
             <hr/>
@@ -518,7 +475,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/17828/" class="b-link-green">登山系列- 玉山一日單攻(主峰)攻略&amp;紀錄</a>
+                    <a href="/posts/26469/" class="b-link-green">pyspark系列-如何使用pyspark連結kafka教學</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -558,9 +515,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/17828/';
-        this.page.identifier = '/posts/17828/';
-        this.page.title = '登山系列- 玉山一日單攻(主峰)攻略&amp;紀錄';
+        this.page.url = 'https://chilunhuang.github.io/posts/26469/';
+        this.page.identifier = '/posts/26469/';
+        this.page.title = 'pyspark系列-如何使用pyspark連結kafka教學';
     };
     let disqus_shortname = 'clhlab';
 
@@ -583,9 +540,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/posts/26469/">
                     <div class="card-image">
@@ -601,9 +559,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 於 GCP Dataproc 環境中加入spark-sql-kafka 的 jar 檔
 於 pyspark</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-14
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-14
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -616,6 +574,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -634,33 +593,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/5/">
+                <a href="/posts/17828/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="登山系列- 玉山一日單攻(主峰)攻略&紀錄">
                         
-                        <span class="card-title">Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?</span>
+                        <span class="card-title">登山系列- 玉山一日單攻(主峰)攻略&紀錄</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to get current url in template or view.py?在本範例你會學到：
-
-如何獲取當下頁面的 url
-如何獲取前一頁面的 url (referrer)
-
-在本範例你需要先準備好：
-
-可以使用 Djan</div>
+                    <div class="summary">玉山一日單攻(主峰)攻略&amp;紀錄登上玉山的計畫從 2020/03 就開始了，但是可以的時間都一直抽不到簽，超級沒有籤運QQ，與排雲山莊非常的沒有緣分，只好開始改抽單攻。很幸運的在8月改制後(先搶先贏改成電腦選)就中籤了，順利在 9月完</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-08-23
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-08
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Django/" class="post-category" target="_blank">
-                                    Django
+                            <a href="/categories/%E7%99%BB%E5%B1%B1%E7%B3%BB%E5%88%97/" class="post-category" target="_blank">
+                                    登山系列
                                 </a>
                             
                             
@@ -670,8 +622,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/django/" target="_blank">
-                        <span class="chip bg-color">django</span>
+                    <a href="/tags/%E7%8E%89%E5%B1%B1%E5%96%AE%E6%94%BB/" target="_blank">
+                        <span class="chip bg-color">玉山單攻</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%99%BB%E5%B1%B1/" target="_blank">
+                        <span class="chip bg-color">登山</span>
                     </a>
                     
                 </div>
