@@ -387,27 +387,6 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
     
     
     <div class="col s12 m6" data-aos="zoom-in-up">
-        <div class="post-card" style="background-image: url('/medias/featureimages/3.jpg')">
-            <div class="post-body">
-                <div class="post-categories">
-                    
-                    <a href="/categories/keras/" class="category" target="_blank">keras</a>
-                    
-                </div>
-                <a href="/posts/63500/" target="_blank">
-                    <h3 class="post-title">keras系列 - keras model部署與序列化於spark進行預測</h3>
-                </a>
-                <p class="post-description">Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p>
-                <a href="/posts/63500/" target="_blank"
-                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #1AD6FD 0%, #1D62F0 100%)">
-                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    
-    <div class="col s12" data-aos="zoom-in-up">
         <div class="post-card" style="background-image: url('/medias/featureimages/5.jpg')">
             <div class="post-body">
                 <div class="post-categories">
@@ -420,7 +399,49 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 </a>
                 <p class="post-description">想要使用 lit 增加欄位時，如果增加的是一個 array，spark 將會拋出錯誤 Unsupported literal type class java.util.ArrayList。本文章將簡單的示範該如何解決此問題。</p>
                 <a href="/posts/54688/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #1AD6FD 0%, #1D62F0 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/3.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/keras/" class="category" target="_blank">keras</a>
+                    
+                </div>
+                <a href="/posts/63500/" target="_blank">
+                    <h3 class="post-title">keras系列 - keras model部署與序列化於spark進行預測</h3>
+                </a>
+                <p class="post-description">Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p>
+                <a href="/posts/63500/" target="_blank"
                         class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #FFCC00 0%, #FF9500 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/2.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/pyspark/" class="category" target="_blank">pyspark</a>
+                    
+                </div>
+                <a href="/posts/29655/" target="_blank">
+                    <h3 class="post-title">pyspark系列-如何於 dataframe 增加索引(index)值或 row number</h3>
+                </a>
+                <p class="post-description">本範例將會示範如何在 pyspark dataframe 中加入 index 號碼。將會簡單的使用 Window 這個 lib 搭配 pyspark.sql.functions 中的 row_number 來進行操作。</p>
+                <a href="/posts/29655/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #4cbf30 0%, #0f9d58 100%)">
                     <i class="icon fa fa-eye fa-fw"></i>閱讀更多
                 </a>
             </div>
@@ -441,7 +462,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 </a>
                 <p class="post-description">How to use collect_list &amp; collect_set in pyspark dataframe?在使用 spa</p>
                 <a href="/posts/53705/" target="_blank"
-                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #4cbf30 0%, #0f9d58 100%)">
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #C644FC 0%, #5856D6 100%)">
                     <i class="icon fa fa-eye fa-fw"></i>閱讀更多
                 </a>
             </div>
@@ -449,7 +470,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
     </div>
     
     
-    <div class="col s12 m6" data-aos="zoom-in-up">
+    <div class="col s12" data-aos="zoom-in-up">
         <div class="post-card" style="background-image: url('/medias/featureimages/1.jpg')">
             <div class="post-body">
                 <div class="post-categories">
@@ -462,49 +483,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 </a>
                 <p class="post-description">本範例將會示範如何在 pyspark 中使用 to_date 方法將時間字串轉成 datetime 格式以及 unix_timestamp 方法轉 timestamp 格式。</p>
                 <a href="/posts/9025/" target="_blank"
-                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #C644FC 0%, #5856D6 100%)">
-                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    
-    <div class="col s12" data-aos="zoom-in-up">
-        <div class="post-card" style="background-image: url('/medias/featureimages/2.jpg')">
-            <div class="post-body">
-                <div class="post-categories">
-                    
-                    <a href="/categories/pyspark/" class="category" target="_blank">pyspark</a>
-                    
-                </div>
-                <a href="/posts/29655/" target="_blank">
-                    <h3 class="post-title">pyspark系列-如何於 dataframe 增加索引(index)值或 row number</h3>
-                </a>
-                <p class="post-description">本範例將會示範如何在 pyspark dataframe 中加入 index 號碼。將會簡單的使用 Window 這個 lib 搭配 pyspark.sql.functions 中的 row_number 來進行操作。</p>
-                <a href="/posts/29655/" target="_blank"
                         class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #55EFCB 0%, #5BCAFF 100%)">
-                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    
-    <div class="col s12 m6" data-aos="zoom-in-up">
-        <div class="post-card" style="background-image: url('/medias/featureimages/4.jpg')">
-            <div class="post-body">
-                <div class="post-categories">
-                    
-                    <a href="/categories/SEO/" class="category" target="_blank">SEO</a>
-                    
-                </div>
-                <a href="/posts/17948/" target="_blank">
-                    <h3 class="post-title">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</h3>
-                </a>
-                <p class="post-description">seo 改進的後期關鍵基本上都是想辦提昇網頁的整體載入效能，本文將分享使用 nginx 作為 server 時如何快速的將平常使用的 css, js 緩存，讓網頁讀取更快速，也不會造成server負擔。</p>
-                <a href="/posts/17948/" target="_blank"
-                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #FF5E3A 0%, #FF2A68 100%)">
                     <i class="icon fa fa-eye fa-fw"></i>閱讀更多
                 </a>
             </div>
@@ -525,6 +504,27 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 </a>
                 <p class="post-description">網頁的效能優化到最後可能會進入一個撞牆期，當該壓縮的都壓縮了，該緩存的也緩存了，但是 performance 還是不完美，這時還能做什麼呢？本篇就來告訴你一個小技巧，purify css！</p>
                 <a href="/posts/43991/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #FF5E3A 0%, #FF2A68 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/4.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/SEO/" class="category" target="_blank">SEO</a>
+                    
+                </div>
+                <a href="/posts/17948/" target="_blank">
+                    <h3 class="post-title">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</h3>
+                </a>
+                <p class="post-description">seo 改進的後期關鍵基本上都是想辦提昇網頁的整體載入效能，本文將分享使用 nginx 作為 server 時如何快速的將平常使用的 css, js 緩存，讓網頁讀取更快速，也不會造成server負擔。</p>
+                <a href="/posts/17948/" target="_blank"
                         class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #EF4DB6 0%, #C643FC 100%)">
                     <i class="icon fa fa-eye fa-fw"></i>閱讀更多
                 </a>
@@ -600,16 +600,16 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                     <a href="/posts/17828/">
                         <div class="card-image">
                             
-                            <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="登山系列- 玉山一日單攻(主峰)攻略&紀錄">
+                            <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="登山系列-玉山一日單攻(主峰)攻略&紀錄">
                             
-                            <span class="card-title">登山系列- 玉山一日單攻(主峰)攻略&紀錄</span>
+                            <span class="card-title">登山系列-玉山一日單攻(主峰)攻略&紀錄</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary">
                             
-                                登上玉山的計畫從2020/03就開始了，但一路上可以的時間都一直抽不到簽，超級沒有籤運，與排雲山莊非常的沒有緣分，後來就開始改抽單攻，很幸運的在8月改制後(先搶先贏改成電腦選)就中籤了，由於當初在網路上很多資料其實有點舊了，所以希望寫一篇來紀錄一下！
+                                登上玉山的計畫從2020/03就開始了，但一路上可以的時間都一直抽不到簽，超級沒有籤運，與排雲山莊非常的沒有緣分，後來就開始改抽玉山單攻，很幸運的在8月改制後(先搶先贏改成電腦選)就中籤了，由於當初在網路上很多資料其實有點舊了，所以希望寫一篇來紀錄一下！
                             
                         </div>
                         <div class="publish-info">
