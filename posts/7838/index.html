@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="pyspark,clickhouse,gcp,dataproc,jdbc,ru.yandex,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="本文將簡單的示範如何在 pyspark 中對 clickhouse 進行讀取的動作。">
+    <meta name="keywords" content="striptags,truncatechars,truncatechars_html,django,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="在顯示部落格的文章清單時常常會有顯示每篇文章開頭的簡短文字需求，內建的 `truncatechars` 將會是你的好朋友！不過使用的時候卻會把 HTML Tag 字元都算進去，使用起來相當不便，這時候就可以使用`striptags`來解決問">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="pyspark系列-如何使用pyspark連結clickhouse教學" />
-    <meta property="og:description" content="本文將簡單的示範如何在 pyspark 中對 clickhouse 進行讀取的動作。" />
-    <meta property="og:image" content="/medias/featureimages/4.jpg" />
+    <meta property="og:title" content="Django 系列- 如何在{{value}}中完整移除html tag?" />
+    <meta property="og:description" content="在顯示部落格的文章清單時常常會有顯示每篇文章開頭的簡短文字需求，內建的 `truncatechars` 將會是你的好朋友！不過使用的時候卻會把 HTML Tag 字元都算進去，使用起來相當不便，這時候就可以使用`striptags`來解決問" />
+    <meta property="og:image" content="/medias/featureimages/2.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>pyspark系列-如何使用pyspark連結clickhouse教學 | Happy Coding Lab</title>
+    <title>Django 系列- 如何在{{value}}中完整移除html tag? | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        pyspark系列-如何使用pyspark連結clickhouse教學
+                        Django 系列- 如何在{{value}}中完整移除html tag?
                     </div>
                 </div>
             </div>
@@ -355,8 +355,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/pyspark/" target="_blank">
-                                <span class="chip bg-color">pyspark</span>
+                            <a href="/tags/django/" target="_blank">
+                                <span class="chip bg-color">django</span>
+                            </a>
+                        
+                            <a href="/tags/truncatechars/" target="_blank">
+                                <span class="chip bg-color">truncatechars</span>
+                            </a>
+                        
+                            <a href="/tags/striptags/" target="_blank">
+                                <span class="chip bg-color">striptags</span>
                             </a>
                         
                     </div>
@@ -367,8 +375,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/pyspark/" class="post-category" target="_blank">
-                                pyspark
+                            <a href="/categories/Django/" class="post-category" target="_blank">
+                                Django
                             </a>
                         
                     </div>
@@ -379,7 +387,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-10-14
+                    2021-01-13
                 </div>
 
                 
@@ -405,52 +413,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="How-to-use-pyspark-connect-with-cilckhouse-to-read"><a href="#How-to-use-pyspark-connect-with-cilckhouse-to-read" class="headerlink" title="How to use pyspark connect with cilckhouse to read?"></a>How to use pyspark connect with cilckhouse to read?</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-completely-remove-the-tags-before-truncating"><a href="#How-to-completely-remove-the-tags-before-truncating" class="headerlink" title="How to completely remove the tags before truncating?"></a>How to completely remove the tags before truncating?</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>於 <code>GCP Dataproc</code> 環境中加入<code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code> 的 jar 檔</li>
-<li>於 pyspark 中對 clickhouse 進行讀取</li>
+<li>部落格或網誌的文章清單中簡短顯示內容<a href="https://chilunhuang.github.io/posts/52152/">(點擊看上集)</a></li>
+<li>Django filters(過濾器) 的使用<ul>
+<li><code>striptags</code></li>
+</ul>
+</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>熟悉 gcp 環境</li>
-<li>一個以使用的 clickhouse 環境</li>
+<li>可以使用 Django的環境或簡單範例</li>
+<li>本環境測試使用 <code>Django==3.0.7</code> 以上(含)</li>
 </ul>
-<h3 id="1-引入-jar-檔"><a href="#1-引入-jar-檔" class="headerlink" title="1.引入 jar 檔"></a><strong>1.引入 jar 檔</strong></h3><p>基本上在 spark 環境都會引入各種需要的 jar 檔來完成很多事，clickhouse 也不例外，這裡要使用的是 <code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code>，相關版本號請自行依需求微調：<a href="https://mvnrepository.com/artifact/ru.yandex.clickhouse/clickhouse-jdbc" target="_blank" rel="noopener">版本列表</a>！決定好版本後我們就開始吧～</p>
-<h3 id="2-啟動-Dataproc"><a href="#2-啟動-Dataproc" class="headerlink" title="2.啟動 Dataproc"></a><strong>2.啟動 Dataproc</strong></h3><p>這邊我就不贅述了，就是把 jar 檔案加入 <code>--properties</code> 中即可，其中的格式寫法可參考稍早之前的文章 <a href="https://chilunhuang.github.io/posts/14115/">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件</a>，其他參數就依照自己需求調整！</p>
-<pre><code>gcloud dataproc clusters create clickhouse-pyspark \
-    --region=global \
-    --bucket my-bucket \
-    --master-boot-disk-size 100GB \
-    --num-workers 2 \
-    --worker-boot-disk-size 500GB  \
-    --worker-machine-type n1-standard-4 \
-    --zone asia-east1-b  \
-    --labels pro=report,user=test  \
-    --image-version=1.4 \
-    --metadata &#39;PIP_PACKAGES=configparser==4.0.2 PyMySQL==0.9.3&#39;\
-    --initialization-actions gs://dataproc-initialization-actions/python/pip-install.sh \    
-    --properties &#39;spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true&#39;
-</code></pre><h3 id="3-pyspark-read-data-from-clickhouse"><a href="#3-pyspark-read-data-from-clickhouse" class="headerlink" title="3.pyspark read data from clickhouse"></a><strong>3.pyspark read data from clickhouse</strong></h3><p>這邊必須要填入 clickhouse 的 <code>url</code> 與 <code>登入資訊</code>等等資料，都查到這篇了我就預設大家手上都已經有可以正常登入的 clickhouse！</p>
-<pre class="line-numbers language-python"><code class="language-python">df <span class="token operator">=</span> spark<span class="token punctuation">.</span>read<span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"jdbc"</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"driver"</span><span class="token punctuation">,</span> <span class="token string">"ru.yandex.clickhouse.ClickHouseDriver"</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"url"</span><span class="token punctuation">,</span><span class="token string">"jdbc:clickhouse://自行填入位置"</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"user"</span><span class="token punctuation">,</span><span class="token string">"帳號"</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">,</span><span class="token string">"密碼"</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"dbtable"</span><span class="token punctuation">,</span>SQL語法<span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"partitionColumn"</span><span class="token punctuation">,</span> <span class="token string">"product_id"</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"fetchsize"</span><span class="token punctuation">,</span> <span class="token number">25000</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"lowerBound"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"upperBound"</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"numPartitions"</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>option<span class="token punctuation">(</span><span class="token string">"queryTimeout"</span><span class="token punctuation">,</span> <span class="token number">600</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>上面範例的其他參數就自行所需來微調了！</p>
-<p>今天就介紹到這吧！</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p><code>properties</code> 格式的用法請參照：</p>
+<p>在顯示部落格的文章清單時常常會有顯示每篇文章開頭的簡短文字需求，內建的 <code>truncatechars</code> 將會是你的好朋友！不過使用的時候這方法卻會把 HTML Tag 字元都算進去，使用起來相當不便，還要自己計算位置並搭配<code>slice</code>一起使用，本文將會幫你解決此問題。</p>
+<p>更詳盡的搭配使用說明請見上一期<a href="https://chilunhuang.github.io/posts/52152/"> Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?</a>，搭配服用更有效。</p>
+<h3 id="1-striptags"><a href="#1-striptags" class="headerlink" title="1. striptags"></a><strong>1. striptags</strong></h3><p>假設資料讀出來的時候是:</p>
+<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>hello, word<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用 <code>striptags</code>的方法:</p>
+<pre><code>{{ content.text|striptags|truncatechars:3 }}</code></pre><p>結果將會顯示兩個字母(記得 filter 會自動 -1 喔！)</p>
+<pre><code>he</code></pre><p>有看上集的朋友應該會有點疑惑這個方法跟 <code>truncatechars_html</code>差別是什麼呢？</p>
+<pre><code>{{ content.text| truncatechars_html:7 }}</code></pre><p>比較專區：</p>
+<p><code>truncatechars_html</code> 將會忽略前後的標籤，取得中間的字做處理，但標籤還是存在的，並沒有被拿掉或刪除！而使用 <code>striptags</code>的方法他會直接將 html 直接拿掉，在對字詞做處理，這是他們最大的不同喔！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>官網：</p>
 <blockquote>
-<p><a href="https://chilunhuang.github.io/posts/14115/">https://chilunhuang.github.io/posts/14115/</a></p>
+<p><a href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#striptags" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#striptags</a></p>
 </blockquote>
-<p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
+<p>stackoverflow</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/48662262/how-can-i-truncate-text-and-remove-html-tags-in-django-template" target="_blank" rel="noopener">https://stackoverflow.com/questions/48662262/how-can-i-truncate-text-and-remove-html-tags-in-django-template</a></p>
+</blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
             </div>
@@ -465,7 +457,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/36151/" class="b-link-green">pyspark系列-如何使用pyspark連結clickhouse教學</a>
+                    <a href="/posts/7838/" class="b-link-green">Django 系列- 如何在{{value}}中完整移除html tag?</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -505,9 +497,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/36151/';
-        this.page.identifier = '/posts/36151/';
-        this.page.title = 'pyspark系列-如何使用pyspark連結clickhouse教學';
+        this.page.url = 'https://chilunhuang.github.io/posts/7838/';
+        this.page.identifier = '/posts/7838/';
+        this.page.title = 'Django 系列- 如何在{{value}}中完整移除html tag?';
     };
     let disqus_shortname = 'clhlab';
 
@@ -530,9 +522,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/posts/7838/">
                     <div class="card-image">
@@ -549,9 +542,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 Django filters(過濾器) 的使用
 stripta</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2021-01-13
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-01-13
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -564,6 +557,7 @@ stripta</div>
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -590,19 +584,18 @@ stripta</div>
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/26469/">
+                <a href="/posts/36151/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="pyspark系列-如何使用pyspark連結kafka教學">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="pyspark系列-如何使用pyspark連結clickhouse教學">
                         
-                        <span class="card-title">pyspark系列-如何使用pyspark連結kafka教學</span>
+                        <span class="card-title">pyspark系列-如何使用pyspark連結clickhouse教學</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to use pyspark connect with kafka to write and read?在本範例你會學到：
+                    <div class="summary">How to use pyspark connect with cilckhouse to read?在本範例你會學到：
 
-於 GCP Dataproc 環境中加入spark-sql-kafka 的 jar 檔
-於 pyspark</div>
+於 GCP Dataproc 環境中加入ru.yandex.clickhouse:clickhouse-jdbc:0</div>
                     <div class="publish-info">
                             <span class="publish-date">
                                 <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-14
