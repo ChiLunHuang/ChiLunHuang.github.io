@@ -20,11 +20,11 @@
       
         <tags>
             
+            <tag> word2vec </tag>
+            
             <tag> wikicorpus </tag>
             
             <tag> NLP </tag>
-            
-            <tag> word2vec </tag>
             
             <tag> gensim </tag>
             
@@ -799,9 +799,9 @@
       
         <tags>
             
-            <tag> word2vec </tag>
-            
             <tag> nlp </tag>
+            
+            <tag> word2vec </tag>
             
             <tag> tensorboard </tag>
             
@@ -926,7 +926,7 @@
     
     
     <entry>
-      <title>GCP系列-監控Dataproc memory 資源使用狀態</title>
+      <title>GCP系列-如何使用 tracking UI 監控pyspark叢集 memory資源使用狀態於 Dataproc 中</title>
       <link href="/posts/2671099804/"/>
       <url>/posts/2671099804/</url>
       
@@ -946,9 +946,9 @@
             
             <tag> Dataproc </tag>
             
-            <tag> TrackingUI </tag>
+            <tag> pyspark </tag>
             
-            <tag> cpu </tag>
+            <tag> TrackingUI </tag>
             
             <tag> memory </tag>
             
