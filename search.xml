@@ -22,9 +22,9 @@
             
             <tag> mac </tag>
             
-            <tag> M1 </tag>
-            
             <tag> docker </tag>
+            
+            <tag> M1 </tag>
             
         </tags>
       
@@ -49,11 +49,11 @@
       
         <tags>
             
-            <tag> word2vec </tag>
-            
             <tag> wikicorpus </tag>
             
             <tag> NLP </tag>
+            
+            <tag> word2vec </tag>
             
             <tag> gensim </tag>
             
@@ -650,11 +650,11 @@
       
         <tags>
             
-            <tag> mac </tag>
-            
             <tag> 快捷鍵 </tag>
             
             <tag> hot key </tag>
+            
+            <tag> mac </tag>
             
             <tag> terminal </tag>
             
@@ -828,9 +828,9 @@
       
         <tags>
             
-            <tag> nlp </tag>
-            
             <tag> word2vec </tag>
+            
+            <tag> nlp </tag>
             
             <tag> tensorboard </tag>
             
@@ -915,9 +915,9 @@
             
             <tag> GCP </tag>
             
-            <tag> docker </tag>
-            
             <tag> jupyterhub </tag>
+            
+            <tag> docker </tag>
             
             <tag> oauth </tag>
             
@@ -975,11 +975,11 @@
             
             <tag> Dataproc </tag>
             
+            <tag> pyspark </tag>
+            
             <tag> TrackingUI </tag>
             
             <tag> memory </tag>
-            
-            <tag> pyspark </tag>
             
         </tags>
       
