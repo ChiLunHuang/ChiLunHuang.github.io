@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Mac M1系列-如何安裝 docker</title>
+      <link href="/posts/22454/"/>
+      <url>/posts/22454/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-install-docker-on-Mac-M1-series"><a href="#How-to-install-docker-on-Mac-M1-series" class="headerlink" title="How to install docker on Mac M1 series?"></a>How to install docker on Mac M1 series?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何於 新版的 mac m1 系列中安裝 docker</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>一台稍微便宜一點的 M1 晶片 mac </li></ul><p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性，在安裝開發環境的時候很多人應該都撞了不少牆，今天就來簡單介紹大家常用的 <code>docker</code> 安裝吧！</p><h3 id="1-安裝-Rosetta-2"><a href="#1-安裝-Rosetta-2" class="headerlink" title="1.安裝 Rosetta 2"></a><strong>1.安裝 Rosetta 2</strong></h3><p>這個東西老實說我不太知道是幹嘛的，還沒特別研究，有空閒我會再補充，不過在安裝其他程式的時候也會遇到他(ex:下一篇會介紹的 python install pandas 問題)。而在 docker 的官網上也已經列出了相關的 issue 給大家參考，就照著範例安裝吧：</p><pre><code>softwareupdate --install-rosetta</code></pre><h3 id="2-下載-docker-dmg"><a href="#2-下載-docker-dmg" class="headerlink" title="2.下載 docker dmg"></a><strong>2.下載 docker dmg</strong></h3><p>這邊有釋出了一個 preview 版本(<a href="https://docs.docker.com/docker-for-mac/apple-m1/#docker-desktop-preview-310" target="_blank" rel="noopener">官網下載點 Apple M1 tech preview build</a>)，請各位自行下載。</p><h3 id="3-啟動"><a href="#3-啟動" class="headerlink" title="3.啟動"></a><strong>3.啟動</strong></h3><p>一切就緒後，點兩下啟動 docker 鯨魚圖案，正常的依照正常程序安裝就可以了！過程中可能會問一些警告性的問題，都按確定或是ok就可以了！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>下載點</p><blockquote><p><a href="https://docs.docker.com/docker-for-mac/apple-m1/" target="_blank" rel="noopener">https://docs.docker.com/docker-for-mac/apple-m1/</a></p></blockquote><p>相關部落格</p><blockquote><p><a href="https://www.docker.com/blog/apple-silicon-m1-chips-and-docker/" target="_blank" rel="noopener">https://www.docker.com/blog/apple-silicon-m1-chips-and-docker/</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mac </tag>
+            
+            <tag> M1 </tag>
+            
+            <tag> docker </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>NLP 系列- 如何在word2vec訓練時讓WikiCorpus保留數字(digit)?</title>
       <link href="/posts/58469/"/>
       <url>/posts/58469/</url>
@@ -412,9 +441,9 @@
             
             <tag> nginx </tag>
             
-            <tag> Cache-Control </tag>
-            
             <tag> performance </tag>
+            
+            <tag> Cache-Control </tag>
             
         </tags>
       
@@ -443,13 +472,13 @@
             
             <tag> seo </tag>
             
-            <tag> nginx </tag>
-            
-            <tag> performance </tag>
-            
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
+            
+            <tag> nginx </tag>
+            
+            <tag> performance </tag>
             
         </tags>
       
@@ -621,11 +650,11 @@
       
         <tags>
             
+            <tag> mac </tag>
+            
             <tag> 快捷鍵 </tag>
             
             <tag> hot key </tag>
-            
-            <tag> mac </tag>
             
             <tag> terminal </tag>
             
@@ -886,9 +915,9 @@
             
             <tag> GCP </tag>
             
-            <tag> jupyterhub </tag>
-            
             <tag> docker </tag>
+            
+            <tag> jupyterhub </tag>
             
             <tag> oauth </tag>
             
@@ -946,11 +975,11 @@
             
             <tag> Dataproc </tag>
             
-            <tag> pyspark </tag>
-            
             <tag> TrackingUI </tag>
             
             <tag> memory </tag>
+            
+            <tag> pyspark </tag>
             
         </tags>
       
