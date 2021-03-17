@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries</title>
+      <link href="/posts/8942/"/>
+      <url>/posts/8942/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Mac-M1-Error-no-matching-manifest-for-linux-arm64-v8-in-the-manifest-list-entries"><a href="#Mac-M1-Error-no-matching-manifest-for-linux-arm64-v8-in-the-manifest-list-entries" class="headerlink" title="Mac M1:Error:no matching manifest for linux/arm64/v8 in the manifest list entries"></a>Mac M1:Error:no matching manifest for linux/arm64/v8 in the manifest list entries</h1><p><strong>在本範例你會學到：</strong></p><ul><li>解決在 docker build mysql image 的時候遇到的失敗問題</li></ul><blockquote><p>no matching manifest for linux/arm64/v8 in the manifest list entries</p></blockquote><p><strong>在本範例你需要先準備好：</strong></p><ul><li>一台稍微便宜一點的 M1 晶片 mac </li><li>安裝好 docker，<a href="https://chilunhuang.github.io/posts/22454/?utm_source=clh&utm_medium=link&utm_content=Mac">安裝失敗問題請參照這篇 Mac M1系列-如何安裝 docker</a></li></ul><p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片 M1，以 Arm 架構設計Apple Silicon 處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決用 docker 建立 mysql 遇到的錯誤問題 ！</p><h3 id="1-編輯-docker-compose-yml"><a href="#1-編輯-docker-compose-yml" class="headerlink" title="1.編輯 docker-compose.yml"></a><strong>1.編輯 docker-compose.yml</strong></h3><p>這部分其實非常的簡單，只要將原本的 docker-compose.yml 加上一句語法就可以解決了！</p><p>原本應該大概會長這樣子：</p><p>docker-compose.yml </p><pre><code>services:  redis:    image: &quot;redis:5&quot;    ports:         - &quot;6379:6379&quot;    restart: always   db:    image: mysql:5.7    environment:    ...</code></pre><p>在這個情況下執行就會遇到標題的錯誤：</p><p><code>no matching manifest for linux/arm64/v8 in the manifest list entries</code></p><p>這時候只要將 <code>platform: linux/amd64</code> 加上去就可以正常執行囉！</p><p>請看下方範例：</p><pre><code>services:  redis:    image: &quot;redis:5&quot;    ports:         - &quot;6379:6379&quot;    restart: always   db:    image: mysql:5.7    platform: linux/amd64    environment:    ...</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>GitHub</p><blockquote><p><a href="https://github.com/docker-library/mysql/issues/318" target="_blank" rel="noopener">https://github.com/docker-library/mysql/issues/318</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mac </tag>
+            
+            <tag> M1 </tag>
+            
+            <tag> docker </tag>
+            
+            <tag> mysql </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Mac M1系列-如何安裝 docker</title>
       <link href="/posts/22454/"/>
       <url>/posts/22454/</url>
@@ -503,11 +534,11 @@
             
             <tag> performance </tag>
             
-            <tag> nginx </tag>
-            
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
+            
+            <tag> nginx </tag>
             
         </tags>
       

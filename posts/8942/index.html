@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="seo,GZIP,nginx,django, performance,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="網頁架設的後期就會開始使用相關的工具來增進 seo ，其中容易被警告的一個項目就是 js 與 css 或是網頁內容應該要被壓縮，本文將會教授如何在 Nginx 中輕鬆設定完成 GZIP 壓縮、加快載入速度。">
+    <meta name="keywords" content="mac,M1,docker,mysql,arm64,rosetta,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決用 docker 建立 mysq">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="seo系列 - Enable text compression on Nginx" />
-    <meta property="og:description" content="網頁架設的後期就會開始使用相關的工具來增進 seo ，其中容易被警告的一個項目就是 js 與 css 或是網頁內容應該要被壓縮，本文將會教授如何在 Nginx 中輕鬆設定完成 GZIP 壓縮、加快載入速度。" />
-    <meta property="og:image" content="/medias/featureimages/1.jpg" />
+    <meta property="og:title" content="Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries" />
+    <meta property="og:description" content="Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決用 docker 建立 mysq" />
+    <meta property="og:image" content="/medias/featureimages/4.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>seo系列 - Enable text compression on Nginx | Happy Coding Lab</title>
+    <title>Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        seo系列 - Enable text compression on Nginx
+                        Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries
                     </div>
                 </div>
             </div>
@@ -355,28 +355,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/django/" target="_blank">
-                                <span class="chip bg-color">django</span>
+                            <a href="/tags/mac/" target="_blank">
+                                <span class="chip bg-color">mac</span>
                             </a>
                         
-                            <a href="/tags/seo/" target="_blank">
-                                <span class="chip bg-color">seo</span>
+                            <a href="/tags/M1/" target="_blank">
+                                <span class="chip bg-color">M1</span>
                             </a>
                         
-                            <a href="/tags/performance/" target="_blank">
-                                <span class="chip bg-color">performance</span>
+                            <a href="/tags/docker/" target="_blank">
+                                <span class="chip bg-color">docker</span>
                             </a>
                         
-                            <a href="/tags/text-compression/" target="_blank">
-                                <span class="chip bg-color">text compression</span>
-                            </a>
-                        
-                            <a href="/tags/GZIP/" target="_blank">
-                                <span class="chip bg-color">GZIP</span>
-                            </a>
-                        
-                            <a href="/tags/nginx/" target="_blank">
-                                <span class="chip bg-color">nginx</span>
+                            <a href="/tags/mysql/" target="_blank">
+                                <span class="chip bg-color">mysql</span>
                             </a>
                         
                     </div>
@@ -387,8 +379,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                SEO
+                            <a href="/categories/Mac/" class="post-category" target="_blank">
+                                Mac
                             </a>
                         
                     </div>
@@ -399,7 +391,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-04-13
+                    2021-03-17
                 </div>
 
                 
@@ -425,71 +417,48 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="Mac-M1-Error-no-matching-manifest-for-linux-arm64-v8-in-the-manifest-list-entries"><a href="#Mac-M1-Error-no-matching-manifest-for-linux-arm64-v8-in-the-manifest-list-entries" class="headerlink" title="Mac M1:Error:no matching manifest for linux/arm64/v8 in the manifest list entries"></a>Mac M1:Error:no matching manifest for linux/arm64/v8 in the manifest list entries</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>如何評分自己網頁的 <code>seo</code> 是否及格</li>
-<li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li>
+<li>解決在 docker build mysql image 的時候遇到的失敗問題</li>
 </ul>
+<blockquote>
+<p>no matching manifest for linux/arm64/v8 in the manifest list entries</p>
+</blockquote>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>nginx 服務</li>
-<li>自己架設的網頁</li>
+<li>一台稍微便宜一點的 M1 晶片 mac </li>
+<li>安裝好 docker，<a href="https://chilunhuang.github.io/posts/22454/?utm_source=clh&utm_medium=link&utm_content=Mac">安裝失敗問題請參照這篇 Mac M1系列-如何安裝 docker</a></li>
 </ul>
-<p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p>
-<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p>
-<h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p>
-<p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p>
-<p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p>
-<pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p>
-<p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p>
-<h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p>
-<p>找到 nginx server 的設定檔，沒意外預設會放在：</p>
-<pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p>
+<p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片 M1，以 Arm 架構設計Apple Silicon 處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決用 docker 建立 mysql 遇到的錯誤問題 ！</p>
+<h3 id="1-編輯-docker-compose-yml"><a href="#1-編輯-docker-compose-yml" class="headerlink" title="1.編輯 docker-compose.yml"></a><strong>1.編輯 docker-compose.yml</strong></h3><p>這部分其實非常的簡單，只要將原本的 docker-compose.yml 加上一句語法就可以解決了！</p>
+<p>原本應該大概會長這樣子：</p>
+<p>docker-compose.yml </p>
+<pre><code>services:
+  redis:
+    image: &quot;redis:5&quot;
+    ports:
+         - &quot;6379:6379&quot;
+    restart: always 
+  db:
+    image: mysql:5.7
+    environment:
+    ...</code></pre><p>在這個情況下執行就會遇到標題的錯誤：</p>
+<p><code>no matching manifest for linux/arm64/v8 in the manifest list entries</code></p>
+<p>這時候只要將 <code>platform: linux/amd64</code> 加上去就可以正常執行囉！</p>
+<p>請看下方範例：</p>
+<pre><code>services:
+  redis:
+    image: &quot;redis:5&quot;
+    ports:
+         - &quot;6379:6379&quot;
+    restart: always 
+  db:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+    ...</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>GitHub</p>
 <blockquote>
-<p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p>
-</blockquote>
-<pre><code># Enable Gzip 
-    gzip on; 
-    gzip_http_version 1.0; 
-    gzip_comp_level 2; 
-    gzip_min_length 1100; 
-    gzip_buffers  4 8k; 
-    gzip_proxied any; 
-    gzip_types 
-    # text/html is always compressed by HttpGzipModule 
-    text/css 
-    text/javascript 
-    text/xml 
-    text/plain 
-    text/x-component 
-    application/javascript 
-    application/json 
-    application/xml 
-    application/rss+xml 
-    font/truetype 
-    font/opentype 
-    application/vnd.ms-fontobject 
-    image/svg+xml; 
-
-    gzip_static on; 
-    gzip_proxied  expired no-cache no-store private auth; 
-    gzip_disable  &quot;MSIE [1-6]\.&quot;; 
-    gzip_vary   on; </code></pre><p>內容基本上就是：</p>
-<ul>
-<li>啟動 gzip 壓縮</li>
-<li>設定要被壓縮的類型(css、javascript 等等)</li>
-</ul>
-<p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p>
-<pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p>
-<p>進步超級多，壓縮效果是不是相當的驚人呢！</p>
-<p>有機會再與大家分享更多 seo 更多經驗！</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
-<p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p>
-</blockquote>
-<blockquote>
-<p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p>
+<p><a href="https://github.com/docker-library/mysql/issues/318" target="_blank" rel="noopener">https://github.com/docker-library/mysql/issues/318</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -505,7 +474,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/12526/" class="b-link-green">seo系列 - Enable text compression on Nginx</a>
+                    <a href="/posts/8942/" class="b-link-green">Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -545,9 +514,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/12526/';
-        this.page.identifier = '/posts/12526/';
-        this.page.title = 'seo系列 - Enable text compression on Nginx';
+        this.page.url = 'https://chilunhuang.github.io/posts/8942/';
+        this.page.identifier = '/posts/8942/';
+        this.page.title = 'Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries';
     };
     let disqus_shortname = 'clhlab';
 
@@ -570,54 +539,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/posts/53969/">
+                <a href="/posts/8942/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="seo系列 - Image Lazy Load 延遲載入圖片">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries">
                         
-                        <span class="card-title">seo系列 - Image Lazy Load 延遲載入圖片</span>
+                        <span class="card-title">Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to use image lazy load to speed up performance of website?在本範例你會學到：
+                    <div class="summary">Mac M1:Error:no matching manifest for linux/arm64/v8 in the manifest list entries在本範例你會學到：
 
-如何用最簡單的方式提升多圖的網頁速度
-使用 image lazy load 改造網頁
-
-在本範</div>
+解決在 docker build mysql image</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-03-17
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
+                            <a href="/categories/Mac/" class="post-category" target="_blank">
+                                    Mac
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
+                    <a href="/tags/mac/" target="_blank">
+                        <span class="chip bg-color">mac</span>
                     </a>
                     
-                    <a href="/tags/lazyload/" target="_blank">
-                        <span class="chip bg-color">lazyload</span>
+                    <a href="/tags/M1/" target="_blank">
+                        <span class="chip bg-color">M1</span>
                     </a>
                     
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
+                    <a href="/tags/docker/" target="_blank">
+                        <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                    <a href="/tags/mysql/" target="_blank">
+                        <span class="chip bg-color">mysql</span>
                     </a>
                     
                 </div>
@@ -631,26 +603,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/9661/">
+                <a href="/posts/22454/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="Mac M1系列-如何安裝 docker">
                         
-                        <span class="card-title">Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)</span>
+                        <span class="card-title">Mac M1系列-如何安裝 docker</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to remove the last commit and froce push again?在前一篇 Github - 如何移除GitHub上所有的 commit(一) 的系列文中介紹到了如何完整個將整個 repository 的</div>
+                    <div class="summary">How to install docker on Mac M1 series?在本範例你會學到：
+
+如何於 新版的 mac m1 系列中安裝 docker
+
+在本範例你需要先準備好：
+
+一台稍微便宜一點的 M1 晶片 mac 
+
+Mac系列</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-22
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-03-12
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/GitHub/" class="post-category" target="_blank">
-                                    GitHub
+                            <a href="/categories/Mac/" class="post-category" target="_blank">
+                                    Mac
                                 </a>
                             
                             
@@ -660,16 +640,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/github/" target="_blank">
-                        <span class="chip bg-color">github</span>
+                    <a href="/tags/mac/" target="_blank">
+                        <span class="chip bg-color">mac</span>
                     </a>
                     
-                    <a href="/tags/commit/" target="_blank">
-                        <span class="chip bg-color">commit</span>
+                    <a href="/tags/M1/" target="_blank">
+                        <span class="chip bg-color">M1</span>
                     </a>
                     
-                    <a href="/tags/rebase/" target="_blank">
-                        <span class="chip bg-color">rebase</span>
+                    <a href="/tags/docker/" target="_blank">
+                        <span class="chip bg-color">docker</span>
                     </a>
                     
                 </div>
