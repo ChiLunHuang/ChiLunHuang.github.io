@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Mac M1系列-解決安裝wget的 Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)</title>
+      <link href="/posts/35500/"/>
+      <url>/posts/35500/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-solve-Error-Cannot-install-under-Rosetta-2-in-ARM-default-prefix-opt-homebrew"><a href="#How-to-solve-Error-Cannot-install-under-Rosetta-2-in-ARM-default-prefix-opt-homebrew" class="headerlink" title="How to solve: Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)!"></a>How to solve: Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)!</h1><p><strong>在本範例你會學到：</strong></p><ul><li>解決在 wget 的時候遇到的失敗問題</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>一台稍微便宜一點的 M1 晶片 mac </li></ul><p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決安裝 wget 遇到的錯誤問題！</p><h3 id="1-安裝-wget"><a href="#1-安裝-wget" class="headerlink" title="1.安裝 wget"></a><strong>1.安裝 wget</strong></h3><p>正常在 mac 安裝 wget 會直接下 </p><pre><code>brew install wget</code></pre><p>但是卻會不如預期的出現錯誤：</p><pre><code>Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)!To rerun under ARM use:    arch -arm64 brew install ...To install under x86_64, install Homebrew into /usr/local.</code></pre><p>過他的提示也蠻明確的，在 ARM 的系統下，必須使用新的語法 <code>arch -arm64 brew install</code> 來進行安裝。</p><p>把與法修正成：</p><pre><code>arch -arm64 brew install wget</code></pre><p>這樣就可以正常安裝了喔～ 其他常用的語法也都可以直接加上上面的  <code>arch -arm64 brew install</code> 進行安裝。</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>無</p><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mac </tag>
+            
+            <tag> M1 </tag>
+            
+            <tag> wget </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Mac M1系列-解決安裝python pandas問題(使用iTerm2)</title>
       <link href="/posts/8953/"/>
       <url>/posts/8953/</url>
@@ -49,11 +78,11 @@
       
         <tags>
             
+            <tag> docker </tag>
+            
             <tag> mac </tag>
             
             <tag> M1 </tag>
-            
-            <tag> docker </tag>
             
             <tag> mysql </tag>
             
@@ -80,11 +109,11 @@
       
         <tags>
             
+            <tag> docker </tag>
+            
             <tag> mac </tag>
             
             <tag> M1 </tag>
-            
-            <tag> docker </tag>
             
         </tags>
       
@@ -109,11 +138,11 @@
       
         <tags>
             
-            <tag> word2vec </tag>
-            
             <tag> wikicorpus </tag>
             
             <tag> NLP </tag>
+            
+            <tag> word2vec </tag>
             
             <tag> gensim </tag>
             
@@ -406,13 +435,13 @@
             
             <tag> GCP </tag>
             
-            <tag> DNS </tag>
-            
             <tag> SSL </tag>
             
             <tag> certbot </tag>
             
             <tag> letsencrypt </tag>
+            
+            <tag> DNS </tag>
             
         </tags>
       
@@ -888,9 +917,9 @@
       
         <tags>
             
-            <tag> nlp </tag>
-            
             <tag> word2vec </tag>
+            
+            <tag> nlp </tag>
             
             <tag> tensorboard </tag>
             
@@ -975,9 +1004,9 @@
             
             <tag> GCP </tag>
             
-            <tag> docker </tag>
-            
             <tag> jupyterhub </tag>
+            
+            <tag> docker </tag>
             
             <tag> oauth </tag>
             
