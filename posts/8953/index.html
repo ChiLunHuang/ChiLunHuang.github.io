@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="gcp,letsencrypt,ssl,dns,certbot,https,http,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="本教程將會簡單講述如何在 GCP 的環境中更新網頁的 ssl 憑證(免費的 letsencrypt)，此範例僅適用於將 dns 交由 GCP Cloud DNS 託管的情況下。">
+    <meta name="keywords" content="mac,M1,mysql,arm64,rosetta,python,pandas,pip,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決安裝 python 套件 pan">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期" />
-    <meta property="og:description" content="本教程將會簡單講述如何在 GCP 的環境中更新網頁的 ssl 憑證(免費的 letsencrypt)，此範例僅適用於將 dns 交由 GCP Cloud DNS 託管的情況下。" />
+    <meta property="og:title" content="Mac M1系列-解決安裝python pandas問題(使用iTerm2)" />
+    <meta property="og:description" content="Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決安裝 python 套件 pan" />
     <meta property="og:image" content="/medias/featureimages/0.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期 | Happy Coding Lab</title>
+    <title>Mac M1系列-解決安裝python pandas問題(使用iTerm2) | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -263,7 +263,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期
+                        Mac M1系列-解決安裝python pandas問題(使用iTerm2)
                     </div>
                 </div>
             </div>
@@ -355,24 +355,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/GCP/" target="_blank">
-                                <span class="chip bg-color">GCP</span>
+                            <a href="/tags/mac/" target="_blank">
+                                <span class="chip bg-color">mac</span>
                             </a>
                         
-                            <a href="/tags/DNS/" target="_blank">
-                                <span class="chip bg-color">DNS</span>
+                            <a href="/tags/M1/" target="_blank">
+                                <span class="chip bg-color">M1</span>
                             </a>
                         
-                            <a href="/tags/SSL/" target="_blank">
-                                <span class="chip bg-color">SSL</span>
-                            </a>
-                        
-                            <a href="/tags/certbot/" target="_blank">
-                                <span class="chip bg-color">certbot</span>
-                            </a>
-                        
-                            <a href="/tags/letsencrypt/" target="_blank">
-                                <span class="chip bg-color">letsencrypt</span>
+                            <a href="/tags/python/" target="_blank">
+                                <span class="chip bg-color">python</span>
                             </a>
                         
                     </div>
@@ -383,8 +375,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/GCP/" class="post-category" target="_blank">
-                                GCP
+                            <a href="/categories/Mac/" class="post-category" target="_blank">
+                                Mac
                             </a>
                         
                     </div>
@@ -395,7 +387,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2020-05-25
+                    2021-03-17
                 </div>
 
                 
@@ -421,129 +413,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="Auto-renew-letsencrypt-by-certbot-in-GCP"><a href="#Auto-renew-letsencrypt-by-certbot-in-GCP" class="headerlink" title="Auto renew letsencrypt by certbot in GCP."></a>Auto renew letsencrypt by certbot in GCP.</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-solve-Error-installing-pandas-in-Mac-M1-with-iTerm2"><a href="#How-to-solve-Error-installing-pandas-in-Mac-M1-with-iTerm2" class="headerlink" title="How to solve: Error installing pandas in Mac M1 with iTerm2"></a>How to solve: Error installing pandas in Mac M1 with iTerm2</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>手動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)</li>
-<li>自動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)</li>
-<li>將不安全網頁(http)變成綠色小鎖頭(https)</li>
-<li>使用 <code>certbot</code></li>
-<li>使用 <code>certbot-dns-google</code></li>
+<li>解決在 pip install pandas 的時候遇到的失敗問題</li>
 </ul>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>有使用 Cloud DNS 將 GCP 的機器與其他第三方網域(ex:GoDaddy)供應商進行綁定</li>
-<li>對 GCP 有一定熟悉程度</li>
-<li>需要 https 將網頁變成安全的網頁的需求</li>
-<li>所有設定都在 <code>CentOS</code> 與 <code>python3</code> 環境完成</li>
+<li>一台稍微便宜一點的 M1 晶片 mac </li>
+<li>iTerm2 (本範例使用的 terminal 環境)</li>
 </ul>
-<h3 id="1-簡介"><a href="#1-簡介" class="headerlink" title="1.簡介"></a><strong>1.簡介</strong></h3><p>大家在開發網頁的時候基本上一開始一定都還是使用 http 的網址作為開頭使用，不過現在 Google 大神會將 <code>http 開頭的網頁視為不安全的網頁</code>，當然基本上不會特別直接影響到網頁的速度、效能以及其他功能，依然可以正常使用，不過長時間以來是會影響 <code>seo</code> 排名的喔！所以本教學就來告訴大家如何將 http 變成 https 的綠色小鎖頭吧！</p>
-<p><img src="/medias/post_img/51659_1.jpg" alt="憑證的綠色小鎖頭"></p>
-<p>要變成綠色小鎖頭就必須要有憑證，而憑證又該如何取得呢，有兩種方式：</p>
-<ul>
-<li>付錢</li>
-<li>免費的 letsencrypt (<code>每三個月必須更新憑證</code>)</li>
-</ul>
-<p>本教程將會記錄如何將 <code>免費letsencrypt 的憑證自動續約</code>，這樣就可以免去手動更新的麻煩了！</p>
-<p>看到這踏家或許有些疑問為什麼我一直要特別強調 DNS 呢？因為這個方法只適用於<code>有使用 GCP Cloud DNS 才能使用喔</code>。如果是正常的方式網路上已經超級多方法了(這也是我一直沒發現用錯方法的原因)，我這邊就不特別在寫一篇了，不過基本上語法都是一樣的，到官網上看稍微修改也是可以使用的。</p>
-<h3 id="2-手動申請與續約"><a href="#2-手動申請與續約" class="headerlink" title="2.手動申請與續約"></a><strong>2.手動申請與續約</strong></h3><p>這邊還是稍微講述一下簡單的手動模式，給不需要自動更新或是單純測試的夥伴們可以先用這個方法測試喔！！</p>
-<p>先安裝套件：</p>
-<pre><code>pip install certbot
-</code></pre><p>直接進入主題下語法：</p>
-<ul>
-<li>–dry-run: 代表不會真的執行，試跑與法有沒有錯誤可以使用</li>
-<li>-d: 有多少個 domain 就寫幾個</li>
-<li>–server: 照抄就好</li>
-</ul>
-<p>要特別注意這邊是使用 <code>dns</code>喔！</p>
-<pre><code>certbot certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns  -d test.com.tw -d www.test.com.tw --dry-run</code></pre><p>接下來就是比較麻煩也可能會出錯的地方：</p>
-<ul>
-<li>按下 enter 後直接到 GCP Cloud DNS 頁面(<a href="https://chilunhuang.github.io/posts/22148/">不知道我在講什麼請看這篇</a>)選擇目前要使用的區域(domain)</li>
-<li>按下<code>新增紀錄集</code>，並依照剛剛 enter 後 terminal 的指示新增<code>資源記錄類型</code>中的<code>TXT</code>，並將 terminal 中的序號填入<code>TXT 資料</code>並按下建立，並等待至少30秒，讓它生效(此步驟需要等待時間生效，直接繼續在 terminal 按 enter 可能會設定失敗)</li>
-<li>等待秒數過後可以繼續新增下一個 domain，一樣再到 GCP 頁面新增序號，直到沒有網域需要新增就結束</li>
-</ul>
-<p>以上步驟如果有訊息說失敗，可以再試一次，有可能是等待時間不夠長，不過依據經驗30秒是足夠的。</p>
-<p>設定完成就會見到以下訊息：</p>
-<pre><code>IMPORTANT NOTES:
- - Congratulations! Your certificate and chain have been saved at:
-   /etc/letsencrypt/live/test.com.tw/fullchain.pem
-   Your key file has been saved at:
-   /etc/letsencrypt/live/test.com.tw/privkey.pem
-   Your cert will expire on 2020-06-29. To obtain a new or tweaked
-   version of this certificate in the future, simply run certbot
-   again. To non-interactively renew *all* of your certificates, run
-   &quot;certbot renew&quot;
- - If you like Certbot, please consider supporting our work by:
-
-
-   Donating to ISRG / Let&#39;s Encrypt:   https://letsencrypt.org/donate
-   Donating to EFF:                    https://eff.org/donate-le</code></pre><p>該訊息基本上包含兩件事：</p>
-<ul>
-<li>該憑證的到期日，三個月後就會作廢</li>
-<li>該憑證的產生位置(<code>*.pem</code>)，可以依需求放到自己相對應的伺服器位置(Nginx or Apache)</li>
-</ul>
-<p>若是需要手動續約，也非常簡單 (正式的時候要把<code>--dry-run</code>拿掉喔！)：</p>
-<pre><code>sudo certbot renew --dry-run</code></pre><h3 id="3-自動更新"><a href="#3-自動更新" class="headerlink" title="3.自動更新"></a><strong>3.自動更新</strong></h3><p>網路上有非常多手動/自動更新的方法，小弟在使用每一篇文章都會看到的 <code>sudo certbot renew</code> 從來都沒有成功過，一直都抱一樣的錯誤訊息，所以非常苦惱，不想要三個月就手動一次，後來才發現原來 Google 有相對應的套件可以使用啊！！</p>
-<p>直接切入主題：</p>
-<p>1.安裝</p>
-<pre><code>pip install certbot-dns-google</code></pre><p>2.設定 Google Credentials，取得金鑰 json</p>
-<p><strong>每次都有的貼心小提醒：GCP頁面變動相當的大，可能短短幾個月步驟就不一樣了，請大家多注意！</strong></p>
-<ul>
-<li>於 GCP 導覽列中找到 <code>API 和服務</code>選擇<code>憑證</code></li>
-<li>按下建立憑證選擇服務帳戶 (找不到看下圖)</li>
-</ul>
-<p><img src="/medias/post_img/51659_2.jpg" alt="設定步驟"></p>
-<ul>
-<li>輸入名稱</li>
-<li>進入<code>將專案存取權授予這個服務帳戶</code>要進行角色選擇，可以<a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">依照官網自己決定</a>，或是可以跟著本篇設定即可，這裡可能要花點時間找到想要的角色:</li>
-</ul>
-<pre><code>dns.changes.create
-dns.changes.get
-dns.managedZones.list
-dns.resourceRecordSets.create
-dns.resourceRecordSets.delete
-dns.resourceRecordSets.list
-dns.resourceRecordSets.update</code></pre><ul>
-<li>最後一步驟有一個建立金鑰，按下去選擇 <code>json</code> 並下載</li>
-<li>得到金鑰後，將剛剛的金鑰 json 檔放到網頁伺服器的(vm)的相對應位置(自行決定)，並輸入下列語法：<ul>
-<li><code>-d</code>: 更改網域位置</li>
-<li><code>--dns-google-credentials</code> 位置為 json 檔路徑</li>
-</ul>
-</li>
-</ul>
-<pre><code>certbot certonly --dns-google --dns-google-credentials /etc/letsencrypt/renewal/fabled-mystery-264984-6tg78hcd467.json -d www.test.com.tw. -d test.com.tw. --dry-run</code></pre><p>基本上會跟上方手動很像，不過這個的好處就是不用自己輸入 <code>TXT</code> 金鑰囉！！執行指令後可以在 <code>GCP Cloud DNS</code>頁面看到它運作的情況，會自動幫你新增，沒收到任何錯誤訊息就是成功囉，如果有遇到錯誤可以先在執行一次看看，通常就會解決了。</p>
-<p>3.將 ssl 憑證放入相對應位置</p>
-<p>這個步驟跟上方的手動設定基本上功能一樣，完成後將剛剛產生的 <code>fullchain.pem</code>、<code>privkey.pem</code>放到伺服器相對位置下，以<code>Nginx</code>為例子，將下列設定加入設定檔 <code>/etc/nginx/nginx.conf</code>中：</p>
-<pre><code>ssl_certificate /etc/letsencrypt/live/test.com.tw/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><p>4.更新憑證</p>
-<p>基本上上面都沒問題，這步驟也會順利：</p>
-<p><code>certbot renew --dry-run</code></p>
-<h3 id="4-確認憑證狀態"><a href="#4-確認憑證狀態" class="headerlink" title="4.確認憑證狀態"></a><strong>4.確認憑證狀態</strong></h3><p>這步驟就是簡單地使用網頁去驗證剛剛產生的憑證是否狀態正常且生效:</p>
-<ul>
-<li>將下列的 <code>www.test.com.tw</code> 換成自己的網址即可使用</li>
-</ul>
-<pre><code>https://www.ssllabs.com/ssltest/analyze.html?d=www.test.com.tw&amp;latest</code></pre><ul>
-<li>若沒問題就會看到以下畫面</li>
-</ul>
-<p><img src="/medias/post_img/51659_3.jpg" alt="成功畫面"></p>
-<p>在主機上也可測試剛剛申請的是否成功與狀態顯示：</p>
-<pre><code>sudo certbot certificates</code></pre><h3 id="5-自動更新憑證"><a href="#5-自動更新憑證" class="headerlink" title="5.自動更新憑證"></a><strong>5.自動更新憑證</strong></h3><p>最後的重點就是不想要三個月就執行以上的步驟一次，所以在主機上設定 <code>cron job</code>讓他自己去更新：</p>
-<p>進入主機並輸入(不同OS方法有所差異，請斟酌參考)</p>
-<pre><code>crontab -e</code></pre><p>輸入相對應的更新日期以及月份就大功告成囉，若不懂怎麼設定可以參考下方參考資料的連結！請記得正式的情況<code>--dry-run</code>要拿掉喔！</p>
-<p>以上都完成後，就可以去看看有沒有變成綠色小鎖頭了(https)。</p>
-<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>特別感謝作者<code>tn710617</code>在憑證設定部分給予大大的幫助</p>
+<p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決安裝 python 套件 <code>pandas</code> 遇到的錯誤問題！</p>
+<h3 id="1-錯誤代碼"><a href="#1-錯誤代碼" class="headerlink" title="1.錯誤代碼"></a><strong>1.錯誤代碼</strong></h3><p>換了新的 mac 之後安裝 python 常用的套件 pandas 會遇到下方的錯誤：</p>
+<pre class="line-numbers language-sh"><code class="language-sh">pip install pandas<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre><code>ERROR: Command errored out with exit status 1: command: &#39;C:\Users\Tomas Kloucek\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\python.exe&#39; &#39;C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.240.0_x64__qbz5n2kfra8p0\lib\site-packages\pip&#39; install --ignore-installed --no-user --prefix &#39;C:\Users\Tomas Kloucek\AppData\Local\Temp\pip-build-env-5func91g\overlay&#39; --no-warn-script-location --no-binary :none: --only-binary :none: -i https://pypi.org/simple -- setuptools wheel &#39;Cython&gt;=0.29.21,&lt;3&#39; &#39;numpy==1.15.4; python_version==&#39;&quot;&#39;&quot;&#39;3.6&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.15.4; python_version==&#39;&quot;&#39;&quot;&#39;3.7&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.17.3; python_version&gt;=&#39;&quot;&#39;&quot;&#39;3.8&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.16.0; python_version==&#39;&quot;&#39;&quot;&#39;3.6&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.16.0; python_version==&#39;&quot;&#39;&quot;&#39;3.7&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.17.3; python_version&gt;=&#39;&quot;&#39;&quot;&#39;3.8&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; cwd: None Complete output (25 lines): Ignoring numpy: markers &#39;python_version == &quot;3.6&quot; and platform_system != &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.7&quot; and platform_system != &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.6&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.7&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version &gt;= &quot;3.8&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Collecting setuptools Using cached setuptools-50.3.0-py3-none-any.whl (785 kB) Collecting wheel Using cached wheel-0.35.1-py2.py3-none-any.whl (33</code></pre><h3 id="2-了解與錯誤嘗試"><a href="#2-了解與錯誤嘗試" class="headerlink" title="2.了解與錯誤嘗試"></a><strong>2.了解與錯誤嘗試</strong></h3><p>一開始還看不出個所以然，感覺就是跟什麼套件的版本相依性有關係，但是怎麼重新裝他上面提及的套件都沒有用，參照一些有相關錯誤碼的文章也不行，例如：</p>
 <blockquote>
-<p><a href="https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials" target="_blank" rel="noopener">https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials</a></p>
-</blockquote>
-<p>排程設定教學</p>
-<blockquote>
-<p><a href="https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/" target="_blank" rel="noopener">https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/</a></p>
+<p><a href="https://stackoverflow.com/questions/65084318/trouble-installing-pandas-on-new-macbook-air-m1" target="_blank" rel="noopener">https://stackoverflow.com/questions/65084318/trouble-installing-pandas-on-new-macbook-air-m1</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://andyyou.github.io/2019/04/13/how-to-use-certbot/" target="_blank" rel="noopener">https://andyyou.github.io/2019/04/13/how-to-use-certbot/</a></p>
+<p><a href="https://stackoverflow.com/questions/64352000/how-to-solve-error-installing-pandas-winerror123" target="_blank" rel="noopener">https://stackoverflow.com/questions/64352000/how-to-solve-error-installing-pandas-winerror123</a></p>
 </blockquote>
-<p>certbot-dns-google 詳細設定</p>
+<p>依然的錯誤，後來認為應該還是 mac 本身的問題，所以查了更多的相關資料，才發現執行環境必須使用 rosetta 才能正常使用，而這個東西在我安裝 docker 的時候就已經裝好了，不知道的讀者可以參考這篇 <a href="https://chilunhuang.github.io/posts/22454/?utm_source=clh&utm_medium=link&utm_content=Mac">Mac M1系列-如何安裝 docker</a> 有安裝的方法。</p>
+<p>安裝語法：</p>
+<pre><code>softwareupdate --install-rosetta</code></pre><h3 id="3-解決"><a href="#3-解決" class="headerlink" title="3.解決"></a><strong>3.解決</strong></h3><p>但是 iTerm2 預設啟動 terminal 時並沒有使用  rosetta 啟動，所以我們要將它修改成預設就可以囉！</p>
 <blockquote>
-<p><a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">https://certbot-dns-google.readthedocs.io/en/stable/</a></p>
+<p><a href="https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7" target="_blank" rel="noopener">https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7</a></p>
+</blockquote>
+<p>參照上方那篇設定:<br><code>iTerm 按右鍵選擇資訊，把裡面的 rosetta 打勾 就可以了</code></p>
+<p>重新執行，應該就沒問題了！</p>
+<pre class="line-numbers language-sh"><code class="language-sh">pip install pandas<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>最終解決方案</p>
+<blockquote>
+<p><a href="https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7" target="_blank" rel="noopener">https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -559,7 +459,7 @@ ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/51659/" class="b-link-green">GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期</a>
+                    <a href="/posts/8953/" class="b-link-green">Mac M1系列-解決安裝python pandas問題(使用iTerm2)</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -599,9 +499,9 @@ ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/51659/';
-        this.page.identifier = '/posts/51659/';
-        this.page.title = 'GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期';
+        this.page.url = 'https://chilunhuang.github.io/posts/8953/';
+        this.page.identifier = '/posts/8953/';
+        this.page.title = 'Mac M1系列-解決安裝python pandas問題(使用iTerm2)';
     };
     let disqus_shortname = 'clhlab';
 
@@ -624,46 +524,57 @@ ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/posts/9025/">
+                <a href="/posts/8953/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="pyspark系列-字串轉時間格式 string to datetime or timestamp">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Mac M1系列-解決安裝python pandas問題(使用iTerm2)">
                         
-                        <span class="card-title">pyspark系列-字串轉時間格式 string to datetime or timestamp</span>
+                        <span class="card-title">Mac M1系列-解決安裝python pandas問題(使用iTerm2)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to convert pyspark string to datetime?在本範例你會學到：
+                    <div class="summary">How to solve: Error installing pandas in Mac M1 with iTerm2在本範例你會學到：
 
-to_date 使用方式 (New in version 2.2)
-unix_timestamp 使用方式
+解決在 pip install pandas 的時候遇到的失敗問題
 
-在本範例你需要先準備好：</div>
+在本範例你需要先準備好：
+
+一</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-04
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-03-17
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/pyspark/" class="post-category" target="_blank">
-                                    pyspark
+                            <a href="/categories/Mac/" class="post-category" target="_blank">
+                                    Mac
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/pyspark/" target="_blank">
-                        <span class="chip bg-color">pyspark</span>
+                    <a href="/tags/mac/" target="_blank">
+                        <span class="chip bg-color">mac</span>
+                    </a>
+                    
+                    <a href="/tags/M1/" target="_blank">
+                        <span class="chip bg-color">M1</span>
+                    </a>
+                    
+                    <a href="/tags/python/" target="_blank">
+                        <span class="chip bg-color">python</span>
                     </a>
                     
                 </div>
@@ -677,29 +588,28 @@ unix_timestamp 使用方式
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/22148/">
+                <a href="/posts/8942/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="GCP系列-將 GoDaddy 網域與 Google DNS進行綁定">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries">
                         
-                        <span class="card-title">GCP系列-將 GoDaddy 網域與 Google DNS進行綁定</span>
+                        <span class="card-title">Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to connect domain of GoDaddy with GCP Cloud DNS?在本範例你會學到：
+                    <div class="summary">Mac M1:Error:no matching manifest for linux/arm64/v8 in the manifest list entries在本範例你會學到：
 
-使用 GCP 服務的 Cloud DNS
-GoDaddy domain 與 GCP Cloud DNS 的代管綁定</div>
+解決在 docker build mysql image</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-23
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-03-17
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/GCP/" class="post-category" target="_blank">
-                                    GCP
+                            <a href="/categories/Mac/" class="post-category" target="_blank">
+                                    Mac
                                 </a>
                             
                             
@@ -709,16 +619,20 @@ GoDaddy domain 與 GCP Cloud DNS 的代管綁定</div>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/GCP/" target="_blank">
-                        <span class="chip bg-color">GCP</span>
+                    <a href="/tags/mac/" target="_blank">
+                        <span class="chip bg-color">mac</span>
                     </a>
                     
-                    <a href="/tags/DNS/" target="_blank">
-                        <span class="chip bg-color">DNS</span>
+                    <a href="/tags/M1/" target="_blank">
+                        <span class="chip bg-color">M1</span>
                     </a>
                     
-                    <a href="/tags/GoDaddy/" target="_blank">
-                        <span class="chip bg-color">GoDaddy</span>
+                    <a href="/tags/docker/" target="_blank">
+                        <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                    <a href="/tags/mysql/" target="_blank">
+                        <span class="chip bg-color">mysql</span>
                     </a>
                     
                 </div>

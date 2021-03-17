@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Mac M1系列-解決安裝python pandas問題(使用iTerm2)</title>
+      <link href="/posts/8953/"/>
+      <url>/posts/8953/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-solve-Error-installing-pandas-in-Mac-M1-with-iTerm2"><a href="#How-to-solve-Error-installing-pandas-in-Mac-M1-with-iTerm2" class="headerlink" title="How to solve: Error installing pandas in Mac M1 with iTerm2"></a>How to solve: Error installing pandas in Mac M1 with iTerm2</h1><p><strong>在本範例你會學到：</strong></p><ul><li>解決在 pip install pandas 的時候遇到的失敗問題</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>一台稍微便宜一點的 M1 晶片 mac </li><li>iTerm2 (本範例使用的 terminal 環境)</li></ul><p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決安裝 python 套件 <code>pandas</code> 遇到的錯誤問題！</p><h3 id="1-錯誤代碼"><a href="#1-錯誤代碼" class="headerlink" title="1.錯誤代碼"></a><strong>1.錯誤代碼</strong></h3><p>換了新的 mac 之後安裝 python 常用的套件 pandas 會遇到下方的錯誤：</p><pre class="line-numbers language-sh"><code class="language-sh">pip install pandas<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><pre><code>ERROR: Command errored out with exit status 1: command: &#39;C:\Users\Tomas Kloucek\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\python.exe&#39; &#39;C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.240.0_x64__qbz5n2kfra8p0\lib\site-packages\pip&#39; install --ignore-installed --no-user --prefix &#39;C:\Users\Tomas Kloucek\AppData\Local\Temp\pip-build-env-5func91g\overlay&#39; --no-warn-script-location --no-binary :none: --only-binary :none: -i https://pypi.org/simple -- setuptools wheel &#39;Cython&gt;=0.29.21,&lt;3&#39; &#39;numpy==1.15.4; python_version==&#39;&quot;&#39;&quot;&#39;3.6&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.15.4; python_version==&#39;&quot;&#39;&quot;&#39;3.7&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.17.3; python_version&gt;=&#39;&quot;&#39;&quot;&#39;3.8&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.16.0; python_version==&#39;&quot;&#39;&quot;&#39;3.6&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.16.0; python_version==&#39;&quot;&#39;&quot;&#39;3.7&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.17.3; python_version&gt;=&#39;&quot;&#39;&quot;&#39;3.8&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; cwd: None Complete output (25 lines): Ignoring numpy: markers &#39;python_version == &quot;3.6&quot; and platform_system != &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.7&quot; and platform_system != &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.6&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.7&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version &gt;= &quot;3.8&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Collecting setuptools Using cached setuptools-50.3.0-py3-none-any.whl (785 kB) Collecting wheel Using cached wheel-0.35.1-py2.py3-none-any.whl (33</code></pre><h3 id="2-了解與錯誤嘗試"><a href="#2-了解與錯誤嘗試" class="headerlink" title="2.了解與錯誤嘗試"></a><strong>2.了解與錯誤嘗試</strong></h3><p>一開始還看不出個所以然，感覺就是跟什麼套件的版本相依性有關係，但是怎麼重新裝他上面提及的套件都沒有用，參照一些有相關錯誤碼的文章也不行，例如：</p><blockquote><p><a href="https://stackoverflow.com/questions/65084318/trouble-installing-pandas-on-new-macbook-air-m1" target="_blank" rel="noopener">https://stackoverflow.com/questions/65084318/trouble-installing-pandas-on-new-macbook-air-m1</a></p></blockquote><blockquote><p><a href="https://stackoverflow.com/questions/64352000/how-to-solve-error-installing-pandas-winerror123" target="_blank" rel="noopener">https://stackoverflow.com/questions/64352000/how-to-solve-error-installing-pandas-winerror123</a></p></blockquote><p>依然的錯誤，後來認為應該還是 mac 本身的問題，所以查了更多的相關資料，才發現執行環境必須使用 rosetta 才能正常使用，而這個東西在我安裝 docker 的時候就已經裝好了，不知道的讀者可以參考這篇 <a href="https://chilunhuang.github.io/posts/22454/?utm_source=clh&utm_medium=link&utm_content=Mac">Mac M1系列-如何安裝 docker</a> 有安裝的方法。</p><p>安裝語法：</p><pre><code>softwareupdate --install-rosetta</code></pre><h3 id="3-解決"><a href="#3-解決" class="headerlink" title="3.解決"></a><strong>3.解決</strong></h3><p>但是 iTerm2 預設啟動 terminal 時並沒有使用  rosetta 啟動，所以我們要將它修改成預設就可以囉！</p><blockquote><p><a href="https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7" target="_blank" rel="noopener">https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7</a></p></blockquote><p>參照上方那篇設定:<br><code>iTerm 按右鍵選擇資訊，把裡面的 rosetta 打勾 就可以了</code></p><p>重新執行，應該就沒問題了！</p><pre class="line-numbers language-sh"><code class="language-sh">pip install pandas<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>最終解決方案</p><blockquote><p><a href="https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7" target="_blank" rel="noopener">https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mac </tag>
+            
+            <tag> M1 </tag>
+            
+            <tag> python </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries</title>
       <link href="/posts/8942/"/>
       <url>/posts/8942/</url>
@@ -80,11 +109,11 @@
       
         <tags>
             
+            <tag> word2vec </tag>
+            
             <tag> wikicorpus </tag>
             
             <tag> NLP </tag>
-            
-            <tag> word2vec </tag>
             
             <tag> gensim </tag>
             
@@ -269,9 +298,9 @@
       
         <tags>
             
-            <tag> urlparse </tag>
-            
             <tag> python </tag>
+            
+            <tag> urlparse </tag>
             
             <tag> utm </tag>
             
@@ -377,13 +406,13 @@
             
             <tag> GCP </tag>
             
+            <tag> DNS </tag>
+            
             <tag> SSL </tag>
             
             <tag> certbot </tag>
             
             <tag> letsencrypt </tag>
-            
-            <tag> DNS </tag>
             
         </tags>
       
@@ -470,40 +499,11 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> nginx </tag>
             
-            <tag> Cache-Control </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
-      <link href="/posts/53969/"/>
-      <url>/posts/53969/</url>
-      
-        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> lazyload </tag>
-            
             <tag> performance </tag>
+            
+            <tag> Cache-Control </tag>
             
         </tags>
       
@@ -532,13 +532,42 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
             
             <tag> nginx </tag>
+            
+            <tag> performance </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
+      <link href="/posts/53969/"/>
+      <url>/posts/53969/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/lazyload/lazysizes.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre class="line-numbers language-html"><code class="language-html"># 原來寫法<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><pre class="line-numbers language-html"><code class="language-html"># 新方式<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>lazyload<span class="token punctuation">"</span></span> <span class="token attr-name">data-src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/img/hcl.jpg<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> lazyload </tag>
             
         </tags>
       
@@ -681,11 +710,11 @@
       
         <tags>
             
-            <tag> mac </tag>
-            
             <tag> 快捷鍵 </tag>
             
             <tag> hot key </tag>
+            
+            <tag> mac </tag>
             
             <tag> terminal </tag>
             
@@ -859,9 +888,9 @@
       
         <tags>
             
-            <tag> word2vec </tag>
-            
             <tag> nlp </tag>
+            
+            <tag> word2vec </tag>
             
             <tag> tensorboard </tag>
             
