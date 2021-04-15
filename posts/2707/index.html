@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="mac,M1,docker,mysql,arm64,rosetta,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
-    <meta name="description" content="Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決用 docker 建立 mysq">
+    <meta name="keywords" content="mac,M1,tensorflow,pip,python,rosetta,conda,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決無法使用 pip install">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -15,15 +15,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries" />
-    <meta property="og:description" content="Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決用 docker 建立 mysq" />
-    <meta property="og:image" content="/medias/featureimages/4.jpg" />
+    <meta property="og:title" content="Mac M1系列-如何安裝 tensorflow 於Mac M1?" />
+    <meta property="og:description" content="Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決無法使用 pip install" />
+    <meta property="og:image" content="/medias/featureimages/0.jpg" />
     <meta property="og:site_name" content="Happy Coding Lab" />
     <!-- Facebook end-->
     <!-- Google Search console -->
     <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
     <!-- Google Search console end-->
-    <title>Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries | Happy Coding Lab</title>
+    <title>Mac M1系列-如何安裝 tensorflow 於Mac M1? | Happy Coding Lab</title>
     <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -257,13 +257,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries
+                        Mac M1系列-如何安裝 tensorflow 於Mac M1?
                     </div>
                 </div>
             </div>
@@ -363,12 +363,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <span class="chip bg-color">M1</span>
                             </a>
                         
-                            <a href="/tags/docker/" target="_blank">
-                                <span class="chip bg-color">docker</span>
-                            </a>
-                        
-                            <a href="/tags/mysql/" target="_blank">
-                                <span class="chip bg-color">mysql</span>
+                            <a href="/tags/tensorflow/" target="_blank">
+                                <span class="chip bg-color">tensorflow</span>
                             </a>
                         
                     </div>
@@ -391,7 +387,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
-                    2021-03-17
+                    2021-04-15
                 </div>
 
                 
@@ -417,48 +413,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-                <h1 id="Mac-M1-Error-no-matching-manifest-for-linux-arm64-v8-in-the-manifest-list-entries"><a href="#Mac-M1-Error-no-matching-manifest-for-linux-arm64-v8-in-the-manifest-list-entries" class="headerlink" title="Mac M1:Error:no matching manifest for linux/arm64/v8 in the manifest list entries"></a>Mac M1:Error:no matching manifest for linux/arm64/v8 in the manifest list entries</h1><p><strong>在本範例你會學到：</strong></p>
+                <h1 id="How-to-install-tensorflow-on-Mac-M1"><a href="#How-to-install-tensorflow-on-Mac-M1" class="headerlink" title="How to install tensorflow on Mac M1?"></a>How to install tensorflow on Mac M1?</h1><p><strong>在本範例你會學到：</strong></p>
 <ul>
-<li>解決在 docker build mysql image 的時候遇到的失敗問題</li>
+<li>正確的在 Mac M1 安裝 <code>tensorflow</code></li>
 </ul>
-<blockquote>
-<p>no matching manifest for linux/arm64/v8 in the manifest list entries</p>
-</blockquote>
 <p><strong>在本範例你需要先準備好：</strong></p>
 <ul>
-<li>一台稍微便宜一點的 M1 晶片 mac </li>
-<li>安裝好 docker，<a href="https://chilunhuang.github.io/posts/22454/?utm_source=clh&utm_medium=link&utm_content=Mac">安裝失敗問題請參照這篇 Mac M1系列-如何安裝 docker</a></li>
+<li>一台稍微便宜一點的 M1 晶片 mac</li>
+<li>所有的指令都在有安裝 rosetta 並預設啟動的 <code>iTerm2</code> 中執行， 若該環境有問題可以參照另一篇先設定好 terminal 環境: <a href="https://chilunhuang.github.io/posts/8953/?utm_source=clh&utm_medium=link&utm_content=Mac">Mac M1系列-解決安裝python pandas問題(使用iTerm2)</a>。</li>
 </ul>
-<p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片 M1，以 Arm 架構設計Apple Silicon 處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決用 docker 建立 mysql 遇到的錯誤問題 ！</p>
-<h3 id="1-編輯-docker-compose-yml"><a href="#1-編輯-docker-compose-yml" class="headerlink" title="1.編輯 docker-compose.yml"></a><strong>1.編輯 docker-compose.yml</strong></h3><p>這部分其實非常的簡單，只要將原本的 docker-compose.yml 加上一句語法就可以解決了！</p>
-<p>原本應該大概會長這樣子：</p>
-<p>docker-compose.yml </p>
-<pre><code>services:
-  redis:
-    image: &quot;redis:5&quot;
-    ports:
-         - &quot;6379:6379&quot;
-    restart: always 
-  db:
-    image: mysql:5.7
-    environment:
-    ...</code></pre><p>在這個情況下執行就會遇到標題的錯誤：</p>
-<p><code>no matching manifest for linux/arm64/v8 in the manifest list entries</code></p>
-<p>這時候只要將 <code>platform: linux/amd64</code> 加上去就可以正常執行囉！</p>
-<p>請看下方範例：</p>
-<pre><code>services:
-  redis:
-    image: &quot;redis:5&quot;
-    ports:
-         - &quot;6379:6379&quot;
-    restart: always 
-  db:
-    image: mysql:5.7
-    platform: linux/amd64
-    environment:
-    ...</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>GitHub</p>
+<p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple<br>  Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決無法使用 pip install<br>  tensorflow 的方式安裝 tensorflow 的錯誤問題 ！</p>
+<h3 id="1-下載-安裝-conda-與-python3-8-環境"><a href="#1-下載-安裝-conda-與-python3-8-環境" class="headerlink" title="1.下載/安裝 conda 與 python3.8 環境"></a><strong>1.下載/安裝 conda 與 python3.8 環境</strong></h3><ul>
+<li>前往該網址 <a href="https://github.com/conda-forge/miniforge/#download" target="_blank" rel="noopener">https://github.com/conda-forge/miniforge/#download</a></li>
+<li>搜索 <code>arm64 (Apple Silicon)</code> 或 <code>Miniforge3-MacOSX-arm64</code> 並下載後方的 sh 檔</li>
+<li>在 terminal 中 cd 到下載該檔案的資料夾: <code>bash Miniforge3-MacOSX-arm64.sh</code></li>
+<li>安裝 python 3.8環境，tensorflow 無法在3.9中執行<ul>
+<li><code>conda create -n py38 python=3.8</code></li>
+<li><code>conda activate py38</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-安装tensorflow"><a href="#2-安装tensorflow" class="headerlink" title="2.安装tensorflow"></a><strong>2.安装tensorflow</strong></h3><ul>
+<li>前往該網址 <a href="https://github.com/apple/tensorflow_macos/releases" target="_blank" rel="noopener">https://github.com/apple/tensorflow_macos/releases</a></li>
+<li>直接用最新的 release，下方應該會有 <code>Assets</code> 可以點開的下拉，點開後找到 <code>tar.gz</code> 下載 <code>tensorflow_macos-0.1alpha3.tar.gz</code> (有可能是 alpha1, alpha2, alpha3…)</li>
+<li>解壓縮該檔案並 cd 進入該資料夾 <code>cd tensorflow_macos/arm64</code></li>
+<li>確認有啟動環境 <code>conda activate py38</code></li>
+<li>安裝下列語法：</li>
+</ul>
+<pre><code>pip install --upgrade --no-dependencies --force numpy-1.18.5-cp38-cp38-macosx_11_0_arm64.whl grpcio-1.33.2-cp38-cp38-macosx_11_0_arm64.whl h5py-2.10.0-cp38-cp38-macosx_11_0_arm64.whl tensorflow_addons_macos-0.1a3-cp38-cp38-macosx_11_0_arm64.whl
+
+pip install absl-py astunparse flatbuffers gast google_pasta keras_preprocessing opt_einsum protobuf tensorflow_estimator termcolor typing_extensions wrapt wheel tensorboard typeguard
+
+pip install --upgrade --force --no-dependencies tensorflow_macos-0.1a1-cp38-cp38-macosx_11_0_arm64.whl</code></pre><p><strong><em>安裝時曾經有遇到網路的參考語法中的檔案不存在了，可以在該資料夾下面去搜索類似的名稱，就會找到跟原本名稱非常類似的檔案，再重新安裝即可！</em></strong></p>
+<h3 id="3-確認"><a href="#3-確認" class="headerlink" title="3.確認"></a><strong>3.確認</strong></h3><p>最後一步很簡單，就是確認有沒有辦法正常 import tensorflow</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> tensorflow<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>正確載入就大功告成囉~ 記得新的 terminal 在啟動時，都要建立/激活虛擬環境喔！ <code>conda activate py38</code></p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
+<p><a href="https://blog.csdn.net/Carina_Cao/article/details/115140308" target="_blank" rel="noopener">https://blog.csdn.net/Carina_Cao/article/details/115140308</a></p>
+</blockquote>
 <blockquote>
-<p><a href="https://github.com/docker-library/mysql/issues/318" target="_blank" rel="noopener">https://github.com/docker-library/mysql/issues/318</a></p>
+<p><a href="https://parthiban-kannan.medium.com/install-tensorflow-on-apple-macbook-m1-release-c1ce7e65cd0" target="_blank" rel="noopener">https://parthiban-kannan.medium.com/install-tensorflow-on-apple-macbook-m1-release-c1ce7e65cd0</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -474,7 +468,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </span>
                     <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/posts/8942/" class="b-link-green">Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries</a>
+                    <a href="/posts/2707/" class="b-link-green">Mac M1系列-如何安裝 tensorflow 於Mac M1?</a>
                 </p>
             </div>
             <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
@@ -514,9 +508,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://chilunhuang.github.io/posts/8942/';
-        this.page.identifier = '/posts/8942/';
-        this.page.title = 'Mac M1系列-解決docker安裝mysql error:no matching manifest for linux/arm64/v8 in the manifest list entries';
+        this.page.url = 'https://chilunhuang.github.io/posts/2707/';
+        this.page.identifier = '/posts/2707/';
+        this.page.title = 'Mac M1系列-如何安裝 tensorflow 於Mac M1?';
     };
     let disqus_shortname = 'clhlab';
 
@@ -539,30 +533,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/posts/8953/">
+                <a href="/posts/2707/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Mac M1系列-解決安裝python pandas問題(使用iTerm2)">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Mac M1系列-如何安裝 tensorflow 於Mac M1?">
                         
-                        <span class="card-title">Mac M1系列-解決安裝python pandas問題(使用iTerm2)</span>
+                        <span class="card-title">Mac M1系列-如何安裝 tensorflow 於Mac M1?</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to solve: Error installing pandas in Mac M1 with iTerm2在本範例你會學到：
+                    <div class="summary">How to install tensorflow on Mac M1?在本範例你會學到：
 
-解決在 pip install pandas 的時候遇到的失敗問題
+正確的在 Mac M1 安裝 tensorflow
 
 在本範例你需要先準備好：
 
-一</div>
+一台稍微便宜一點的 M1 晶片 mac
+所有的指令都在有安裝 r</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2021-03-17
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-04-15
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -575,6 +571,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -586,8 +583,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <span class="chip bg-color">M1</span>
                     </a>
                     
-                    <a href="/tags/python/" target="_blank">
-                        <span class="chip bg-color">python</span>
+                    <a href="/tags/tensorflow/" target="_blank">
+                        <span class="chip bg-color">tensorflow</span>
                     </a>
                     
                 </div>
@@ -601,27 +598,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/22454/">
+                <a href="/posts/35500/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="Mac M1系列-如何安裝 docker">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Mac M1系列-解決安裝wget的 Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)">
                         
-                        <span class="card-title">Mac M1系列-如何安裝 docker</span>
+                        <span class="card-title">Mac M1系列-解決安裝wget的 Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to install docker on Mac M1 series?在本範例你會學到：
+                    <div class="summary">How to solve: Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)!在本範例你會學到：
 
-如何於 新版的 mac m1 系列中安裝 docker
-
-在本範例你需要先準備好：
-
-一台稍微便宜一點的 M1 晶片 mac 
-
-Mac系列</div>
+解決在 wget 的時候遇到的失敗問題</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-03-12
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-03-17
                             </span>
                         <span class="publish-author">
                             
@@ -646,8 +637,8 @@ Mac系列</div>
                         <span class="chip bg-color">M1</span>
                     </a>
                     
-                    <a href="/tags/docker/" target="_blank">
-                        <span class="chip bg-color">docker</span>
+                    <a href="/tags/wget/" target="_blank">
+                        <span class="chip bg-color">wget</span>
                     </a>
                     
                 </div>
