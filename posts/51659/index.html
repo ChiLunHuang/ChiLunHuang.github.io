@@ -1,0 +1,955 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW,en,default">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="gcp,letsencrypt,ssl,dns,certbot,https,http,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="本教程將會簡單講述如何在 GCP 的環境中更新網頁的 ssl 憑證(免費的 letsencrypt)，此範例僅適用於將 dns 交由 GCP Cloud DNS 託管的情況下。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期" />
+    <meta property="og:description" content="本教程將會簡單講述如何在 GCP 的環境中更新網頁的 ssl 憑證(免費的 letsencrypt)，此範例僅適用於將 dns 交由 GCP Cloud DNS 託管的情況下。" />
+    <meta property="og:image" content="/medias/featureimages/0.jpg" />
+    <meta property="og:site_name" content="Happy Coding Lab" />
+    <!-- Facebook end-->
+    <!-- Google Search console -->
+    <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
+    <!-- Google Search console end-->
+    <title>GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期 | Happy Coding Lab</title>
+    <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+    
+    <!-- AdSense -->
+    <script data-ad-client="ca-pub-6577966333850753" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- AdSense End-->
+
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <!-- GA & GTM-->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- GTM - Google Analytics -->
+
+<script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-MWS2LPV');
+</script>
+
+
+
+    <!-- GA & GTM END-->
+
+</head>
+
+
+<body>
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWS2LPV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript)測試 -->
+
+
+<!-- OneAD network-->
+<div id = "oneadMFSDFPTag"></div>
+<script type="text/javascript">
+  var custom_call = function (params) {
+    if (params.hasAd) {
+      console.log('MFS has AD')
+    } else {
+      console.log('MFS AD empty')
+    }
+  }
+  var _ONEAD = {};
+  _ONEAD.pub = {};
+  _ONEAD.pub.slotobj = document.getElementById("oneadMFSDFPTag");
+  _ONEAD.pub.slots = ["div-onead-ad"];
+  _ONEAD.pub.uid = "2000176";
+  _ONEAD.pub.external_url = "https://onead.onevision.com.tw/";
+  _ONEAD.pub.player_mode_div = "div-onead-ad";
+  _ONEAD.pub.player_mode = "mobile-fullscreen";
+  _ONEAD.pub.google_view_click = "%%CLICK_URL_UNESC%%";
+  _ONEAD.pub.google_view_pixel = "";
+  _ONEAD.pub.queryAdCallback = custom_call
+  var ONEAD_pubs = ONEAD_pubs || [];
+  ONEAD_pubs.push(_ONEAD);
+</script>
+<script type="text/javascript" src = "https://ad-specs.guoshipartners.com/static/js/onead-lib.min.js"></script>
+
+<!-- End OneAD network-->
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="container">
+            <div class="nav-wrapper">
+                <div class="brand-logo">
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <img src="/medias/logo.png" class="logo-img hide-on-small-only">
+                        
+                        <span class="logo-span">Happy Coding Lab</span>
+                    </a>
+                </div>
+                
+
+<a href="#" data-activates="mobile-nav" class="button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首頁</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>文章種類</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>文章書籤</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>文章歷程</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>關於我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>好站分享</span>
+        </a>
+    </li>
+    
+    <li>
+        <a id="toggleSearch" class="waves-effect waves-light">
+            <i id="searchIcon" class="mdi-action-search" title="文章查詢"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div class="side-nav" id="mobile-nav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Happy Coding Lab</div>
+        <div class="logo-desc">
+            
+            Happy Coding Lab，分享平日 Coding 的各種知識分享，快樂學習、快樂成長。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首頁
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                文章種類
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                文章書籤
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                文章歷程
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                關於我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                好站分享
+            </a>
+        </li>
+        
+        
+    </ul>
+
+    <div class="social-link">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+</div>
+
+            </div>
+        </div>
+
+        
+    </nav>
+</header>
+
+
+
+
+
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+</style>
+<div class="row">
+    <div class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/GCP/" target="_blank">
+                                <span class="chip bg-color">GCP</span>
+                            </a>
+                        
+                            <a href="/tags/SSL/" target="_blank">
+                                <span class="chip bg-color">SSL</span>
+                            </a>
+                        
+                            <a href="/tags/certbot/" target="_blank">
+                                <span class="chip bg-color">certbot</span>
+                            </a>
+                        
+                            <a href="/tags/letsencrypt/" target="_blank">
+                                <span class="chip bg-color">letsencrypt</span>
+                            </a>
+                        
+                            <a href="/tags/DNS/" target="_blank">
+                                <span class="chip bg-color">DNS</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/GCP/" class="post-category" target="_blank">
+                                GCP
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
+                    2020-05-25
+                </div>
+
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>瀏覽次數:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="5339419372"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+                <h1 id="Auto-renew-letsencrypt-by-certbot-in-GCP"><a href="#Auto-renew-letsencrypt-by-certbot-in-GCP" class="headerlink" title="Auto renew letsencrypt by certbot in GCP."></a>Auto renew letsencrypt by certbot in GCP.</h1><p><strong>在本範例你會學到：</strong></p>
+<ul>
+<li>手動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)</li>
+<li>自動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)</li>
+<li>將不安全網頁(http)變成綠色小鎖頭(https)</li>
+<li>使用 <code>certbot</code></li>
+<li>使用 <code>certbot-dns-google</code></li>
+</ul>
+<p><strong>在本範例你需要先準備好：</strong></p>
+<ul>
+<li>有使用 Cloud DNS 將 GCP 的機器與其他第三方網域(ex:GoDaddy)供應商進行綁定</li>
+<li>對 GCP 有一定熟悉程度</li>
+<li>需要 https 將網頁變成安全的網頁的需求</li>
+<li>所有設定都在 <code>CentOS</code> 與 <code>python3</code> 環境完成</li>
+</ul>
+<h3 id="1-簡介"><a href="#1-簡介" class="headerlink" title="1.簡介"></a><strong>1.簡介</strong></h3><p>大家在開發網頁的時候基本上一開始一定都還是使用 http 的網址作為開頭使用，不過現在 Google 大神會將 <code>http 開頭的網頁視為不安全的網頁</code>，當然基本上不會特別直接影響到網頁的速度、效能以及其他功能，依然可以正常使用，不過長時間以來是會影響 <code>seo</code> 排名的喔！所以本教學就來告訴大家如何將 http 變成 https 的綠色小鎖頭吧！</p>
+<p><img src="/medias/post_img/51659_1.jpg" alt="憑證的綠色小鎖頭"></p>
+<p>要變成綠色小鎖頭就必須要有憑證，而憑證又該如何取得呢，有兩種方式：</p>
+<ul>
+<li>付錢</li>
+<li>免費的 letsencrypt (<code>每三個月必須更新憑證</code>)</li>
+</ul>
+<p>本教程將會記錄如何將 <code>免費letsencrypt 的憑證自動續約</code>，這樣就可以免去手動更新的麻煩了！</p>
+<p>看到這踏家或許有些疑問為什麼我一直要特別強調 DNS 呢？因為這個方法只適用於<code>有使用 GCP Cloud DNS 才能使用喔</code>。如果是正常的方式網路上已經超級多方法了(這也是我一直沒發現用錯方法的原因)，我這邊就不特別在寫一篇了，不過基本上語法都是一樣的，到官網上看稍微修改也是可以使用的。</p>
+<h3 id="2-手動申請與續約"><a href="#2-手動申請與續約" class="headerlink" title="2.手動申請與續約"></a><strong>2.手動申請與續約</strong></h3><p>這邊還是稍微講述一下簡單的手動模式，給不需要自動更新或是單純測試的夥伴們可以先用這個方法測試喔！！</p>
+<p>先安裝套件：</p>
+<pre><code>pip install certbot
+</code></pre><p>直接進入主題下語法：</p>
+<ul>
+<li>–dry-run: 代表不會真的執行，試跑與法有沒有錯誤可以使用</li>
+<li>-d: 有多少個 domain 就寫幾個</li>
+<li>–server: 照抄就好</li>
+</ul>
+<p>要特別注意這邊是使用 <code>dns</code>喔！</p>
+<pre><code>certbot certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns  -d test.com.tw -d www.test.com.tw --dry-run</code></pre><p>接下來就是比較麻煩也可能會出錯的地方：</p>
+<ul>
+<li>按下 enter 後直接到 GCP Cloud DNS 頁面(<a href="https://chilunhuang.github.io/posts/22148/">不知道我在講什麼請看這篇</a>)選擇目前要使用的區域(domain)</li>
+<li>按下<code>新增紀錄集</code>，並依照剛剛 enter 後 terminal 的指示新增<code>資源記錄類型</code>中的<code>TXT</code>，並將 terminal 中的序號填入<code>TXT 資料</code>並按下建立，並等待至少30秒，讓它生效(此步驟需要等待時間生效，直接繼續在 terminal 按 enter 可能會設定失敗)</li>
+<li>等待秒數過後可以繼續新增下一個 domain，一樣再到 GCP 頁面新增序號，直到沒有網域需要新增就結束</li>
+</ul>
+<p>以上步驟如果有訊息說失敗，可以再試一次，有可能是等待時間不夠長，不過依據經驗30秒是足夠的。</p>
+<p>設定完成就會見到以下訊息：</p>
+<pre><code>IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/test.com.tw/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/test.com.tw/privkey.pem
+   Your cert will expire on 2020-06-29. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot
+   again. To non-interactively renew *all* of your certificates, run
+   &quot;certbot renew&quot;
+ - If you like Certbot, please consider supporting our work by:
+
+
+   Donating to ISRG / Let&#39;s Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le</code></pre><p>該訊息基本上包含兩件事：</p>
+<ul>
+<li>該憑證的到期日，三個月後就會作廢</li>
+<li>該憑證的產生位置(<code>*.pem</code>)，可以依需求放到自己相對應的伺服器位置(Nginx or Apache)</li>
+</ul>
+<p>若是需要手動續約，也非常簡單 (正式的時候要把<code>--dry-run</code>拿掉喔！)：</p>
+<pre><code>sudo certbot renew --dry-run</code></pre><h3 id="3-自動更新"><a href="#3-自動更新" class="headerlink" title="3.自動更新"></a><strong>3.自動更新</strong></h3><p>網路上有非常多手動/自動更新的方法，小弟在使用每一篇文章都會看到的 <code>sudo certbot renew</code> 從來都沒有成功過，一直都抱一樣的錯誤訊息，所以非常苦惱，不想要三個月就手動一次，後來才發現原來 Google 有相對應的套件可以使用啊！！</p>
+<p>直接切入主題：</p>
+<p>1.安裝</p>
+<pre><code>pip install certbot-dns-google</code></pre><p>2.設定 Google Credentials，取得金鑰 json</p>
+<p><strong>每次都有的貼心小提醒：GCP頁面變動相當的大，可能短短幾個月步驟就不一樣了，請大家多注意！</strong></p>
+<ul>
+<li>於 GCP 導覽列中找到 <code>API 和服務</code>選擇<code>憑證</code></li>
+<li>按下建立憑證選擇服務帳戶 (找不到看下圖)</li>
+</ul>
+<p><img src="/medias/post_img/51659_2.jpg" alt="設定步驟"></p>
+<ul>
+<li>輸入名稱</li>
+<li>進入<code>將專案存取權授予這個服務帳戶</code>要進行角色選擇，可以<a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">依照官網自己決定</a>，或是可以跟著本篇設定即可，這裡可能要花點時間找到想要的角色:</li>
+</ul>
+<pre><code>dns.changes.create
+dns.changes.get
+dns.managedZones.list
+dns.resourceRecordSets.create
+dns.resourceRecordSets.delete
+dns.resourceRecordSets.list
+dns.resourceRecordSets.update</code></pre><ul>
+<li>最後一步驟有一個建立金鑰，按下去選擇 <code>json</code> 並下載</li>
+<li>得到金鑰後，將剛剛的金鑰 json 檔放到網頁伺服器的(vm)的相對應位置(自行決定)，並輸入下列語法：<ul>
+<li><code>-d</code>: 更改網域位置</li>
+<li><code>--dns-google-credentials</code> 位置為 json 檔路徑</li>
+</ul>
+</li>
+</ul>
+<pre><code>certbot certonly --dns-google --dns-google-credentials /etc/letsencrypt/renewal/fabled-mystery-264984-6tg78hcd467.json -d www.test.com.tw. -d test.com.tw. --dry-run</code></pre><p>基本上會跟上方手動很像，不過這個的好處就是不用自己輸入 <code>TXT</code> 金鑰囉！！執行指令後可以在 <code>GCP Cloud DNS</code>頁面看到它運作的情況，會自動幫你新增，沒收到任何錯誤訊息就是成功囉，如果有遇到錯誤可以先在執行一次看看，通常就會解決了。</p>
+<p>3.將 ssl 憑證放入相對應位置</p>
+<p>這個步驟跟上方的手動設定基本上功能一樣，完成後將剛剛產生的 <code>fullchain.pem</code>、<code>privkey.pem</code>放到伺服器相對位置下，以<code>Nginx</code>為例子，將下列設定加入設定檔 <code>/etc/nginx/nginx.conf</code>中：</p>
+<pre><code>ssl_certificate /etc/letsencrypt/live/test.com.tw/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><p>4.更新憑證</p>
+<p>基本上上面都沒問題，這步驟也會順利：</p>
+<p><code>certbot renew --dry-run</code></p>
+<h3 id="4-確認憑證狀態"><a href="#4-確認憑證狀態" class="headerlink" title="4.確認憑證狀態"></a><strong>4.確認憑證狀態</strong></h3><p>這步驟就是簡單地使用網頁去驗證剛剛產生的憑證是否狀態正常且生效:</p>
+<ul>
+<li>將下列的 <code>www.test.com.tw</code> 換成自己的網址即可使用</li>
+</ul>
+<pre><code>https://www.ssllabs.com/ssltest/analyze.html?d=www.test.com.tw&amp;latest</code></pre><ul>
+<li>若沒問題就會看到以下畫面</li>
+</ul>
+<p><img src="/medias/post_img/51659_3.jpg" alt="成功畫面"></p>
+<p>在主機上也可測試剛剛申請的是否成功與狀態顯示：</p>
+<pre><code>sudo certbot certificates</code></pre><h3 id="5-自動更新憑證"><a href="#5-自動更新憑證" class="headerlink" title="5.自動更新憑證"></a><strong>5.自動更新憑證</strong></h3><p>最後的重點就是不想要三個月就執行以上的步驟一次，所以在主機上設定 <code>cron job</code>讓他自己去更新：</p>
+<p>進入主機並輸入(不同OS方法有所差異，請斟酌參考)</p>
+<pre><code>crontab -e</code></pre><p>輸入相對應的更新日期以及月份就大功告成囉，若不懂怎麼設定可以參考下方參考資料的連結！請記得正式的情況<code>--dry-run</code>要拿掉喔！</p>
+<p>以上都完成後，就可以去看看有沒有變成綠色小鎖頭了(https)。</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>特別感謝作者<code>tn710617</code>在憑證設定部分給予大大的幫助</p>
+<blockquote>
+<p><a href="https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials" target="_blank" rel="noopener">https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials</a></p>
+</blockquote>
+<p>排程設定教學</p>
+<blockquote>
+<p><a href="https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/" target="_blank" rel="noopener">https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://andyyou.github.io/2019/04/13/how-to-use-certbot/" target="_blank" rel="noopener">https://andyyou.github.io/2019/04/13/how-to-use-certbot/</a></p>
+</blockquote>
+<p>certbot-dns-google 詳細設定</p>
+<blockquote>
+<p><a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">https://certbot-dns-google.readthedocs.io/en/stable/</a></p>
+</blockquote>
+<p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;轉載與引用請註明作者:
+                    </span>
+                    <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/posts/51659/" class="b-link-green">GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期</a>
+                </p>
+            </div>
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone, qq, weibo, douban"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="4984196151"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'https://chilunhuang.github.io/posts/51659/';
+        this.page.identifier = '/posts/51659/';
+        this.page.title = 'GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期';
+    };
+    let disqus_shortname = 'clhlab';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/posts/9025/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="pyspark系列-字串轉時間格式 string to datetime or timestamp">
+                        
+                        <span class="card-title">pyspark系列-字串轉時間格式 string to datetime or timestamp</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">How to convert pyspark string to datetime?在本範例你會學到：
+
+to_date 使用方式 (New in version 2.2)
+unix_timestamp 使用方式
+
+在本範例你需要先準備好：</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-04
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/posts/22148/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="GCP系列-將 GoDaddy 網域與 Google DNS進行綁定">
+                        
+                        <span class="card-title">GCP系列-將 GoDaddy 網域與 Google DNS進行綁定</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">How to connect domain of GoDaddy with GCP Cloud DNS?在本範例你會學到：
+
+使用 GCP 服務的 Cloud DNS
+GoDaddy domain 與 GCP Cloud DNS 的代管綁定</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-23
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/GCP/" class="post-category" target="_blank">
+                                    GCP
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/GCP/" target="_blank">
+                        <span class="chip bg-color">GCP</span>
+                    </a>
+                    
+                    <a href="/tags/DNS/" target="_blank">
+                        <span class="chip bg-color">DNS</span>
+                    </a>
+                    
+                    <a href="/tags/GoDaddy/" target="_blank">
+                        <span class="chip bg-color">GoDaddy</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 文章最下方廣告 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="3650099032"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('1000')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: Happy Coding Lab<br />'
+            + '作者: ChiLun Huang<br />'
+            + '超連結: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作權為作者所有，任何形式的轉載都請註明出處。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    </div>
+    <div class="col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目錄</div>
+            <div id="toc-content"></div>
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 文章右側廣告 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:250px;height:250px"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="8070019335"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+        </div>
+    </div>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+    });
+</script>
+
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright &copy; 2019-2020 | Powered by <a href="https://hexo.io/zh-tw/index.html" target="_blank">Hexo</a> | Theme by <a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a> | Photo by <a href="https://github.com/ChiLunHuang" target="_blank">Happy Coding Lab</a> 本站嚴禁任何圖像轉載使用
+
+            
+
+            
+			
+                <br>
+                
+                <span id="busuanzi_container_site_pv">
+                    總瀏覽人數 <span id="busuanzi_value_site_pv" class="white-color"></span>
+                </span>
+                
+                
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;文章查詢</span>
+            <input type="search" id="searchInput" name="s" placeholder="搜索關鍵字"
+                   class="search-input" autofocus="">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+
+<script src="/libs/materialize/js/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+
+    <script type="text/javascript" color="0,0,255" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,962 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>NLP 系列- 如何在word2vec訓練時讓WikiCorpus保留數字(digit)?</title>
+      <link href="/posts/58469/"/>
+      <url>/posts/58469/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-get-the-wikipedia-corpus-text-with-digits-by-using-gensim-wikicorpus"><a href="#How-to-get-the-wikipedia-corpus-text-with-digits-by-using-gensim-wikicorpus" class="headerlink" title="How to get the wikipedia corpus text with digits by using gensim wikicorpus?"></a>How to get the wikipedia corpus text with digits by using gensim wikicorpus?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>訓練 word2vec 時可以保留數字</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>大致上熟悉 word2vec 訓練流程</li><li>知曉如何從 wikipedia dump 檔案</li><li>版本 <ul><li>python 3.6.8</li><li>gensim==3.8.3 </li></ul></li></ul><p>訓練 word2vec model(後面簡稱w2v) 時的中文語料第一選擇通常就是 <code>Wikipedia</code> 的語料庫(最後一次查看有<code>3651160篇文章</code>)，而 w2v 本身又支援直接處理 wiki 的 <code>bz2</code>檔案產出對應格式的中文，不過他會先做一些預處理例如：<code>移除標點符號、所有的數字</code>，但我又想要留下這些東西怎麼辦呢？像是年份(ex:1992)、品牌型號(iphone12)、專有名詞(4G, 5G)，word2vec 在預設使用 wiki 當語料庫情況下是會去除數字的，我們來繼續看下去！</p><h3 id="1-深入了解-wikicorpus"><a href="#1-深入了解-wikicorpus" class="headerlink" title="1.深入了解 wikicorpus"></a><strong>1.深入了解 wikicorpus</strong></h3><p>大家如果照著網路上的教學，通常也寫得大同小異，可能也不會特別注意模型到底是在哪個階段把東西濾掉的，這裡就來拆解一下整個流程讓大家了解一下：</p><p>預設情況下，讀者有訓練過 w2v 的話，一定會看過這行：</p><pre><code class="python">wiki_corpus = WikiCorpus(your_dump_bz2_file, dictionary={})</code></pre><p>這段就是把 dump 下來的 wiki 壓縮檔直接餵給 <code>WikiCorpus</code> 這個 class 來進行預處理，他會把文章處理成這個樣子：</p><ul><li><p>原來: 今天 天氣 , 不好 2021 星期一 氣溫 15度 , 下雨 , 機率 100%</p></li><li><p>處理後： 今天 天氣 不好 星期一 氣溫 度 下雨 機率</p><p>很明顯的上方例子的<code>數字</code>與<code>標點符號</code>都被消失了！</p><p>查看了官方文件後很明顯的沒有合適可以使用的參數，只有轉小寫這件事情可以直接用參數調整，不然我也不會發這篇了</p><blockquote><p><a href="https://radimrehurek.com/gensim/corpora/wikicorpus.html#gensim.corpora.wikicorpus.WikiCorpus" target="_blank" rel="noopener">https://radimrehurek.com/gensim/corpora/wikicorpus.html#gensim.corpora.wikicorpus.WikiCorpus</a></p></blockquote></li></ul><p>查詢官方的 source code 之後，發現他調整的地方是 WikiCorpus 裡面中會調用 <code>utils.py</code> 這隻檔案中的 <code>utils.tokenize</code>，裡面有毀屍滅跡的 regex 語法。接下來稍微說明一下他怎麼運作的呢？</p><h3 id="2-深入了解-utils-py"><a href="#2-深入了解-utils-py" class="headerlink" title="2.深入了解 utils.py"></a><strong>2.深入了解 utils.py</strong></h3><p>這裡面其他的 func 我們就別理他了，專注於他處理 regex 部分即可，我們現在就先簡單的直接調用，看看會發生什麼事：</p><h4 id="原始的樣子"><a href="#原始的樣子" class="headerlink" title="原始的樣子"></a>原始的樣子</h4><pre><code class="python">from gensim import utilscontent = &#39;今天 天氣 , 不好 2021 星期一 氣溫 15度 , 下雨 , 機率 100%&#39;[token.encode(&#39;utf8&#39;) for token in utils.tokenize(content, lower=True, errors=&#39;ignore&#39;)            if len(token) &lt;= 15 and not token.startswith(&#39;_&#39;)]</code></pre><ul><li>輸出，可以看得出來數字標點都不見了:</li></ul><pre><code>[b&#39;\xe4\xbb\x8a\xe5\xa4\xa9&#39;, b&#39;\xe5\xa4\xa9\xe6\xb0\xa3&#39;, b&#39;\xe4\xb8\x8d\xe5\xa5\xbd&#39;, b&#39;\xe6\x98\x9f\xe6\x9c\x9f\xe4\xb8\x80&#39;, b&#39;\xe6\xb0\xa3\xe6\xba\xab&#39;, b&#39;\xe5\xba\xa6&#39;, b&#39;\xe4\xb8\x8b\xe9\x9b\xa8&#39;, b&#39;\xe6\xa9\x9f\xe7\x8e\x87&#39;]</code></pre><h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><p>改寫了一下，不使用 <code>utils.tokenize</code></p><pre><code class="python">from gensim import utilscontent = &#39;今天 天氣 , 不好 2021 星期一 氣溫 15度 , 下雨 , 機率 100%&#39;[token.encode(&#39;utf8&#39;) for token in content.split()            if len(token) &lt;= 15 and not token.startswith(&#39;_&#39;)]</code></pre><ul><li>輸出，什麼都留下來了，但什麼都要自己處理有點煩，不採用，但是確定是這裡的問題:</li></ul><pre><code>[b&#39;\xe4\xbb\x8a\xe5\xa4\xa9&#39;, b&#39;\xe5\xa4\xa9\xe6\xb0\xa3&#39;, b&#39;,&#39;, b&#39;\xe4\xb8\x8d\xe5\xa5\xbd&#39;, b&#39;2021&#39;, b&#39;\xe6\x98\x9f\xe6\x9c\x9f\xe4\xb8\x80&#39;, b&#39;\xe6\xb0\xa3\xe6\xba\xab&#39;, b&#39;15\xe5\xba\xa6&#39;, b&#39;,&#39;, b&#39;\xe4\xb8\x8b\xe9\x9b\xa8&#39;, b&#39;,&#39;, b&#39;\xe6\xa9\x9f\xe7\x8e\x87&#39;, b&#39;100%&#39;]</code></pre><h4 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h4><p>直接改寫<code>utils.py</code>，大家可以在 package 的路徑下找到這份檔案</p><blockquote><p>/anaconda/lib/python3.6/site-packages/gensim/utils.py</p></blockquote><p>打開這份檔案可以發現，裡面有個 <code>tokenize</code>(我把註解拿掉了篇幅太長)，很明顯地在文章被轉成小寫之後，執行了 <code>PAT_ALPHABETIC.finditer(text)</code>，搜索了一下 <code>PAT_ALPHABETIC</code> 才終於發現這個萬惡之源！</p><pre><code class="python">def tokenize(text, lowercase=False, deacc=False, errors=&quot;strict&quot;, to_lower=False, lower=False):    lowercase = lowercase or to_lower or lower    text = to_unicode(text, errors=errors)    if lowercase:        text = text.lower()    if deacc:        text = deaccent(text)    for match in PAT_ALPHABETIC.finditer(text):        yield match.group()</code></pre><p>預設的 re 是這樣寫的：</p><pre><code class="python">PAT_ALPHABETIC = re.compile(&#39;(((?![\d])\w)+)&#39;, re.UNICODE)</code></pre><p>裡面的<code>(?![\d])</code>會把數字都過濾掉，所以我就把他改寫成這樣，大家可以依需求調整：</p><pre><code class="python">PAT_ALPHABETIC = re.compile(&#39;((()\w)+)&#39;, re.UNICODE)</code></pre><p>我們用最廢的範例還實作一次，請忽略 code 很醜：</p><pre><code class="python">import reimport utilscontent = &#39;今天 天氣 , 不好 2021 星期一 氣溫 15度 , 下雨 , 機率 100%&#39;PAT_ALPHABETIC = re.compile(&#39;((()\w)+)&#39;, re.UNICODE)def simple_tokenize(content):    for match in PAT_ALPHABETIC.finditer(content):        yield match.group()text = simple_tokenize(content)result = &#39;&#39;for i in text:    result += i + &#39; &#39;print(result)</code></pre><ul><li>輸出，是我想像的樣子了:</li></ul><pre><code>今天 天氣 不好 2021 星期一 氣溫 15度 下雨 機率 100</code></pre><p>不過這是我們自己的小測試，該如何應用在真實訓練上呢？我們繼續看下去～</p><h3 id="3-改寫與繼承"><a href="#3-改寫與繼承" class="headerlink" title="3.改寫與繼承"></a><strong>3.改寫與繼承</strong></h3><p>大致上了解他的用法之後，我採用的方式是直接複製一份 <code>utils.py</code> 到我的專案目錄下面，並改寫：</p><ul><li>從 </li></ul><pre><code class="python">PAT_ALPHABETIC = re.compile(&#39;(((?![\d])\w)+)&#39;, re.UNICODE)</code></pre><ul><li>變成</li></ul><pre><code class="python">PAT_ALPHABETIC = re.compile(&#39;((()\w)+)&#39;, re.UNICODE)</code></pre><p>而在主要調用的地方，自己創一個新的 class來繼承原來的 <code>WikiCorpus</code>，並改寫兩個 func 分別為 <code>tokenize</code> 與 <code>process_article</code> 就可以直接使用了喔！！ 以下的範例基本上跟原始 source 是一樣的，不用修改什麼：</p><p><strong><em>記得在 import 自己的 utils.py 時要放在 gensim 後面喔！</em></strong></p><pre><code class="python">import sysfrom gensim.corpora import *import osfrom gensim.corpora.wikicorpus import *import utils # must import after gensim packagedef tokenize(content):    &quot;&quot;&quot;    Tokenize a piece of text from wikipedia. The input string `content` is assumed    to be mark-up free (see `filter_wiki()`).    Return list of tokens as utf8 bytestrings. Ignore words shorted than 2 or longer    that 15 characters (not bytes!).    &quot;&quot;&quot;    # TODO maybe ignore tokens with non-latin characters? (no chinese, arabic, russian etc.)    return [        utils.to_unicode(token) for token in utils.tokenize(content, lower=True, errors=&#39;ignore&#39;)        if 2 &lt;= len(token) &lt;= 15 and not token.startswith(&#39;_&#39;)    ]def process_article(args):    &quot;&quot;&quot;    Parse a wikipedia article, returning its content as a list of tokens    (utf8-encoded strings).    &quot;&quot;&quot;    text, lemmatize, title, pageid = args    text = filter_wiki(text)    if lemmatize:        result = utils.lemmatize(text)    else:        result = tokenize(text)    return result, title, pageidclass MyWikiCorpus(WikiCorpus):    def __init__(self, fname, processes=None, lemmatize=utils.has_pattern(), dictionary=None, filter_namespaces=(&#39;0&#39;,)):        WikiCorpus.__init__(self, fname, processes, lemmatize, dictionary, filter_namespaces)    def get_texts(self):        articles, articles_all = 0, 0        positions, positions_all = 0, 0        texts = ((text, self.lemmatize, title, pageid) for title, text, pageid in extract_pages(bz2.BZ2File(self.fname), self.filter_namespaces))        pool = multiprocessing.Pool(self.processes)        # process the corpus in smaller chunks of docs, because multiprocessing.Pool        # is dumb and would load the entire input into RAM at once...        for group in utils.chunkize(texts, chunksize=10 * self.processes, maxsize=1):            for tokens, title, pageid in pool.imap(process_article, group):  # chunksize=10):                articles_all += 1                positions_all += len(tokens)                # article redirects and short stubs are pruned here                if len(tokens) &lt; ARTICLE_MIN_WORDS or any(title.startswith(ignore + &#39;:&#39;) for ignore in IGNORED_NAMESPACES):                    continue                articles += 1                positions += len(tokens)                if self.metadata:                    yield (tokens, (pageid, title))                else:                    yield tokens        pool.terminate()        logger.info(            &quot;finished iterating over Wikipedia corpus of %i documents with %i positions&quot;            &quot; (total %i articles, %i positions before pruning articles shorter than %i words)&quot;,            articles, positions, articles_all, positions_all, ARTICLE_MIN_WORDS)        self.length = articles  # cache corpus length</code></pre><p>要修改的地方就是一開始使用的地方，要將：</p><pre><code class="python">wiki_corpus = WikiCorpus(your_dump_bz2_file, dictionary={})</code></pre><p>改成 <code>MyWikiCorpus</code> 就可以囉：</p><pre><code class="python">wiki_corpus = MyWikiCorpus(your_dump_bz2_file, dictionary={})</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>以下參考資料並沒有直接說明如何保留數字，都是說明怎麼保留標點符號，要保留數字可以用我上面改寫 utils.py 的方式！</p><p>gensim 套件說明</p><blockquote><p><a href="https://radimrehurek.com/gensim/corpora/wikicorpus.html#gensim.corpora.wikicorpus.WikiCorpus" target="_blank" rel="noopener">https://radimrehurek.com/gensim/corpora/wikicorpus.html#gensim.corpora.wikicorpus.WikiCorpus</a></p></blockquote><p>解決標點符號被移除的問題(數字依然會被移掉)</p><blockquote><p><a href="https://stackoverflow.com/questions/50697092/how-to-get-the-wikipedia-corpus-text-with-punctuation-by-using-gensim-wikicorpus" target="_blank" rel="noopener">https://stackoverflow.com/questions/50697092/how-to-get-the-wikipedia-corpus-text-with-punctuation-by-using-gensim-wikicorpus</a></p></blockquote><p>完整範例程式參考(數字依然會被移掉)</p><blockquote><p><a href="https://github.com/RaRe-Technologies/gensim/issues/552#issuecomment-278036501" target="_blank" rel="noopener">https://github.com/RaRe-Technologies/gensim/issues/552#issuecomment-278036501</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> NLP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> wikicorpus </tag>
+            
+            <tag> NLP </tag>
+            
+            <tag> word2vec </tag>
+            
+            <tag> gensim </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Django 系列- 如何在{{value}}中完整移除html tag?</title>
+      <link href="/posts/7838/"/>
+      <url>/posts/7838/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-completely-remove-the-tags-before-truncating"><a href="#How-to-completely-remove-the-tags-before-truncating" class="headerlink" title="How to completely remove the tags before truncating?"></a>How to completely remove the tags before truncating?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>部落格或網誌的文章清單中簡短顯示內容<a href="https://chilunhuang.github.io/posts/52152/">(點擊看上集)</a></li><li>Django filters(過濾器) 的使用<ul><li><code>striptags</code></li></ul></li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>可以使用 Django的環境或簡單範例</li><li>本環境測試使用 <code>Django==3.0.7</code> 以上(含)</li></ul><p>在顯示部落格的文章清單時常常會有顯示每篇文章開頭的簡短文字需求，內建的 <code>truncatechars</code> 將會是你的好朋友！不過使用的時候這方法卻會把 HTML Tag 字元都算進去，使用起來相當不便，還要自己計算位置並搭配<code>slice</code>一起使用，本文將會幫你解決此問題。</p><p>更詳盡的搭配使用說明請見上一期<a href="https://chilunhuang.github.io/posts/52152/"> Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?</a>，搭配服用更有效。</p><h3 id="1-striptags"><a href="#1-striptags" class="headerlink" title="1. striptags"></a><strong>1. striptags</strong></h3><p>假設資料讀出來的時候是:</p><pre><code class="html">&lt;p&gt;hello, word&lt;/p&gt;</code></pre><p>使用 <code>striptags</code>的方法:</p><pre><code>{{ content.text|striptags|truncatechars:3 }}</code></pre><p>結果將會顯示兩個字母(記得 filter 會自動 -1 喔！)</p><pre><code>he</code></pre><p>有看上集的朋友應該會有點疑惑這個方法跟 <code>truncatechars_html</code>差別是什麼呢？</p><pre><code>{{ content.text| truncatechars_html:7 }}</code></pre><p>比較專區：</p><p><code>truncatechars_html</code> 將會忽略前後的標籤，取得中間的字做處理，但標籤還是存在的，並沒有被拿掉或刪除！而使用 <code>striptags</code>的方法他會直接將 html 直接拿掉，在對字詞做處理，這是他們最大的不同喔！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>官網：</p><blockquote><p><a href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#striptags" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#striptags</a></p></blockquote><p>stackoverflow</p><blockquote><p><a href="https://stackoverflow.com/questions/48662262/how-can-i-truncate-text-and-remove-html-tags-in-django-template" target="_blank" rel="noopener">https://stackoverflow.com/questions/48662262/how-can-i-truncate-text-and-remove-html-tags-in-django-template</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Django </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> django </tag>
+            
+            <tag> truncatechars </tag>
+            
+            <tag> striptags </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pyspark系列-如何使用pyspark連結clickhouse教學</title>
+      <link href="/posts/36151/"/>
+      <url>/posts/36151/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-pyspark-connect-with-cilckhouse-to-read"><a href="#How-to-use-pyspark-connect-with-cilckhouse-to-read" class="headerlink" title="How to use pyspark connect with cilckhouse to read?"></a>How to use pyspark connect with cilckhouse to read?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>於 <code>GCP Dataproc</code> 環境中加入<code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code> 的 jar 檔</li><li>於 pyspark 中對 clickhouse 進行讀取</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>熟悉 gcp 環境</li><li>一個以使用的 clickhouse 環境</li></ul><h3 id="1-引入-jar-檔"><a href="#1-引入-jar-檔" class="headerlink" title="1.引入 jar 檔"></a><strong>1.引入 jar 檔</strong></h3><p>基本上在 spark 環境都會引入各種需要的 jar 檔來完成很多事，clickhouse 也不例外，這裡要使用的是 <code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code>，相關版本號請自行依需求微調：<a href="https://mvnrepository.com/artifact/ru.yandex.clickhouse/clickhouse-jdbc" target="_blank" rel="noopener">版本列表</a>！決定好版本後我們就開始吧～</p><h3 id="2-啟動-Dataproc"><a href="#2-啟動-Dataproc" class="headerlink" title="2.啟動 Dataproc"></a><strong>2.啟動 Dataproc</strong></h3><p>這邊我就不贅述了，就是把 jar 檔案加入 <code>--properties</code> 中即可，其中的格式寫法可參考稍早之前的文章 <a href="https://chilunhuang.github.io/posts/14115/">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件</a>，其他參數就依照自己需求調整！</p><pre><code>gcloud dataproc clusters create clickhouse-pyspark \    --region=global \    --bucket my-bucket \    --master-boot-disk-size 100GB \    --num-workers 2 \    --worker-boot-disk-size 500GB  \    --worker-machine-type n1-standard-4 \    --zone asia-east1-b  \    --labels pro=report,user=test  \    --image-version=1.4 \    --metadata &#39;PIP_PACKAGES=configparser==4.0.2 PyMySQL==0.9.3&#39;\    --initialization-actions gs://dataproc-initialization-actions/python/pip-install.sh \        --properties &#39;spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true&#39;</code></pre><h3 id="3-pyspark-read-data-from-clickhouse"><a href="#3-pyspark-read-data-from-clickhouse" class="headerlink" title="3.pyspark read data from clickhouse"></a><strong>3.pyspark read data from clickhouse</strong></h3><p>這邊必須要填入 clickhouse 的 <code>url</code> 與 <code>登入資訊</code>等等資料，都查到這篇了我就預設大家手上都已經有可以正常登入的 clickhouse！</p><pre><code class="python">df = spark.read.format(&quot;jdbc&quot;)\    .option(&quot;driver&quot;, &quot;ru.yandex.clickhouse.ClickHouseDriver&quot;)\    .option(&quot;url&quot;,&quot;jdbc:clickhouse://自行填入位置&quot;)\    .option(&quot;user&quot;,&quot;帳號&quot;)\    .option(&quot;password&quot;,&quot;密碼&quot;)\    .option(&quot;dbtable&quot;,SQL語法)\    .option(&quot;partitionColumn&quot;, &quot;product_id&quot;)\    .option(&quot;fetchsize&quot;, 25000)\    .option(&quot;lowerBound&quot;, 0)\    .option(&quot;upperBound&quot;, 24)\    .option(&quot;numPartitions&quot;, 24)\    .option(&quot;queryTimeout&quot;, 600)\    .load()</code></pre><p>上面範例的其他參數就自行所需來微調了！</p><p>今天就介紹到這吧！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p><code>properties</code> 格式的用法請參照：</p><blockquote><p><a href="https://chilunhuang.github.io/posts/14115/">https://chilunhuang.github.io/posts/14115/</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pyspark系列-如何使用pyspark連結kafka教學</title>
+      <link href="/posts/26469/"/>
+      <url>/posts/26469/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-pyspark-connect-with-kafka-to-write-and-read"><a href="#How-to-use-pyspark-connect-with-kafka-to-write-and-read" class="headerlink" title="How to use pyspark connect with kafka to write and read?"></a>How to use pyspark connect with kafka to write and read?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>於 <code>GCP Dataproc</code> 環境中加入<code>spark-sql-kafka</code> 的 jar 檔</li><li>於 pyspark 中對 kafka 進行讀/寫</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>熟悉 gcp 環境</li><li>kafka 的 <code>broker</code></li><li>kafka 的 <code>Topic</code></li></ul><h3 id="1-引入-jar-檔"><a href="#1-引入-jar-檔" class="headerlink" title="1.引入 jar 檔"></a><strong>1.引入 jar 檔</strong></h3><p>基本上在 spark 環境都會引入各種需要的 jar 檔來完成很多事，kafka 也不例外，這裡要使用的是 <code>spark-sql-kafka-0-10_2.11:2.3.2</code>，相關版本號請自行依需求微調：<a href="https://mvnrepository.com/artifact/org.apache.spark/spark-sql-kafka-0-10_2.11" target="_blank" rel="noopener">版本列表</a>！決定好版本後我們就開始吧～</p><h3 id="2-啟動-Dataproc"><a href="#2-啟動-Dataproc" class="headerlink" title="2.啟動 Dataproc"></a><strong>2.啟動 Dataproc</strong></h3><p>這邊我就不贅述了，就是把 jar 檔案加入 <code>--properties</code> 中即可，其中的格式寫法可參考稍早之前的文章 <a href="https://chilunhuang.github.io/posts/14115/">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件</a>，其他參數就依照自己需求調整！</p><pre><code>gcloud dataproc clusters create kafka-pyspark \    --region=global \    --bucket my-bucket \    --master-boot-disk-size 100GB \    --num-workers 2 \    --worker-boot-disk-size 500GB  \    --worker-machine-type n1-standard-4 \    --zone asia-east1-b  \    --labels pro=report,user=test  \    --image-version=1.4 \    --metadata &#39;PIP_PACKAGES=configparser==4.0.2 PyMySQL==0.9.3&#39;\    --initialization-actions gs://dataproc-initialization-actions/python/pip-install.sh \        --properties &#39;spark:spark.jars.packages=org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2,dataproc:dataproc.monitoring.stackdriver.enable=true&#39;</code></pre><h3 id="3-pyspark-write-data-into-kafka"><a href="#3-pyspark-write-data-into-kafka" class="headerlink" title="3.pyspark write data into kafka"></a><strong>3.pyspark write data into kafka</strong></h3><p>這邊必須要填入 kafka 的 <code>topic</code> 與 <code>broker</code>，都查到這篇了我就預設大家都知道這是要幹嘛的了！</p><pre><code class="python"># 定義 Topic 與 Kafka_brokers(隨便打的範例)Topic = &quot;test.data.com.tw&quot;Kafka_brokers =  &quot;11.242.290.235:9092&quot;df.select(to_json(struct(&quot;*&quot;)).alias(&quot;value&quot;))\    .write\    .format(&quot;kafka&quot;)\    .option(&quot;kafka.bootstrap.servers&quot;, Kafka_brokers)\    .option(&quot;topic&quot;, Topic)\    .save()</code></pre><p>基本上就是填入兩個參數到相對應的位置即可，簡單易懂！</p><h3 id="4-pyspark-read-data-from-kafka"><a href="#4-pyspark-read-data-from-kafka" class="headerlink" title="4.pyspark read data from kafka"></a><strong>4.pyspark read data from kafka</strong></h3><p>寫的部分都這麼容易了，讀其實也是差不多的：</p><pre><code class="python">df = spark \  .read \  .format(&quot;kafka&quot;) \  .option(&quot;kafka.bootstrap.servers&quot;, Kafka_brokers) \  .option(&quot;subscribe&quot;, Topic) \  .load()</code></pre><p>今天就介紹到這吧！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>更多的參數與寫法調整，請參考官網：</p><blockquote><p><a href="https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html</a></p></blockquote><p>properties 格式的用法請參照：</p><blockquote><p><a href="https://chilunhuang.github.io/posts/14115/">https://chilunhuang.github.io/posts/14115/</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>登山系列-玉山一日單攻(主峰)攻略&amp;紀錄</title>
+      <link href="/posts/17828/"/>
+      <url>/posts/17828/</url>
+      
+        <content type="html"><![CDATA[<h1 id="玉山一日單攻-主峰-攻略-amp-紀錄"><a href="#玉山一日單攻-主峰-攻略-amp-紀錄" class="headerlink" title="玉山一日單攻(主峰)攻略&amp;紀錄"></a>玉山一日單攻(主峰)攻略&amp;紀錄</h1><p>登上玉山的計畫從 2020/03 就開始了，但是可以的時間都一直抽不到簽，超級沒有籤運QQ，與排雲山莊非常的沒有緣分，只好開始準備玉山一日單攻抽籤。很幸運的在8月改制後(<code>先搶先贏改成電腦選</code>)就中籤了，也順利在 9月完攻。這次準備上比較麻煩也花比較多時間查資料的就是交通了，由於沒有自駕車，所以都要靠高鐵、客運、公車來解決，今天就來分享一下準備的路線！</p><p><strong>上山會檢查的文件證件：</strong></p><p>基本上下面列出來的東西最重要，其他就是依照自己需求準備了！</p><ul><li><strong>身分證 (半夜出發時需要電腦報到掃描身份證)</strong></li><li><strong>入山證 (需要印出來)</strong></li><li><strong>入園證 (可以將電子版存在手機查證即可，節能減碳)</strong></li><li><strong>準備住宿 (本篇是東埔山莊)</strong></li><li><strong>其他證件/文件則依照自己的需求攜帶(健保卡等)</strong></li></ul><h3 id="1-如何申請"><a href="#1-如何申請" class="headerlink" title="1.如何申請"></a><strong>1.如何申請</strong></h3><p>這部分其實會查到相當多的資料，其實我一開始也是看得亂七八糟。在玉山單日往返部份有四種路線：</p><ul><li>玉山前峰單日往返(塔塔加 - 玉山前峰 - 塔塔加 )</li><li><code>玉山線單日往返(塔塔加 - 玉山線 - 塔塔加) &lt;- 限制60人</code></li><li>乙女瀑布單日往返(東埔 – 乙女瀑布 – 東埔)</li><li>瓦拉米單日往返(南安 - 瓦拉米 - 南安)</li></ul><p>我們要申請的路線就是有限制人數的那一條，<code>玉山線單日往返(塔塔加 - 玉山線 - 塔塔加)</code>，提前決定好日期來申請，由電腦抽籤決定，但如果不興沒中籤又很想趕快爬，就可以在<a href="https://npm.cpami.gov.tw/bed_7.aspx" target="_blank" rel="noopener">官網上</a>看一下哪一天還有餘額可以選，如果平日可以出發的夥伴基本上比較容易有空缺！</p><p>基本上就是進入官網填寫相關基本資料<a href="https://npm.cpami.gov.tw/apply_1_2.aspx?unit=c951cdcd-b75a-46b9-8002-8ef952ec95fd" target="_blank" rel="noopener">(入園申請)</a>，這裡我就不贅述，該寫什麼就寫什麼，主路線部分就選擇 <code>玉山線</code>，次路線就是<code>玉山線單日往返(塔塔加 - 玉山線 - 塔塔加)</code>，都填完之後，就是等消息囉！</p><p>如果雀屏中選，信箱應該會收到一封 <code>YSNP(玉管處)notification－玉山線單日往返中籤通知(你的編號)</code> 為開頭的信，這個時候就可以開始選備後續的事情了！</p><h3 id="2-中籤後該做什麼"><a href="#2-中籤後該做什麼" class="headerlink" title="2.中籤後該做什麼"></a><strong>2.中籤後該做什麼</strong></h3><ul><li><p><strong>預定住宿</strong></p><p>由於是單攻，勢必要在半夜出發，所以上山後到入夜必須有個落腳處，這次就選擇了<a href="http://dongpu.mmweb.tw/?ptype=info" target="_blank" rel="noopener">東埔山莊</a>，他的評價兩極，個人覺得衛生沒有很差，廁所非常乾淨，差的是跟其他山屋一樣很吵睡眠品質很不好就是了，其他尚可接受。</p><p>預約方式就打電話過去，留下相關資料後，於時間內匯款至指定帳戶，匯款成功後要<code>傳真</code>給他們(這裡我真的覺得很不可思議從小到大我還真的沒有傳真過…，最後使用了免費的線上傳真(可以 google 一下))，一人一個晚上 300 元。<code>記得一定要留匯款紀錄的截圖或是紙本紀錄，現場會被再問一次的</code>…</p></li></ul><p><img src="/medias/post_img/17828_2.jpg" alt="東埔山莊"></p><ul><li><strong>安排交通</strong></li></ul><p>就如前面所說，我們沒有自駕車，所以就查了許多資料，基本上都是參考網路上各位大大的資訊：</p><p>我們的上山路線是 ：</p><pre><code>07:55 板橋高鐵站09:13 嘉義高鐵站09:30 台灣好行 7329A (2號出口7月台)11:39 阿里山轉運站 (午餐)13:00 員林客運 6739（7-11前）13:30 上東埔站13:50 東埔山莊11:40 起床吃早餐預計起登</code></pre><p><img src="/medias/post_img/17828_1.jpg" alt="台灣好行 7329 (高鐵2號出口7月台)"></p><p><code>台灣好行 7329</code> 直接刷悠遊卡就可以上車，我是不知道車滿了上不去會發生什麼事(是遊覽車)，所以我們有預留下一班的時間，大家要自己斟酌時間的彈性，一定不要把時間算死，影響到下一班最害怕沒搭到的公車 <code>6739</code>。</p><p><code>員林客運 6739(阿里山往日月潭)</code> ，整趟旅程最害怕錯過的公車(小巴)，一天只有兩班(下午一點跟兩點)，部分則需要事先預約<a href="https://www.bustrip.com.tw/memberLogin.action" target="_blank" rel="noopener">(這裡預約)</a>，他會給一組 QR code，不用事先付款，也是上車的時候刷悠遊卡，不過我們上車沒有檢查 QR code，所以沒有很確定整個運作原理是什麼，可能是沒有滿車就不會檢查吧？！(<code>切記下山的公車也是要事先預約的，所以最好下山的也一起訂了！</code>)</p><p>綜合以上兩點，請大家<code>悠遊卡裡面一定要有錢喔</code>！</p><ul><li><strong>等待入園證通過，一鍵申請入山</strong></li></ul><p>基本上單攻的團隊都沒有住在排雲，也不會有繳費問題，除非資料有缺漏，不然什麼都不用做，就是等待<code>入園證</code>通過，通過後在下方會有個可以一鍵申請<code>入山證</code>的鈕，兩個證件都收到之後，基本上就大功告成拉！</p><p>記得入山證要印出來，入園證可以使用電子版的形式存在手機即可！</p><h3 id="3-準備就緒"><a href="#3-準備就緒" class="headerlink" title="3. 準備就緒"></a><strong>3. 準備就緒</strong></h3><p>文件都準備好後，好好睡一覺準備欣賞台灣最高峰的全貌吧！相關行動糧與背包配置我就不多說明了！</p><p>記得出發前要：</p><ul><li>入山證上聯和名冊投入塔塔加小隊前信箱</li><li>用身分證在塔塔加小隊隔壁服務中心自助機前面掃描</li><li>入園證到排雲山莊檢查（6點開始有人）</li><li>單攻隊伍早上<code>10點前</code>一定要過排雲山莊</li><li>玉山登山口至上東埔停車場有100元接駁車（走路約50分鐘，可視情況看是否搭車）</li><li>保登山險 (政府有規定，若被查到是會罰錢的)</li></ul><p><img src="/medias/post_img/17828_3.jpg" alt="入山證上聯和名冊投入塔塔加小隊前信箱"></p><p><img src="/medias/post_img/17828_4.jpg" alt="身分證於自助機前面掃描"></p><h3 id="4-單攻玉山"><a href="#4-單攻玉山" class="headerlink" title="4. 單攻玉山"></a><strong>4. 單攻玉山</strong></h3><p>我們隊伍三人因為要配合交通，所以走得非常快，很怕趕不上車子，基本上看大家的紀錄都是 14~18 小時都有，我們最後完攻回登山口是12小時，如果跟我們一樣沒有自己交通工具的話，可以參考一下我們的數據。</p><p>以下為我們整趟行程的時間點紀錄，給大家參考：</p><p><code>2020/09/21</code></p><pre><code>00:11 東埔山莊出發 (途中走錯方向拍很久的星星)00:39 投入山證00:42 身分證報到 起登01:14 玉山登山口01:54 夢祿亭02:15 玉山前鋒岔路口04:04 距離排雲山莊 2.5k04:56 距離排雲山莊 0.5k05:12 排雲山莊休整與報到入園 (雖然還沒六點，但是此時其實有遇到檢查的大哥，所以提前報到了)05:45 出發06:18 主峰圓峰山屋岔路口07:15 距離主峰 0.4k處07:20 風口(主北岔路)07:41 登頂玉山主峰08:15 拍照完下山08:31 風口(主北岔路)09:07 主峰圓峰山屋岔路口09:38 排雲山莊停機坪10:04 距離登山口 8k10:15 距離登山口 7.5k10:42 玉山大峭壁11:05 棧橋編號5412:44 玉山登山口</code></pre><p>也還好天氣非常的好，夜爬的時候滿天星斗，還有遇到白面鼯鼠、山羌，這些在白天爬還很難遇到呢！也是因為這好天氣讓我們趕路的很順利！</p><p><img src="/medias/post_img/17828_5.jpg" alt="登頂照"></p><h3 id="5-回程"><a href="#5-回程" class="headerlink" title="5. 回程"></a><strong>5. 回程</strong></h3><p>由於我們回程的時候，剛好有好心的山友有自駕車，願意順便載我們到高鐵站，所以就省下了還要坐公車折騰到日月潭和台中高鐵的過程，不過我們還是有事先查好資料，所以就提供給大家。但以下的資訊就<code>沒有實際搭過了</code>，大家自己斟酌參考囉：</p><p>原本預計下山行程：</p><p><code>記得下山的 員林客運 6739 一樣要先預約喔！！</code></p><pre><code>14:30 塔塔加站 員林客運 6739 (公廁旁)16:30 日月潭站16:40 台灣好行 667018:00 台中高鐵站回板橋</code></pre><p>以上為單攻的相關紀錄，有任何問題也歡迎發問，玉山真的規劃的相當好也安全，除了過了排雲後的路程稍為有點危險性，只要慢慢走一定都沒問題，大人小孩都一樣，只是單攻要注意到<code>個人的體能狀況</code>，隨時要調整呼吸與注意有沒有誘發高山症喔！山永遠都在，沒爬完下次再來就好，祝大家次次出大景！</p><p>若有任何問題或錯誤與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 登山系列 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 玉山單攻 </tag>
+            
+            <tag> 登山 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?</title>
+      <link href="/posts/5/"/>
+      <url>/posts/5/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-get-current-url-in-template-or-view-py"><a href="#How-to-get-current-url-in-template-or-view-py" class="headerlink" title="How to get current url in template or view.py?"></a>How to get current url in template or view.py?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何獲取當下頁面的 url</li><li>如何獲取前一頁面的 url (referrer)</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>可以使用 Django的環境或簡單範例</li><li>本環境測試使用 <code>Django==3.0.7</code> 以上(含) </li></ul><h3 id="1-在-template-中"><a href="#1-在-template-中" class="headerlink" title="1.在 template 中"></a><strong>1.在 template 中</strong></h3><p>在 template 裡面有基本的三種使用方式，要依照網頁架構跟需求使用：</p><p>假設以本站的某一篇文章為例子：</p><p><code>https://chilunhuang.github.io/posts/52152/#toc-heading-5</code></p><p>第一種去頭去尾(拿掉 http/https 以及 get 相關參數)：</p><pre><code>{{request.path}}</code></pre><p>結果為：</p><blockquote><p>/posts/52152/</p></blockquote><p>第二種去頭(拿掉 http/https)：</p><pre><code>{{request.get_full_path}}</code></pre><p>結果為：</p><blockquote><p>/posts/52152/#toc-heading-5</p></blockquote><p>第三種完整 url：</p><pre><code>{{request.build_absolute_uri}}</code></pre><p>結果為：</p><blockquote><p><a href="https://chilunhuang.github.io/posts/52152/#toc-heading-5">https://chilunhuang.github.io/posts/52152/#toc-heading-5</a></p></blockquote><h3 id="2-在-view-py-中"><a href="#2-在-view-py-中" class="headerlink" title="2.在 view.py 中"></a><strong>2.在 view.py 中</strong></h3><p>其實基本上剛剛上面 template 的例子全部也都可以直接使用在 view.py 當中喔，只要把 <code>{{}}</code> 拿掉就可以使用了，<code>request</code> 大家應該也相對的很熟悉了，每一段 function 都要使用啊！</p><p>就像下面判斷 GET/POST 的小範例一樣的用法：</p><pre><code>if request.method == &#39;GET&#39;:    do_something()elif request.method == &#39;POST&#39;:    do_something_else()</code></pre><p>獲取方式就是下面這樣：</p><pre><code>request.build_absolute_uri</code></pre><h3 id="3-取得前一頁網址-referrer"><a href="#3-取得前一頁網址-referrer" class="headerlink" title="3.取得前一頁網址(referrer)"></a><strong>3.取得前一頁網址(referrer)</strong></h3><p>這一段要介紹一個別東西： <code>HttpRequest.META</code><br>這個 library 可以獲取很多額外的資訊，例如：</p><ul><li>client’s user-agent  </li><li>The IP address of the client.</li><li>The hostname of the client.</li><li>…</li></ul><p>更多功能請見官網：</p><blockquote><p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META</a></p></blockquote><p>這裡就示範我最常用的導回前一頁的功能，大家可能會想怎麼會有這個需求呢？通常填完表單就讓他再回到表單頁就好，那就簡單的 redirect 到  <code>request.build_absolute_uri</code> 就好，幹嘛需要 <code>referrer</code>？</p><p>這麼做的原因是有些表單填完送出後是沒有真實頁面存在的，他就直接 call view.py 去執行相關的動作後就會結束，如果我倒回原來的頁面，網址其實是不對的，是不是很抽象？我來舉個例子：</p><p>假設我在 <code>https://chilunhuang.github.io/</code> 有個表單，該表單是讓大家寄信問問題，送出後就會直接寄信給我以及 user，但該表單並沒有一個獨立頁面，而是嵌在 <code>https://chilunhuang.github.io/</code>，當表單送出時會導向一個頁面(<code>send_gmail/</code>)，以及執行已經在 view.py 中定義的 func(<code>send_gmail</code>)</p><pre><code class="python"># 在 urls.py 中path(&#39;send_gmail/&#39;, send_gmail, name=&#39;send_gmail&#39;)</code></pre><p>執行完畢後直接使用 <code>request.build_absolute_uri</code> 回到該頁面就會導向 <code>send_gmail/</code> 這個不存在的頁面去！所以才會有導向 <code>referrer</code> 的需求，那該如何是好呢？可以使用以下的語法(<code>HTTP_REFERER</code>)：</p><pre><code class="python">HttpResponseRedirect(request.META.get(&#39;HTTP_REFERER&#39;, &#39;/&#39;))</code></pre><p>使用上面的這個方法就可以直接回到 <code>send_gmail/</code> 前一頁的 <code>https://chilunhuang.github.io/</code>！</p><p>以上為簡單的與 url path 相關的一些語法介紹，這裡面的水其實蠻深的，也有很多有趣的東西，有興趣的讀者可以自己好好的玩玩！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>官方文件：</p><blockquote><p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/</a></p></blockquote><p>stackoverflow：</p><blockquote><p><a href="https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template" target="_blank" rel="noopener">https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我<code>隨便點個廣告</code>，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Django </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> django </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?</title>
+      <link href="/posts/52152/"/>
+      <url>/posts/52152/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-truncate-filter-to-slice-text-of-Django-template-tag"><a href="#How-to-use-truncate-filter-to-slice-text-of-Django-template-tag" class="headerlink" title="How to use truncate filter to  slice text of Django template tag?"></a>How to use truncate filter to  slice text of Django template tag?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>部落格或網誌的文章清單中簡短顯示內容</li><li>Django filters(過濾器) 的使用<ul><li><code>truncatechars</code></li><li><code>truncatechars_html</code></li><li><code>truncatewords</code></li><li>附贈 <code>slice</code></li></ul></li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>可以使用 Django的環境或簡單範例</li><li>本環境測試使用 <code>Django==3.0.7</code> 以上(含)</li></ul><p>在官方文件中也解釋得蠻清楚的，我就簡單的帶過所有可以使用的相關語法：</p><h3 id="1-truncatechars"><a href="#1-truncatechars" class="headerlink" title="1. truncatechars"></a><strong>1. truncatechars</strong></h3><p><code>truncatechars</code>從字面上的意思也很好理解，使用方式如下：</p><pre><code>{{ value|truncatechars:7 }}</code></pre><p>結果如下圖，可以看出他秀出了六個字<code>&lt;p&gt;這是一…</code>，這個例子可以看出兩個小結論：</p><ul><li>Filters 後面所寫的數字會自動 <code>-1</code>，我是填 7，但只出現 6 個</li><li>如果文章儲存的方式是直接存入整個 <code>html</code>，這樣其他 tag 也會被算入</li><li>使用這個體系的 filters 會自動地在結尾上面加上 <code>...</code></li></ul><p>針對第二點，<code>Django filters</code> 也有相對應的解決方式，請繼續看下去！ </p><p><img src="/medias/post_img/52152_1.jpg" alt="結果"></p><h3 id="2-truncatechars-html"><a href="#2-truncatechars-html" class="headerlink" title="2. truncatechars_html"></a><strong>2. truncatechars_html</strong></h3><p>直接上範例：</p><pre><code>{{ value| truncatechars_html:7 }}</code></pre><p>這時候大家應該有發現，這次 filter 自動忽略了 tag <code>&lt;p&gt;...&lt;/p&gt;</code>，直接抓取了中間的六個文字！</p><blockquote><p>小提醒：如果不想要顯示 html 出現在頁面上，在要語法後面加上<code>safe</code>:</p></blockquote><pre><code>{{ value| truncatechars_html:7|safe }}</code></pre><p><img src="/medias/post_img/52152_2.jpg" alt="結果"></p><h3 id="3-truncatewords-中文不適用"><a href="#3-truncatewords-中文不適用" class="headerlink" title="3. truncatewords(中文不適用)"></a><strong>3. truncatewords(中文不適用)</strong></h3><p>這個字面上看起來好理解，但他卻<code>不適用在中文</code>上面喔！他會針對句子中的標點符號或是空白來斷字，這個方式對英語系的才會有效果，中文會變得非常奇怪，變成整段字都會回傳！</p><h3 id="4-truncatewords-html-中文不適用"><a href="#4-truncatewords-html-中文不適用" class="headerlink" title="4. truncatewords_html(中文不適用)"></a><strong>4. truncatewords_html(中文不適用)</strong></h3><p>與 <code>truncatewords</code>相同，不適用於中文，與上面的差別就是 html tag 會被忽略計算。</p><h3 id="5-同場加碼-slice"><a href="#5-同場加碼-slice" class="headerlink" title="5. 同場加碼 slice"></a><strong>5. 同場加碼 slice</strong></h3><p><code>slice</code>這個方法是我還沒發現 <code>truncat</code> 體系時最常使用切割字串的方式，不過他就不會自動加上 <code>...</code>了。</p><p>他比較特別的是有點像 python List [:] 的用法，可以指定前後的位置：</p><pre><code>{{ some_list|slice:"0:2" }}</code></pre><p><strong><em>特別的是他與 python 相同，是從 0 開始計算位置，但不能使用 -1</em></strong></p><p><img src="/medias/post_img/52152_3.jpg" alt="結果"></p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p>truncatechars: <a href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#truncatechars" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#truncatechars</a></p></blockquote><blockquote><p>slice: <a href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#slice" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#slice</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Django </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> django </tag>
+            
+            <tag> filters </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Python 系列- 如何乾淨移除網址url中的追蹤碼?</title>
+      <link href="/posts/24518/"/>
+      <url>/posts/24518/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-remove-parse-utm-tags-from-urls-to-get-clean-url-in-python"><a href="#How-to-remove-parse-utm-tags-from-urls-to-get-clean-url-in-python" class="headerlink" title="How to remove/parse utm tags from urls to get clean url in python?"></a>How to remove/parse utm tags from urls to get clean url in python?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何使用 python 得到乾淨的 url</li><li>使用 <code>urllib.parse</code> 移除不想要的 tag/參數/query</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>本環境測試使用 <code>python3.6</code> 以上(含)</li></ul><h3 id="1-何謂-UTM"><a href="#1-何謂-UTM" class="headerlink" title="1.何謂 UTM"></a><strong>1.何謂 UTM</strong></h3><p>在處理跟網址相關的程式的時候大家應該都會有一個困擾，明明就都會導到一樣的網址，但是網址卻都不一樣，因為後面帶了各式各樣的來源追蹤碼追蹤網站流量，最常見的就是 Google GA 的<code>UTM</code> 以及 <code>facebook</code> 的追蹤 tag 了，這樣就會導致計算流量時重複計算的困擾:</p><pre><code>https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789#fb_comment_id=0987</code></pre><pre><code>https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789</code></pre><pre><code>https://www.google.com/?utm_source=123&amp;utm_medium=456</code></pre><p>上述的三個例子，都會導向同一個頁面，但是由於網址不同，在計算流量時就會出問題！！</p><p>這個標記能幹嘛呢？</p><blockquote><p>Google Analytics 提供給分析人員可以自訂寫入的連結標</p></blockquote><p>簡單來說就是可以追蹤使用這從何而來，從哪個頁面、按鈕、甚至是廣告，只要使用者點擊了某個被我安插 UTM tag 的按鈕或連結，這個網址就會把相關資訊帶回後台，我就可以很簡單的分流，我的網站流量是來自自然搜尋、email、廣告活動頁面…等等的來源。</p><p>常見的 tag 有 <code>utm_source</code>、<code>utm_medium</code>、<code>utm_campaign</code>，簡單相關常識可以到參考資料看更多喔！</p><h3 id="2-urllib-parse"><a href="#2-urllib-parse" class="headerlink" title="2.urllib.parse"></a><strong>2.urllib.parse</strong></h3><p>我們可以利用 Python 內建的 <code>urllib.parse</code> 模組解析URL中的參數(有些原文稱為 query 或是 tag) </p><ul><li>簡單的 import</li></ul><pre><code class="python">from urllib.parse import urlparse, urlunparse, parse_qs, urlencode</code></pre><ul><li>使用 <code>urlparse(url)</code> 解析網址 </li></ul><p>可以看到他將網址切分成了不同的部分，<code>scheme</code>、<code>netloc</code>、<code>path</code>、<code>params</code>、<code>query</code>、<code>fragment</code>，也可以看得出來我們真正需要的網址是在前半部，後面的<code>params</code>、<code>query</code>、<code>fragment</code>都是要移除掉的部分。</p><pre><code class="python"># 將剛剛的範例放進去url = &#39;https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789#fb_comment_id=0987&#39;url_component = urlparse(url)# 結果&gt;&gt;&gt; ParseResult(scheme=&#39;https&#39;, netloc=&#39;www.google.com&#39;, path=&#39;/&#39;, params=&#39;&#39;, query=&#39;utm_source=123&amp;utm_medium=456&amp;fbclid=789&#39;, fragment=&#39;fb_comment_id=0987&#39;)</code></pre><ul><li>定義想要移除的 tag、query 或關鍵字 </li></ul><pre><code class="python">stripKeys=[&quot;utm_source&quot;,&quot;utm_medium&quot;,&quot;utm_campaign&quot;,&quot;utm_term&quot;,&quot;utm_content&quot;,&quot;fbclid&quot;,&quot;fb_comment_id&quot;,&quot;ref&quot;,&quot;fb_action_ids&quot;,&quot;fb_action_types&quot;,&quot;fb_source&quot;,&quot;fb_ref&quot;,&quot;fb_node&quot;,&quot;action_object_map&quot;,&quot;action_type_map&quot;,&quot;action_ref_map&quot;,&quot;from&quot;,&quot;_fstview&quot;,&quot;openExternalBrowser&quot;,&quot;_gl&quot;,&quot;time&quot;,&quot;utm_compaign&quot;,&quot;gclid&quot;,&quot;ct&quot;,&quot;redirect&quot;]</code></pre><ul><li>使用 <code>parse_qs</code> 移除想要移除的參數</li></ul><p>示範只移除 <code>query</code> 的部分 (<code>url_component.query</code>)</p><pre><code class="python">query = parse_qs(url_component.query, keep_blank_values=True)for keys in stripKeys:    query.pop(keys, None)# 此時 query 為空&gt;&gt;&gt; query{}</code></pre><ul><li>最後將原本的 query 取代掉</li></ul><pre><code class="python">url_component = url_component._replace(query=urlencode(query, True))print(urlunparse(url_component))</code></pre><ul><li>最後結果</li></ul><pre><code>https://www.google.com/#fb_comment_id=0987</code></pre><p>可以明顯地看到只剩下 <code>FB 的 fragment</code> 還在網址後面(這部分就交給大家自己練習)，UTM 的部分都已經被移除囉！是不是蠻容易的呢？</p><h3 id="3-完整範例"><a href="#3-完整範例" class="headerlink" title="3.完整範例"></a><strong>3.完整範例</strong></h3><pre><code class="python">from urllib.parse import urlparse, urlunparse, parse_qs, urlencodeurl = &#39;https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789#fb_comment_id=0987&#39;url_component = urlparse(url)stripKeys=[&quot;utm_source&quot;,&quot;utm_medium&quot;,&quot;utm_campaign&quot;,&quot;utm_term&quot;,&quot;utm_content&quot;,&quot;fbclid&quot;,&quot;fb_comment_id&quot;,&quot;ref&quot;,&quot;fb_action_ids&quot;,&quot;fb_action_types&quot;,&quot;fb_source&quot;,&quot;fb_ref&quot;,&quot;fb_node&quot;,&quot;action_object_map&quot;,&quot;action_type_map&quot;,&quot;action_ref_map&quot;,&quot;from&quot;,&quot;_fstview&quot;,&quot;openExternalBrowser&quot;,&quot;_gl&quot;,&quot;time&quot;,&quot;utm_compaign&quot;,&quot;gclid&quot;,&quot;ct&quot;,&quot;redirect&quot;]query = parse_qs(url_component.query, keep_blank_values=True)for keys in stripKeys:    query.pop(keys, None)url_component = url_component._replace(query=urlencode(query, True))print(urlunparse(url_component))</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>什麼是 UTM</p><blockquote><p><a href="https://www.hellosanta.com.tw/news/what-is-utm" target="_blank" rel="noopener">https://www.hellosanta.com.tw/news/what-is-utm</a></p></blockquote><p>UTM 的參數 (GA官方文件)</p><blockquote><p><a href="https://support.google.com/analytics/answer/1033863?hl=zh-Hant" target="_blank" rel="noopener">https://support.google.com/analytics/answer/1033863?hl=zh-Hant</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> urlparse </tag>
+            
+            <tag> python </tag>
+            
+            <tag> utm </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件</title>
+      <link href="/posts/14115/"/>
+      <url>/posts/14115/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-launch-create-Dataproc-clusters-with-multi-properties-jars-packages"><a href="#How-to-launch-create-Dataproc-clusters-with-multi-properties-jars-packages" class="headerlink" title="How to launch/create Dataproc clusters with multi properties (jars, packages)?"></a>How to launch/create Dataproc clusters with multi properties (jars, packages)?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何在 GCP Dataproc properties 中帶入多個需要安裝的套件，本範例將會示範：<ul><li>kafka(<code>Prefix:spark</code>)</li><li>stackdriver(<code>Prefix:dataproc</code>)</li><li>clickhouse(<code>Prefix:spark</code>)</li></ul></li></ul><p><strong><em>上方所列的 <code>Prefix</code>將會在下方說明。</em></strong></p><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 GCP (Google Cloud Platform) 有基礎認識</li><li>有需要在 cluster 使用多種套件的需求</li></ul><h3 id="1-一般使用方式"><a href="#1-一般使用方式" class="headerlink" title="1.一般使用方式"></a><strong>1.一般使用方式</strong></h3><p>根據 <a href="https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties" target="_blank" rel="noopener">Google 官方文件</a>，有定義了可以帶入的相關套件的<code>Prefix</code>，ex: Spark,  pig, hdfs等等的項目，更詳細的定義請見文件。</p><p>在網路上其實有相當多的使用方式，也看得眼花撩亂，其實官方文件最近已經把它定義的很清楚了，讓我來帶大家一探究竟：</p><p>懶得聽我廢話也可以自己看：</p><blockquote><p><a href="https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties" target="_blank" rel="noopener">https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties</a></p></blockquote><p>基礎定義：</p><pre><code>file_prefix1:property1=value1,file_prefix2:property2=value2,...</code></pre><ul><li>此定義的前提是沒有重複使用到<code>相同的 prefix 中的不同套件</code></li><li>兩個 <code>prefix</code> 之間是用逗號隔開</li><li>prefix 後會接一個冒號(<code>:</code>)，再接 <code>property</code>名稱，再接(<code>=</code>)來放入值</li></ul><p>是不是沒有很懂，來簡單示範一次：</p><ul><li>第一個要使用的套件<code>dataproc:dataproc.monitoring.stackdriver.enable=true</code></li><li>第二個要使用的套件 <code>spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2</code></li><li>接起來的方式就是簡單用逗號(<code>,</code>)分開</li></ul><pre><code>--properties &#39;spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true&#39;</code></pre><p>大家可能會注意到，剛剛官網不是說只有三個符號，<code>冒號、等號跟逗號</code>而已嗎？怎麼上面例子一大堆符號，這就來拿 <code>clickhouse</code> 的套件來簡單說明一下：</p><pre><code># 這個 clickhouse 例子等號後面又有兩個冒號spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2</code></pre><p>某些套件本身就已經有定義好他的名稱了，其中可能包含版本號碼，只要是等號後面的可以就當成一串 string 代表是某個套件名稱的組合喔，其中的標點符後就照抄官網上的就好！ 上方範例等號後面 <code>ru.yandex.clickhouse:clickhouse-jdbc:0.2</code> 的字串就代表<code>套件名稱與版本號</code>！不屬於 properties 本身的結構喔！</p><h3 id="2-需要使用相同-prefix-的方式"><a href="#2-需要使用相同-prefix-的方式" class="headerlink" title="2.需要使用相同 prefix 的方式"></a><strong>2.需要使用相同 prefix 的方式</strong></h3><p>大家可能會覺得，這跟 <code>prefix</code> 一不一樣有什麼關係，沒錯，我一開始也是這樣想的，所以延續上方的例子，我要再加入一個 <code>kafka</code> 的套件(也是來自 prefix:spark)的時候，第一直覺會這樣寫：</p><pre><code>--properties &#39;spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,dataproc:dataproc.monitoring.stackdriver.enable=true,spark:org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2&#39;</code></pre><p>延續上面例子直接用<code>,</code>在分開第三個套件就好了，是不是很直覺。真的去啟動 dataproc 的時候也不會有任何錯誤，但在 submit job 的時候就會發現，同一個 <code>prefix</code> 他只會認得一個喔，而且他會認得最後一個，也就是我最後只會成功帶入 <code>stackdriver</code> 與 <code>kafka</code>，<code>clickhouse</code>是會安裝失敗的！</p><p>對此狀況官網也有提出相對應的撰寫格式：</p><pre><code>--properties ^#^file_prefix1:property1=part1,part2#file_prefix2:property2=value2</code></pre><p>觀察一下整句語法，多了兩種符號的寫法:</p><ul><li><code>^#^</code>:當遇到會使用相同 prefix 時的開頭寫法 </li><li>中間的 <code>#</code>：分隔兩個不同的 prefix</li><li><code>=part1,part2</code>: 剛剛上方講到的同套件問題，就可以直接用<code>逗號</code>解決囉!</li></ul><p>我們把剛剛錯誤的用法來稍微修正一下：</p><pre><code>--properties ^#^spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2#dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><p>第一次看到的人應該還是會覺得很亂，不過懂了官方定義的格式其實就很明瞭了，相同共用 spark prefix 的 clickhouse 及 kafka 就在<code>等號</code>後面用<code>逗號</code>分隔，而不同prefix之間就用<code>井字號</code>分隔。</p><h3 id="3-完整寫法"><a href="#3-完整寫法" class="headerlink" title="3.完整寫法"></a><strong>3.完整寫法</strong></h3><pre><code>gcloud dataproc clusters create test-cluster \    --region=global \    --master-machine-type n1-highmem-4  \    --master-boot-disk-size 100GB \    --num-workers 2 \    --worker-boot-disk-size 500GB  \    --worker-machine-type n1-highmem-4  \    --zone asia-east1-b  \    --image-version=1.4 \    --properties ^#^spark:spark.jars.packages=ru.yandex.clickhouse:clickhouse-jdbc:0.2,org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.2#dataproc:dataproc.monitoring.stackdriver.enable=true</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p><code>properties</code> 其實還有相當多的功用，此篇就著重於額外套件的使用，以後有機會再跟大家分享其他有趣的功能！</p><blockquote><p>官方文件：<a href="https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties" target="_blank" rel="noopener">https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create#--properties</a></p></blockquote><blockquote><p>properties格式定義 <a href="https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties" target="_blank" rel="noopener">https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/cluster-properties</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCP </tag>
+            
+            <tag> Dataproc </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pyspark系列-如何於 dataframe 增加索引(index)值或 row number</title>
+      <link href="/posts/29655/"/>
+      <url>/posts/29655/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-add-a-index-number-column-in-pyspark-dataframe"><a href="#How-to-add-a-index-number-column-in-pyspark-dataframe" class="headerlink" title="How to add a index number column in pyspark dataframe?"></a>How to add a index number column in pyspark dataframe?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>常見的 function <code>monotonically_increasing_id ()</code></li><li>本範例重點 <code>row_number</code> function</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>本範例環境是 <code>pyspark 版本 &gt;= 2.4</code></li><li>歡樂愉快的學習精神</li></ul><h3 id="1-常見的新增-index-方法"><a href="#1-常見的新增-index-方法" class="headerlink" title="1.常見的新增 index 方法"></a><strong>1.常見的新增 index 方法</strong></h3><p>在網路上搜尋建立 index 索引的相關方法，一定會搜索到 <code>monotonically_increasing_id</code> 這個方法，但是若沒有仔細看文件，有可能會無法達到預期的效果喔！！</p><p>根據文件(<a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id" target="_blank" rel="noopener">官網連結</a>)有三個重點：</p><blockquote><p>The generated ID is guaranteed to be monotonically increasing and unique, but not consecutive. </p></blockquote><blockquote><p>The current implementation puts the partition ID in the upper 31 bits, and the record number within each partition in the lower 33 bits. </p></blockquote><blockquote><p>The assumption is that the dataframe has less than 1 billion partitions, and each partition has less than 8 billion records.</p></blockquote><ul><li>此方法保證 id 是唯一的，但是<code>不會是一個連續號碼</code></li><li>編排號碼的方式會與 <code>partition id</code>有直接的關係</li><li>編排號碼的方式會與 <code>partition 筆數</code>有一定的關係</li></ul><p>綜合以上說法，簡單來說，如果你想要的效果是一個連續的索引號碼，<code>1, 2, 3......100</code>，此方法就不符合需求，他是會跳號的！但如果是單純的需要產生一個唯一的 id，不在意號碼產生方式，那此方法就會相當的合適。</p><h3 id="2-row-number-新增-index-方法"><a href="#2-row-number-新增-index-方法" class="headerlink" title="2.row_number 新增 index 方法"></a><strong>2.row_number 新增 index 方法</strong></h3><p>第二種方法之於第一種的不同就是，<code>row_number</code>可以依照自己所需要的條件進行排序，也可以依照不同的 <code>key</code> 來排序(同時有很多個1,2,3…)</p><p>我們來定義一個簡單的範例，搭配 <code>Window()</code> 的方法會有更多的變化：</p><pre><code class="python"> #!/usr/bin/env python# -*- coding: utf-8 -*-from pyspark import SparkConf, SparkContextfrom pyspark.sql import SparkSessionimport pyspark.sql.functions as Ffrom pyspark.sql.types import *from pyspark.sql import Windowspark = SparkSession.builder.appName(&#39;index_num&#39;).getOrCreate()# Create datasetdf = spark.createDataFrame([(&quot;Jolin&quot;, &quot;bell fruit&quot;, &quot;apple&quot;, &quot;2020/05/26&quot;), \        (&quot;John&quot;, &quot;bell fruit&quot;, &quot;banana&quot;, &quot;2020/05/27&quot;), \        (&quot;Lisa&quot;, &quot;banana&quot;, &quot;apple&quot;, &quot;2020/05/28&quot;), \        ], [&quot;name&quot;, &quot;fruit_1&quot;, &quot;fruit_2&quot;, &quot;date&quot;])</code></pre><p>首先，我使用 <code>w = Window().orderBy(F.lit(&quot;name&quot;))</code>來定義一個編碼的 slide window ，且使用 <code>name</code> 這個 column 進行排序。</p><p>接下來針對 df 進行 <code>orderBy</code> 的動作，寫新增一個 id 欄位給索引值(index)，裡面的直將會依照條件 <code>F.row_number().over(w)</code> 填入號碼 1,2,3…</p><pre><code class="python">w = Window().orderBy(F.lit(&quot;name&quot;))df_order = df.orderBy(&quot;name&quot;, ascending=True)\    .withColumn(&quot;id&quot;, F.row_number().over(w))</code></pre><p>而得到最後的結果如下：</p><p><img src="/medias/post_img/29655_1.jpg" alt="排序結果"></p><p>這是個相對簡單的範例，個人最常使用的情境是處理 <code>session</code> 問題時，要<code>排序使用者不同 session 中的瀏覽順序</code>就可以用此方法簡單的完成 dataframe 的 index 排序，而且是可以針對不同 key 值的條件新增，而不會是單純的從頭 1,2,3…到尾，而是可以像下面的例子：</p><pre><code>----------------------| session| url| index|----------------------|   scfer|   A|     1||   scfer|   B|     2||   scfer|   C|     3||   tuikg|   B|     1||   tuikg|   C|     2||   redcv|   B|     1||   redcv|   C|     2||   redcv|   D|     3|----------------------</code></pre><p>以上就是簡單的介紹！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p><p>在 <code>pyspark.sql.functions</code> 其實有許多好用的小 function 可以直接使用，也不用再自己辛苦的寫 <code>udf</code>(User Defined function)，在之後的介紹會再慢慢帶給大家。下方為今天介紹的兩種好用的小function。</p><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id</a></p></blockquote><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.row_number" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.row_number</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pyspark系列-字串轉時間格式 string to datetime or timestamp</title>
+      <link href="/posts/9025/"/>
+      <url>/posts/9025/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-convert-pyspark-string-to-datetime"><a href="#How-to-convert-pyspark-string-to-datetime" class="headerlink" title="How to convert pyspark string to datetime?"></a>How to convert pyspark string to datetime?</h1><p><strong>在本範例你會學到：</strong></p><ul><li><code>to_date</code> 使用方式 (<code>New in version 2.2</code>)</li><li><code>unix_timestamp</code> 使用方式</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>本範例環境是 <code>pyspark 版本 &gt;= 2.4</code></li><li>歡樂愉快的學習精神</li></ul><h3 id="1-Create-Dataframe"><a href="#1-Create-Dataframe" class="headerlink" title="1.Create Dataframe"></a><strong>1.Create Dataframe</strong></h3><p>建立一個簡單的水果清單以及進貨日期，一開始日期是 <code>string</code>：</p><pre><code class="python">#!/usr/bin/env python# -*- coding: utf-8 -*-from pyspark import SparkConf, SparkContextfrom pyspark.sql import SparkSessionimport pyspark.sql.functions as Ffrom pyspark.sql.types import *spark = SparkSession.builder.appName(&#39;date_process&#39;).getOrCreate()# Create datasetdf = spark.createDataFrame([(&quot;bell fruit&quot;, &quot;apple&quot;, &quot;2020/05/26&quot;), \                                (&quot;bell fruit&quot;, &quot;banana&quot;, &quot;2020/05/27&quot;), \                                (&quot;banana&quot;, &quot;apple&quot;, &quot;2020/05/28&quot;), \                                ], [&quot;fruit_1&quot;, &quot;fruit_2&quot;, &quot;date&quot;])</code></pre><p><img src="/medias/post_img/9025_1.jpg" alt="創建資料"></p><h3 id="2-轉換-date-格式"><a href="#2-轉換-date-格式" class="headerlink" title="2.轉換 date 格式"></a><strong>2.轉換 date 格式</strong></h3><p>非常簡單的方法，使用 <code>to_date</code>，前面的 <code>F</code> 是在前面 import 時取的新名稱 <code>import pyspark.sql.functions as F</code>，後面的 <code>yyyy/MM/dd</code> 格式為原始字串的格式，如果原始字串是 <code>2020-05-27</code> 就要改成 <code>yyyy-MM-dd</code></p><p><strong><em>要注意的是這個方法是在 <code>spark 2.2 版本</code> 中才新增的喔！！</em></strong></p><pre><code class="python">df_todate = df.withColumn(&quot;date&quot;, F.to_date(F.col(&quot;date&quot;), &#39;yyyy/MM/dd&#39;))</code></pre><p>執行後就會看到資料的格式已經從 <code>string</code> 轉成 <code>date</code> 型態了！</p><p><img src="/medias/post_img/9025_2.jpg" alt="字串格式變成 date"></p><h3 id="3-轉換-timestamp-格式"><a href="#3-轉換-timestamp-格式" class="headerlink" title="3.轉換 timestamp 格式"></a><strong>3.轉換 timestamp 格式</strong></h3><p>這裡也相當的簡單，如果需要將時間格式轉成 timestamp，只要使用 <code>unix_timestamp</code> 就可以了，跟上面的 <code>F.to_date</code> 使用方法是一模一樣的喔！</p><pre><code class="python">df_timestamp = df.withColumn(&#39;timestamp&#39;,F.unix_timestamp(F.col(&#39;date&#39;),&#39;yy/MM/dd&#39;))</code></pre><p>可以看到新增了一個 timestamp 欄位，型態為 <code>int</code></p><p><img src="/medias/post_img/9025_3.jpg" alt="字串格式變成 timestamp"></p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p><p>在 <code>pyspark.sql.functions</code> 其實有許多好用的小 function 可以直接使用，也不用再自己辛苦的寫 <code>udf</code>(User Defined function)，在之後的介紹會再慢慢帶給大家。下方為今天介紹的兩種好用的小function。</p><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.to_date" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.to_date</a></p></blockquote><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.unix_timestamp" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.unix_timestamp</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>GCP Cloud DNS &amp; letsencrypt 的 ssl 憑證申請與續期</title>
+      <link href="/posts/51659/"/>
+      <url>/posts/51659/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Auto-renew-letsencrypt-by-certbot-in-GCP"><a href="#Auto-renew-letsencrypt-by-certbot-in-GCP" class="headerlink" title="Auto renew letsencrypt by certbot in GCP."></a>Auto renew letsencrypt by certbot in GCP.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>手動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)</li><li>自動更新 letsencrypt 的 ssl 憑證 (有使用Cloud DNS)</li><li>將不安全網頁(http)變成綠色小鎖頭(https)</li><li>使用 <code>certbot</code></li><li>使用 <code>certbot-dns-google</code></li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有使用 Cloud DNS 將 GCP 的機器與其他第三方網域(ex:GoDaddy)供應商進行綁定</li><li>對 GCP 有一定熟悉程度</li><li>需要 https 將網頁變成安全的網頁的需求</li><li>所有設定都在 <code>CentOS</code> 與 <code>python3</code> 環境完成</li></ul><h3 id="1-簡介"><a href="#1-簡介" class="headerlink" title="1.簡介"></a><strong>1.簡介</strong></h3><p>大家在開發網頁的時候基本上一開始一定都還是使用 http 的網址作為開頭使用，不過現在 Google 大神會將 <code>http 開頭的網頁視為不安全的網頁</code>，當然基本上不會特別直接影響到網頁的速度、效能以及其他功能，依然可以正常使用，不過長時間以來是會影響 <code>seo</code> 排名的喔！所以本教學就來告訴大家如何將 http 變成 https 的綠色小鎖頭吧！</p><p><img src="/medias/post_img/51659_1.jpg" alt="憑證的綠色小鎖頭"></p><p>要變成綠色小鎖頭就必須要有憑證，而憑證又該如何取得呢，有兩種方式：</p><ul><li>付錢</li><li>免費的 letsencrypt (<code>每三個月必須更新憑證</code>)</li></ul><p>本教程將會記錄如何將 <code>免費letsencrypt 的憑證自動續約</code>，這樣就可以免去手動更新的麻煩了！</p><p>看到這踏家或許有些疑問為什麼我一直要特別強調 DNS 呢？因為這個方法只適用於<code>有使用 GCP Cloud DNS 才能使用喔</code>。如果是正常的方式網路上已經超級多方法了(這也是我一直沒發現用錯方法的原因)，我這邊就不特別在寫一篇了，不過基本上語法都是一樣的，到官網上看稍微修改也是可以使用的。</p><h3 id="2-手動申請與續約"><a href="#2-手動申請與續約" class="headerlink" title="2.手動申請與續約"></a><strong>2.手動申請與續約</strong></h3><p>這邊還是稍微講述一下簡單的手動模式，給不需要自動更新或是單純測試的夥伴們可以先用這個方法測試喔！！</p><p>先安裝套件：</p><pre><code>pip install certbot</code></pre><p>直接進入主題下語法：</p><ul><li>–dry-run: 代表不會真的執行，試跑與法有沒有錯誤可以使用</li><li>-d: 有多少個 domain 就寫幾個</li><li>–server: 照抄就好</li></ul><p>要特別注意這邊是使用 <code>dns</code>喔！</p><pre><code>certbot certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns  -d test.com.tw -d www.test.com.tw --dry-run</code></pre><p>接下來就是比較麻煩也可能會出錯的地方：</p><ul><li>按下 enter 後直接到 GCP Cloud DNS 頁面(<a href="https://chilunhuang.github.io/posts/22148/">不知道我在講什麼請看這篇</a>)選擇目前要使用的區域(domain)</li><li>按下<code>新增紀錄集</code>，並依照剛剛 enter 後 terminal 的指示新增<code>資源記錄類型</code>中的<code>TXT</code>，並將 terminal 中的序號填入<code>TXT 資料</code>並按下建立，並等待至少30秒，讓它生效(此步驟需要等待時間生效，直接繼續在 terminal 按 enter 可能會設定失敗)</li><li>等待秒數過後可以繼續新增下一個 domain，一樣再到 GCP 頁面新增序號，直到沒有網域需要新增就結束</li></ul><p>以上步驟如果有訊息說失敗，可以再試一次，有可能是等待時間不夠長，不過依據經驗30秒是足夠的。</p><p>設定完成就會見到以下訊息：</p><pre><code>IMPORTANT NOTES: - Congratulations! Your certificate and chain have been saved at:   /etc/letsencrypt/live/test.com.tw/fullchain.pem   Your key file has been saved at:   /etc/letsencrypt/live/test.com.tw/privkey.pem   Your cert will expire on 2020-06-29. To obtain a new or tweaked   version of this certificate in the future, simply run certbot   again. To non-interactively renew *all* of your certificates, run   &quot;certbot renew&quot; - If you like Certbot, please consider supporting our work by:   Donating to ISRG / Let&#39;s Encrypt:   https://letsencrypt.org/donate   Donating to EFF:                    https://eff.org/donate-le</code></pre><p>該訊息基本上包含兩件事：</p><ul><li>該憑證的到期日，三個月後就會作廢</li><li>該憑證的產生位置(<code>*.pem</code>)，可以依需求放到自己相對應的伺服器位置(Nginx or Apache)</li></ul><p>若是需要手動續約，也非常簡單 (正式的時候要把<code>--dry-run</code>拿掉喔！)：</p><pre><code>sudo certbot renew --dry-run</code></pre><h3 id="3-自動更新"><a href="#3-自動更新" class="headerlink" title="3.自動更新"></a><strong>3.自動更新</strong></h3><p>網路上有非常多手動/自動更新的方法，小弟在使用每一篇文章都會看到的 <code>sudo certbot renew</code> 從來都沒有成功過，一直都抱一樣的錯誤訊息，所以非常苦惱，不想要三個月就手動一次，後來才發現原來 Google 有相對應的套件可以使用啊！！</p><p>直接切入主題：</p><p>1.安裝</p><pre><code>pip install certbot-dns-google</code></pre><p>2.設定 Google Credentials，取得金鑰 json</p><p><strong>每次都有的貼心小提醒：GCP頁面變動相當的大，可能短短幾個月步驟就不一樣了，請大家多注意！</strong></p><ul><li>於 GCP 導覽列中找到 <code>API 和服務</code>選擇<code>憑證</code></li><li>按下建立憑證選擇服務帳戶 (找不到看下圖)</li></ul><p><img src="/medias/post_img/51659_2.jpg" alt="設定步驟"></p><ul><li>輸入名稱</li><li>進入<code>將專案存取權授予這個服務帳戶</code>要進行角色選擇，可以<a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">依照官網自己決定</a>，或是可以跟著本篇設定即可，這裡可能要花點時間找到想要的角色:</li></ul><pre><code>dns.changes.createdns.changes.getdns.managedZones.listdns.resourceRecordSets.createdns.resourceRecordSets.deletedns.resourceRecordSets.listdns.resourceRecordSets.update</code></pre><ul><li>最後一步驟有一個建立金鑰，按下去選擇 <code>json</code> 並下載</li><li>得到金鑰後，將剛剛的金鑰 json 檔放到網頁伺服器的(vm)的相對應位置(自行決定)，並輸入下列語法：<ul><li><code>-d</code>: 更改網域位置</li><li><code>--dns-google-credentials</code> 位置為 json 檔路徑</li></ul></li></ul><pre><code>certbot certonly --dns-google --dns-google-credentials /etc/letsencrypt/renewal/fabled-mystery-264984-6tg78hcd467.json -d www.test.com.tw. -d test.com.tw. --dry-run</code></pre><p>基本上會跟上方手動很像，不過這個的好處就是不用自己輸入 <code>TXT</code> 金鑰囉！！執行指令後可以在 <code>GCP Cloud DNS</code>頁面看到它運作的情況，會自動幫你新增，沒收到任何錯誤訊息就是成功囉，如果有遇到錯誤可以先在執行一次看看，通常就會解決了。</p><p>3.將 ssl 憑證放入相對應位置</p><p>這個步驟跟上方的手動設定基本上功能一樣，完成後將剛剛產生的 <code>fullchain.pem</code>、<code>privkey.pem</code>放到伺服器相對位置下，以<code>Nginx</code>為例子，將下列設定加入設定檔 <code>/etc/nginx/nginx.conf</code>中：</p><pre><code>ssl_certificate /etc/letsencrypt/live/test.com.tw/fullchain.pem;ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><p>4.更新憑證</p><p>基本上上面都沒問題，這步驟也會順利：</p><p><code>certbot renew --dry-run</code></p><h3 id="4-確認憑證狀態"><a href="#4-確認憑證狀態" class="headerlink" title="4.確認憑證狀態"></a><strong>4.確認憑證狀態</strong></h3><p>這步驟就是簡單地使用網頁去驗證剛剛產生的憑證是否狀態正常且生效:</p><ul><li>將下列的 <code>www.test.com.tw</code> 換成自己的網址即可使用</li></ul><pre><code>https://www.ssllabs.com/ssltest/analyze.html?d=www.test.com.tw&amp;latest</code></pre><ul><li>若沒問題就會看到以下畫面</li></ul><p><img src="/medias/post_img/51659_3.jpg" alt="成功畫面"></p><p>在主機上也可測試剛剛申請的是否成功與狀態顯示：</p><pre><code>sudo certbot certificates</code></pre><h3 id="5-自動更新憑證"><a href="#5-自動更新憑證" class="headerlink" title="5.自動更新憑證"></a><strong>5.自動更新憑證</strong></h3><p>最後的重點就是不想要三個月就執行以上的步驟一次，所以在主機上設定 <code>cron job</code>讓他自己去更新：</p><p>進入主機並輸入(不同OS方法有所差異，請斟酌參考)</p><pre><code>crontab -e</code></pre><p>輸入相對應的更新日期以及月份就大功告成囉，若不懂怎麼設定可以參考下方參考資料的連結！請記得正式的情況<code>--dry-run</code>要拿掉喔！</p><p>以上都完成後，就可以去看看有沒有變成綠色小鎖頭了(https)。</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>特別感謝作者<code>tn710617</code>在憑證設定部分給予大大的幫助</p><blockquote><p><a href="https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials" target="_blank" rel="noopener">https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials</a></p></blockquote><p>排程設定教學</p><blockquote><p><a href="https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/" target="_blank" rel="noopener">https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/</a></p></blockquote><blockquote><p><a href="https://andyyou.github.io/2019/04/13/how-to-use-certbot/" target="_blank" rel="noopener">https://andyyou.github.io/2019/04/13/how-to-use-certbot/</a></p></blockquote><p>certbot-dns-google 詳細設定</p><blockquote><p><a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">https://certbot-dns-google.readthedocs.io/en/stable/</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCP </tag>
+            
+            <tag> SSL </tag>
+            
+            <tag> certbot </tag>
+            
+            <tag> letsencrypt </tag>
+            
+            <tag> DNS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>GCP系列-將 GoDaddy 網域與 Google DNS進行綁定</title>
+      <link href="/posts/22148/"/>
+      <url>/posts/22148/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-connect-domain-of-GoDaddy-with-GCP-Cloud-DNS"><a href="#How-to-connect-domain-of-GoDaddy-with-GCP-Cloud-DNS" class="headerlink" title="How to connect domain of GoDaddy with GCP Cloud DNS?"></a>How to connect domain of GoDaddy with GCP Cloud DNS?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>使用 GCP 服務的 Cloud DNS</li><li>GoDaddy domain 與 GCP Cloud DNS 的代管綁定</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有個在 GoDaddy 申請的 domain，ex:<code>web.test.com</code></li><li>有個 GCP 帳號</li></ul><h3 id="1-簡單說明需求"><a href="#1-簡單說明需求" class="headerlink" title="1.簡單說明需求"></a><strong>1.簡單說明需求</strong></h3><p>會查到這篇的先進們應該都是有這個需求才會搜索到，這邊我就預設大家對 <code>GCP</code>與<code>GoDaddy</code>(其他網域的 provider理論上道理都是一樣的)有一定的瞭解與熟悉。</p><p>先說明一下我有這樣的需求的原因是：</p><ul><li>Django 網頁架設在 GCP服務上</li><li>在 GoDaddy 申請網域名稱 <code>web.test.com</code> </li><li>網頁要正式上線需要 DNS 服務，考量 GoDaddy 本身 DNS 服務並不便宜，最後考慮使用GCP</li></ul><p>這個領域我也不是相當的熟悉，也是拼拼湊湊起來的，如有不妥或是錯誤請不吝賜教！</p><h3 id="2-於-GCP-Cloud-DNS-新增區域"><a href="#2-於-GCP-Cloud-DNS-新增區域" class="headerlink" title="2.於 GCP Cloud DNS 新增區域"></a><strong>2.於 GCP Cloud DNS 新增區域</strong></h3><p>這裡的步驟不難，不過我第一次做的時候其實也不確定自己在做什麼，大家就小心操作了！</p><ol><li>於 GCP 左方導覽列中尋找 <code>網路服務 &gt; Cloud DNS &gt; 建立區域</code></li><li>填入 <code>區域名稱</code>(自己決定要填什麼)、<code>DNS 名稱</code>就要填入你的網域名稱例如 <code>web.test.com</code></li><li><code>DNSSEC</code>設定啟用，完成後按下建立</li></ol><p><img src="/medias/post_img/22148_1.jpg" alt="建立新的區域"></p><p>完成後就會看到自己建立的 DNS 區域，接下來我們就點進去編輯更多資訊吧！</p><h3 id="3-設定紀錄集資料"><a href="#3-設定紀錄集資料" class="headerlink" title="3.設定紀錄集資料"></a><strong>3.設定紀錄集資料</strong></h3><p>進入之後就會看到 GCP 自動產生的四組 <code>NS</code>跟一組<code>SOA</code>，這待會再說，晚點會用到，我們接著設定其他的類型資料：</p><p><img src="/medias/post_img/22148_2.jpg" alt="自動產生的四組 NS"></p><p><strong>註：如果對這些類型資料意義充滿疑惑，可以參考<a href="https://tw.godaddy.com/help/dns-680" target="_blank" rel="noopener">GoDaddy官網</a>的說明</strong> </p><ul><li>接下來就新增一筆 <code>A紀錄</code>，這個主要是將<code>IP 位址</code>連接至主機名稱，填入你在 gcp 主機的固定 IP即可(記得要先固定喔，不然關機後就要重新來一次了)，其中的秒數欄位可以自己視情況設定。</li></ul><h3 id="4-連結-GoDaddy-DNS-管理"><a href="#4-連結-GoDaddy-DNS-管理" class="headerlink" title="4.連結 GoDaddy DNS 管理"></a><strong>4.連結 GoDaddy DNS 管理</strong></h3><p>最後的步驟相當簡單，只要將剛剛上一步驟產生的四組 NS 字串交給 GoDaddy 知道就可以了！</p><ul><li>前往 GoDaddy 網域管理員介面</li><li>選擇你自己註冊的網域名稱 <code>web.test.com</code>，上方選擇<code>DNS &gt; 管理區域 &gt; 輸入自己的網域搜尋</code>就會進入 DNS 管理區域</li><li>找到<code>網域名稱伺服器</code>按下變更</li><li>選擇<code>我要用自己的名稱伺服器</code></li><li>按下<code>新增名稱伺服器</code></li><li>將 gcp 的四組 ns 都輸入，設定好按下儲存</li></ul><pre><code>#四組都要輸入ns-cloud-b1.googledomains.com.ns-cloud-b2.googledomains.com.ns-cloud-b3.googledomains.com.ns-cloud-b4.googledomains.com.</code></pre><p>大功告成！要稍等一下才會生效，可以等個五分鐘再去測試！</p><p><strong>註：GoDaddy的頁面變動也蠻大的，大家可能要自己稍微找一下相對應的位置</strong></p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p>影片： <a href="https://www.onepagezen.com/transfer-domain-google-cloud-platform/" target="_blank" rel="noopener">https://www.onepagezen.com/transfer-domain-google-cloud-platform/</a></p></blockquote><blockquote><p>英文： <a href="https://vinoaj.com/guides/2018/google-cloud-dns-for-godaddy-domain/" target="_blank" rel="noopener">https://vinoaj.com/guides/2018/google-cloud-dns-for-godaddy-domain/</a></p></blockquote><blockquote><p>中文：<a href="https://ithelp.ithome.com.tw/articles/10200584?sc=iThelpR" target="_blank" rel="noopener">https://ithelp.ithome.com.tw/articles/10200584?sc=iThelpR</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCP </tag>
+            
+            <tag> DNS </tag>
+            
+            <tag> GoDaddy </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo-移除未使用的 css (purify css)</title>
+      <link href="/posts/43991/"/>
+      <url>/posts/43991/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Remove-unused-CSS-code-from-stylesheets"><a href="#Remove-unused-CSS-code-from-stylesheets" class="headerlink" title="Remove unused CSS code from stylesheets."></a>Remove unused CSS code from stylesheets.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>快速的的解決肥大的 css 造成的效能問題</li><li>purify css</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>一個正在跑的網頁</li><li>一個你覺得很肥的 css，而且有用在前一項的網頁</li></ul><h3 id="1-回憶過去"><a href="#1-回憶過去" class="headerlink" title="1. 回憶過去"></a><strong>1. 回憶過去</strong></h3><p>seo 系列介紹了相當多的優化方法：</p><p><a href="https://chilunhuang.github.io/posts/12526/">seo系列 - Enable text compression on Nginx</a></p><p><a href="https://chilunhuang.github.io/posts/53969/">seo系列 - Image Lazy Load 延遲載入圖片</a></p><p><a href="https://chilunhuang.github.io/posts/17948/">seo系列 - 使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</a></p><p>以上包含了 nginx server 端的<code>文字壓縮(text compression)</code>與瀏覽器的<code>緩存機制(Cache-Control)</code>以及<code>圖片的延遲載入(Lazy Load)</code>來提升網頁的 performance、seo等等的分數其實已經相當的足夠了，本篇介紹的方式筆者認為是一個小偏方，他有可能會造成一些非預期的錯誤，不過當你優化進入到撞牆期時，不妨可以試試看喔！</p><h3 id="2-為何需要-purify-css"><a href="#2-為何需要-purify-css" class="headerlink" title="2. 為何需要 purify css"></a><strong>2. 為何需要 purify css</strong></h3><p>網頁開發的套件樣板真的是百百款，學也學不完，不過大家應該都有使用過一個相當方便我個人也相當喜愛的<code>Bootstrap</code><a href="https://getbootstrap.com/" target="_blank" rel="noopener">(官網)</a> 開源前端框架，可以輕鬆的支援與調整想要的 <code>自適應網頁</code>或是稱為<code>響應式網頁 (RWD)</code>，殊不知這是我在優化網頁效能時的一大惡夢，它的優點成為了他的缺點。</p><p>Bootstrap 的 css 包實在是太過巨大了，而且是整個網頁框架都是使用它，所以相關的壓縮、緩存、延遲載入其實效果都很有限，因為他在一開始網頁載入的時候就一定會用到了，我也有參照 Google 的檢測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>的建議來調整<a href="https://web.dev/extract-critical-css/" target="_blank" rel="noopener">同步與異步載入css</a>的方式，不過效果不大，有興趣的朋友可以參考一下原文，或許有幫助。</p><p>所以跟 Google 大神討教一番之後，找到了一個治標不治本的方式<code>purifycss</code>，譯為:</p><blockquote><p>當他太肥的時候，就幫他減肥囉！</p></blockquote><h3 id="2-使用-purify-css"><a href="#2-使用-purify-css" class="headerlink" title="2. 使用 purify css"></a><strong>2. 使用 purify css</strong></h3><p>其實網路上有各種相關的套件可以使用，比較常看到的是：</p><ul><li>npm i -D purify-css <a href="https://github.com/purifycss/purifycss" target="_blank" rel="noopener">(參考)</a></li></ul><p>熟悉 <code>npm</code> 的朋友就自己玩玩吧，我不是很熟，所以就簡單的介紹一個網頁版的給大家囉！</p><h4 id="PurifyCSS-Online"><a href="#PurifyCSS-Online" class="headerlink" title="PurifyCSS Online"></a>PurifyCSS Online</h4><p>網頁：<a href="https://purifycss.online/" target="_blank" rel="noopener">https://purifycss.online/</a></p><p>他就是一個簡單的網頁，基本上就是兩個步驟:</p><ul><li>左邊輸入你的網頁原始碼的 <code>html</code> </li><li>右邊輸入你想要減肥的 <code>css</code> </li></ul><p><img src="/medias/post_img/43991_1.jpg" alt="示意圖"></p><p>我的 css 是放 <code>bootstrap.min.css</code> 的檔案內容，都複製上去後按下開始減肥(Clean up CSS)就可以得到結果。</p><p><img src="/medias/post_img/43991_2.jpg" alt="減肥後的效果"></p><p>下面秀出的新視窗是減肥過後的 css 代碼，可以複製出來另取名稱再套用，以上看得出來我有 <code>33.05%</code>的 code 根本沒用到，拿掉之後可以省下 <code>45.49 KB</code> 的傳輸大小，是不是還蠻不錯的！</p><p>但為何我會說這是個小偏方呢，因為他是以當下的網頁原始碼去做掃描的動作，當你某些html是必須在點擊或是相關動作後才會顯現時，他就會認為這個程式碼並沒有被使用到，就會被刪掉喔！所以使用此方法有一定的風險的，使用前要先再確認有沒有功能因為刪減css而壞掉了，找到之後再把他補上去即可！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://purifycss.online/" target="_blank" rel="noopener">https://purifycss.online/</a></p></blockquote><blockquote><p><a href="https://web.dev/extract-critical-css/" target="_blank" rel="noopener">https://web.dev/extract-critical-css/</a></p></blockquote><blockquote><p><a href="https://github.com/purifycss/purifycss" target="_blank" rel="noopener">https://github.com/purifycss/purifycss</a> </p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> purifycss </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</title>
+      <link href="/posts/17948/"/>
+      <url>/posts/17948/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Solve-“Serve-static-assects-with-an-efficient-cache-policy”-on-nginx-with-Cache-Control"><a href="#Solve-“Serve-static-assects-with-an-efficient-cache-policy”-on-nginx-with-Cache-Control" class="headerlink" title="Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control."></a>Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>在 nginx 中設定緩存參數</li><li>seo 的相關小知識</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有使用 nginx 作為網頁的 server，若不是的話還是可以理解 <code>Cache-Control</code>觀念喔，基本上都是差不多的只是設定不一樣</li></ul><h3 id="1-seo-相關改進方法複習"><a href="#1-seo-相關改進方法複習" class="headerlink" title="1. seo 相關改進方法複習"></a><strong>1. seo 相關改進方法複習</strong></h3><p>在其他幾篇基本上都有提過 Google 的檢測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，基本上他會列出相關問題讓你有修改的空間，本文也是依照相關提示慢慢修改而成，大家可以對自己的網站健康檢查一下喔！</p><p><img src="/medias/post_img/17948_2.jpg" alt="web.dev 的相關提示與建議"></p><p>可以順便複習一下前兩篇：</p><ul><li><a href="https://chilunhuang.github.io/posts/12526/">seo系列 - Enable text compression on Nginx</a></li></ul><p>此篇說明了如何針對 nginx server 送往前端前的文字資料進行壓縮，例如 <code>css</code> 與 <code>js</code> 檔，節省傳送的負載量。</p><ul><li><a href="https://chilunhuang.github.io/posts/53969/">seo系列 - Image Lazy Load 延遲載入圖片</a></li></ul><p>而此篇則著重於將圖片壓縮，改進整體網頁效能。</p><h3 id="2-瀏覽器中的-cache-簡單觀念"><a href="#2-瀏覽器中的-cache-簡單觀念" class="headerlink" title="2. 瀏覽器中的 cache 簡單觀念"></a><strong>2. 瀏覽器中的 cache 簡單觀念</strong></h3><p>有在開發網頁的大大們應該很常使用<code>檢視網頁原始碼</code>以及<code>檢查</code>這兩個功能，而在檢查功能中的 <code>Network</code>頁籤，我們可以看到網頁載入的相關 css、js 等等檔案的狀態與大小，可以很清楚的知道：</p><ul><li>載入檔案的大小 (Size)</li><li>載入的時間 (Time)</li></ul><p>可以從中觀察到網頁變慢的瓶頸在哪？或許很多人不會注意到， <code>Size</code>的這個欄位除了會寫出檔案的大小以外，基本上還會看到兩種標籤(若該網頁的伺服器有設定)，一個是 <code>disk cache</code>與<code>memory cache</code>:</p><p><img src="/medias/post_img/17948_1.jpg" alt="disk cache &amp; memory cache"></p><p>圖中可以清楚地看到載入時間是 <code>0</code>，這代表著使用者第一次載入之後，就cache 在瀏覽器上了，下次再進來的時候，就不用再跟server要一次囉！</p><h3 id="3-瀏覽器中的-cache-的三種屬性"><a href="#3-瀏覽器中的-cache-的三種屬性" class="headerlink" title="3. 瀏覽器中的 cache 的三種屬性"></a><strong>3. 瀏覽器中的 cache 的三種屬性</strong></h3><p>這邊我不是專家，我就簡的說明一下網路上查的相關文章，有興趣可到參考連結參閱。在瀏覽器中有分三種 <code>cache</code> 方式，這三個屬性是可以同時設置的，不過優先權順序為 <code>Cache-Control &gt; Expires</code>，而 <code>Last-Modified</code> 會與前兩個者自搭配使用：</p><h4 id="1-Cache-Control"><a href="#1-Cache-Control" class="headerlink" title="1. Cache-Control:"></a>1. Cache-Control:</h4><p><code>Cache-Control</code>當中有<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control" target="_blank" rel="noopener">相當多的參數</a>可以使用，例如：</p><ul><li><code>no-cach</code>:代表檔案不會被瀏覽器記住，每次 refresh 後都會重新與 server 要一次資料</li><li><code>max-age</code>:以秒為單位，當超過 cache 時間 ，refresh 後會重新與 server 要一次資料</li></ul><h4 id="2-Expires"><a href="#2-Expires" class="headerlink" title="2. Expires"></a>2. Expires</h4><p><code>Expires</code> 顧名思義就是 cache 過期失效的設定，在還沒過期前，使用者怎麼 refresh 都不會重新與 server 要一次資料。這的確會讓 server 壓力大大的下降，但大家或許會看出個問題，假設我設定了 365 天的 Expires，當 server 端的檔案更新但使用者卻要一年之後才會更新怎麼辦？這時第三個主角就要出現了，我們繼續看下去！</p><h4 id="3-Last-Modified"><a href="#3-Last-Modified" class="headerlink" title="3. Last-Modified"></a>3. Last-Modified</h4><p>當設定此參數之後，每次使用者 refresh 頁面後，其實都會偷偷地向 server 下一個請求(非常非常小)，基本上就是確定檔案有沒有被更新過，如果沒有就什麼都不做，如果有就更新！</p><h3 id="4-於-nginx-中設定"><a href="#4-於-nginx-中設定" class="headerlink" title="4. 於 nginx 中設定"></a><strong>4. 於 nginx 中設定</strong></h3><p>講這麼多終於切入正題，直接來看如何設定吧，以下將列出三種範例，大家可以依照需求搭配使用：</p><ul><li>進入網頁 nginx server 的 <code>nginx.conf</code>，每個人習慣不一樣，在此不贅述</li></ul><pre><code>vim /etc/nginx/nginx.conf</code></pre><ul><li>如果想要緩存所有 static 下的檔案 (css, js 檔案都在其中)，可以這樣設定：</li></ul><pre><code>location /static {     alias /你的專案路徑/static;     # for keep static file(css) in server     add_header Cache-Control &quot;public, max-age=31536000&quot;; }</code></pre><p>max-age 單位為秒數，在此設定 365 天</p><ul><li>如果想要 <code>Expires</code> 所有 static 下的檔案 (css, js 檔案都在其中)，可以這樣設定：</li></ul><pre><code>location /static {     alias /你的專案路徑/static;     # for keep static file(css) in server     expires 10d; }</code></pre><p><code>expires 10d</code> 代表著 10 天就會過期，重新要資料。</p><ul><li>如果只想要緩存部分類型的檔案則可以這樣設定：</li></ul><pre><code>location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {expires 365d;}</code></pre><p>是不是相當容易呢？設定之後記得要<code>重啟 nginx 喔</code>！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control</a></p></blockquote><blockquote><p><a href="https://www.cnblogs.com/kevingrace/p/10459429.html" target="_blank" rel="noopener">https://www.cnblogs.com/kevingrace/p/10459429.html</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> django </tag>
+            
+            <tag> seo </tag>
+            
+            <tag> nginx </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> Cache-Control </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Enable text compression on Nginx</title>
+      <link href="/posts/12526/"/>
+      <url>/posts/12526/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server"><a href="#Enable-GZIP-for-CSS-and-JS-files-on-NGINX-server" class="headerlink" title="Enable GZIP for CSS and JS files on NGINX server."></a>Enable GZIP for CSS and JS files on NGINX server.</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何評分自己網頁的 <code>seo</code> 是否及格</li><li>在 <code>nginx</code> 實現<code>GZIP</code>壓縮 <code>css</code> 與 <code>js</code> 來達成加速網頁載入</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>nginx 服務</li><li>自己架設的網頁</li></ul><p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p><pre><code class="html">&lt;script src=&quot;/static/vendor/jquery/jquery.min.js&quot;&gt;&lt;/script&gt;&lt;script src=&quot;/static/vendor/bootstrap/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;</code></pre><p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p><h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p><p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p><p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p><pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p><p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p><h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p><p>找到 nginx server 的設定檔，沒意外預設會放在：</p><pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p><blockquote><p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p></blockquote><pre><code># Enable Gzip     gzip on;     gzip_http_version 1.0;     gzip_comp_level 2;     gzip_min_length 1100;     gzip_buffers  4 8k;     gzip_proxied any;     gzip_types     # text/html is always compressed by HttpGzipModule     text/css     text/javascript     text/xml     text/plain     text/x-component     application/javascript     application/json     application/xml     application/rss+xml     font/truetype     font/opentype     application/vnd.ms-fontobject     image/svg+xml;     gzip_static on;     gzip_proxied  expired no-cache no-store private auth;     gzip_disable  &quot;MSIE [1-6]\.&quot;;     gzip_vary   on; </code></pre><p>內容基本上就是：</p><ul><li>啟動 gzip 壓縮</li><li>設定要被壓縮的類型(css、javascript 等等)</li></ul><p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p><pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p><p>進步超級多，壓縮效果是不是相當的驚人呢！</p><p>有機會再與大家分享更多 seo 更多經驗！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p></blockquote><blockquote><p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> django </tag>
+            
+            <tag> seo </tag>
+            
+            <tag> text compression </tag>
+            
+            <tag> GZIP </tag>
+            
+            <tag> nginx </tag>
+            
+            <tag> performance </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
+      <link href="/posts/53969/"/>
+      <url>/posts/53969/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre><code class="html">&lt;script src=&quot;/static/vendor/lazyload/lazysizes.min.js&quot;&gt;&lt;/script&gt;</code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre><code class="html"># 原來寫法&lt;img class=&quot;&quot; src=&quot;/static/img/hcl.jpg&quot; alt=&quot;&quot;&gt;</code></pre><pre><code class="html"># 新方式&lt;img class=&quot;lazyload&quot; data-src=&quot;/static/img/hcl.jpg&quot; alt=&quot;&quot;&gt;</code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> performance </tag>
+            
+            <tag> lazyload </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)</title>
+      <link href="/posts/9661/"/>
+      <url>/posts/9661/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-remove-the-last-commit-and-froce-push-again"><a href="#How-to-remove-the-last-commit-and-froce-push-again" class="headerlink" title="How to remove the last commit and froce push again?"></a>How to remove the last commit and froce push again?</h1><p>在前一篇 <a href="https://chilunhuang.github.io/posts/25048/">Github - 如何移除GitHub上所有的 commit(一)</a> 的系列文中介紹到了如何完整個將整個 <code>repository</code> 的 commit 刪的一乾二淨，但是該篇方法基本上適用的情況不多，<code>僅適用於自己的測試專案或是分支，千萬不要在 master 上執行</code>，一般專案在管控版本更不應該做那個動作。</p><p>而本篇方法將會教各位如何使用 <code>rebase</code> 刪除最新的 <code>commit</code> 或是 指定的某些 <code>commit</code> 讓他消失(強制刪掉)。個人使用的經驗與情境通常是做壞了或是跟下一個要 commit 的事項基本上可以一起處理時，就會做這個動作。</p><p><strong>在本範例你會學到：</strong></p><ul><li>使用 <code>git rebase</code> 刪除 <code>commit</code></li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有基礎的使用 Git 的能力</li></ul><p><em>註：友善提醒，對 Git 不熟的夥伴請時常備份 code 或是使用分支實驗，請不要隨便針對 master 做這些動作</em></p><h3 id="1-找到想要刪除的-commit"><a href="#1-找到想要刪除的-commit" class="headerlink" title="1.找到想要刪除的 commit"></a><strong>1.找到想要刪除的 commit</strong></h3><ul><li>在 terminal 輸入下列語法，後面的數字<code>2</code>可以自己隨意更改</li></ul><pre><code>git rebase -i HEAD~2</code></pre><ul><li>基本上會進入一個編輯模式，將會列出最新兩筆 commit</li></ul><pre><code>pick 600557f test-1001 Add round() to functionpick c4394fd test-1001 Modified typo error</code></pre><h3 id="2-刪除指定-commit-的資訊"><a href="#2-刪除指定-commit-的資訊" class="headerlink" title="2.刪除指定 commit 的資訊"></a><strong>2.刪除指定 commit 的資訊</strong></h3><ul><li>編輯該檔案，將想要刪除的 commit 整句刪掉，越下面的 commit 代表越新</li><li>存檔離開後就會被提醒該檔案被修正了</li></ul><pre><code>Successfully rebased and updated refs/heads/test-1001. </code></pre><h3 id="3-更新到-GitHub上"><a href="#3-更新到-GitHub上" class="headerlink" title="3.更新到 GitHub上"></a><strong>3.更新到 GitHub上</strong></h3><p>目前所有動作都是在本地端的紀錄，在 GitHub 上的 commit 還是存在的，所以要強制 push 將舊的紀錄蓋掉:</p><pre><code>git push origin yourbranchName --force</code></pre><p>記得換上自己的分支名稱，執行後上 GitHub 頁面有沒有發現少了一個 commit 呢?!</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>網路上有蠻多各種五花八門的方式，我也不能確定哪種方式是最好的，所以選擇了一個相對簡單的方式，如果有更正式或好用的方法歡迎大家留言告訴我。</p><blockquote><p><a href="https://medium.com/micheh/%E7%A7%BB%E9%99%A4-github-%E4%B8%8A%E9%9D%A2%E7%9A%84-commit-91d62ca424a1" target="_blank" rel="noopener">https://medium.com/micheh/%E7%A7%BB%E9%99%A4-github-%E4%B8%8A%E9%9D%A2%E7%9A%84-commit-91d62ca424a1</a></p></blockquote><blockquote><p><a href="https://gist.github.com/CrookedNumber/8964442" target="_blank" rel="noopener">https://gist.github.com/CrookedNumber/8964442</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GitHub </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> github </tag>
+            
+            <tag> commit </tag>
+            
+            <tag> rebase </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Github - 如何刪除GitHub上所有的 commit(一)</title>
+      <link href="/posts/25048/"/>
+      <url>/posts/25048/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-remove-all-history-commit-and-push-again"><a href="#How-to-remove-all-history-commit-and-push-again" class="headerlink" title="How to remove all history commit and push again?"></a>How to remove all history commit and push again?</h1><p>大家應該都有一個經驗，在程式或是網頁的檔案都準備就緒，repository 也創好之後，快樂的下了 git push 指令上去 Github，按下 enter 的瞬間就會發現好像忘記加 <code>.gitignore</code> 了，所有的<code>資料庫帳號密碼</code>跟<code>私密的 config</code> 設定都上去了…。本文就來介紹如何快速的刪除一開始的 commit 與重新上傳的方法，當什麼事都沒發生過！</p><p><strong>在本範例你會學到：</strong></p><ul><li>如何快速修正上傳程式時不小心帶入機密資料的問題，如：<ul><li>database 帳號密碼</li><li>相關服務的 token (slack, sentry) </li><li>網頁 ip 位置</li><li>通訊阜 port</li></ul></li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有基礎的使用 Git 的能力</li></ul><h3 id="1-刪除-git"><a href="#1-刪除-git" class="headerlink" title="1.刪除 .git"></a><strong>1.刪除 .git</strong></h3><p><em>提醒執行此步驟時請確定有對資料進行備份</em></p><ul><li>此步驟會刪除所有的紀錄，請斟酌使用，<code>並不適合針對多個 commit 的某個 commit 刪除</code>，只適合一開始創立的時候。</li></ul><pre><code>cat .git/configrm -rf .git</code></pre><h3 id="2-重新-commit-正確的檔案"><a href="#2-重新-commit-正確的檔案" class="headerlink" title="2.重新 commit 正確的檔案"></a><strong>2.重新 commit 正確的檔案</strong></h3><ul><li>先確認機密資料的 config 檔已經加到了 <code>.gitignore</code> 中(ex: <code>ini</code>、<code>env</code>檔)</li><li>重新上傳檔案</li></ul><pre><code>git initgit add .git commit -m &quot;Initial commit&quot;</code></pre><h3 id="3-重新-push-檔案"><a href="#3-重新-push-檔案" class="headerlink" title="3.重新 push 檔案"></a><strong>3.重新 push 檔案</strong></h3><ul><li>重新 push</li><li>查看頁面是否有將機密資訊刪除了</li></ul><pre><code>git remote add origin &lt;github-uri&gt;git push -u --force origin master</code></pre><p>到這邊就大功告成，之後有空會再分享，已經存在一段時間的專案，真的有需要刪除的 <code>commit</code> 該如何進行，我們下次見！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>本篇參考除了最佳答案以外，也有另外幾個分數也很高的解法，各位也可以嘗試看看。</p><blockquote><p><a href="https://stackoverflow.com/questions/9683279/make-the-current-commit-the-only-initial-commit-in-a-git-repository" target="_blank" rel="noopener">https://stackoverflow.com/questions/9683279/make-the-current-commit-the-only-initial-commit-in-a-git-repository</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GitHub </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> github </tag>
+            
+            <tag> commit </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Flask 系列 - Flask error handling 教學(二)</title>
+      <link href="/posts/39347/"/>
+      <url>/posts/39347/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Example-of-error-handling-in-flask-Part-II"><a href="#Example-of-error-handling-in-flask-Part-II" class="headerlink" title="Example of error handling in flask. (Part II)."></a>Example of error handling in flask. (Part II).</h1><p><strong>在本範例你會學到：</strong></p><ul><li>簡易的 Flask API 架設 (上篇) </li><li>使用 Flask lib 的 <code>abort</code> 控制錯誤訊息 (下篇)</li><li>使用 <code>traceback</code>、<code>sys</code> 套件追蹤自己想要的訊息 (下篇)</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>確認有安裝好 <code>python3</code> 環境(請捨棄 <code>python2</code>)</li><li>安裝 <code>flask</code>，本文使用 <code>flask==1.0.2</code></li><li>有個簡易的 <code>terminal</code> 或是 <code>jupyter</code> 環境</li><li>抱著輕鬆學習的心 </li></ul><h3 id="4-正常的錯誤訊息"><a href="#4-正常的錯誤訊息" class="headerlink" title="4.正常的錯誤訊息"></a><strong>4.正常的錯誤訊息</strong></h3><p>接續前一篇的的範例，若還不知道如何建立 flask api 的朋友可以先看這篇<br><a href="https://chilunhuang.github.io/posts/34383/">Flask 系列 - Flask error handling 教學(ㄧ)</a> </p><p>以下就用簡單的例子噴錯給大家看，故意在程式裡面要取得清單不存在的 <code>C</code>的長度</p><pre><code class="python">from flask import Flask, request, abortapp = Flask(__name__)@app.route(&#39;/error_test_500&#39;,methods=[&#39;POST&#39;])def error_test_500():    post = request.json[0]    return len(post.get(&#39;C&#39;))if __name__ == &#39;__main__&#39;:    app.run(host=&#39;0.0.0.0&#39;,port=1234, debug=False)</code></pre><p>在 terminal 執行打入水果清單：</p><pre><code>curl -d &#39;[{&quot;A&quot;: &quot;apple&quot;,&quot;B&quot;: &quot;banana&quot;}]&#39; -H &quot;Content-Type: application/json&quot; -X POST http://0.0.0.0:1234/error_test_500</code></pre><p>將會乾淨利落的得到 <code>500 Internal Server Error</code></p><p><img src="/medias/post_img/39347_1.jpg" alt="500 Internal Server Error"></p><p>而你的 terminal 會得到正確的錯誤訊息： <code>TypeError: object of type &#39;NoneType&#39; has no len()</code></p><h3 id="5-為錯誤訊息加油添醋"><a href="#5-為錯誤訊息加油添醋" class="headerlink" title="5.為錯誤訊息加油添醋"></a><strong>5.為錯誤訊息加油添醋</strong></h3><p>上面的範例噴錯的問題在實際應用 api 很常見，在 <code>docker</code> 或 <code>VM</code> 環境中我們無法用<code>debug</code>模式盯著，也不能隨便的 access 主機，後端人員突然跟你說噴錯又只拿到500 或 400 根本不知道是哪裡錯誤。</p><p>這時候主事者還要先問前端做了什麼操作來重現情境、再去問後端到底打了什麼給 API，基本上就是用經驗在猜測可能哪裡出錯。</p><p>所以 <code>API</code> 所帶出來的錯誤訊息就相當的重要，好的訊息可以大幅壓縮找蟲的時間啊，以下就教大家用比較簡單的方式獲取錯誤訊。</p><p>接下來壓軸出場的就是<code>traceback</code>、<code>sys</code>了，看字面意思其實也蠻好懂的，他們可以追朔所有的系統錯誤訊息，包含 <code>行數</code>、<code>class</code>、<code>錯誤歷經的所有function</code>、<code>錯誤訊息</code>等等的資訊，相當實用。</p><p>先放上完整範例再來一步一步解釋：</p><pre><code class="python">from flask import Flask, request, abortimport tracebackimport sysdef abort_msg(e):    &quot;&quot;&quot;500 bad request for exception    Returns:        500 and msg which caused problems    &quot;&quot;&quot;    error_class = e.__class__.__name__ # 引發錯誤的 class    detail = e.args[0] # 得到詳細的訊息    cl, exc, tb = sys.exc_info() # 得到錯誤的完整資訊 Call Stack    lastCallStack = traceback.extract_tb(tb)[-1] # 取得最後一行的錯誤訊息    fileName = lastCallStack[0] # 錯誤的檔案位置名稱    lineNum = lastCallStack[1] # 錯誤行數     funcName = lastCallStack[2] # function 名稱    # generate the error message    errMsg = &quot;Exception raise in file: {}, line {}, in {}: [{}] {}. Please contact the member who is the person in charge of project!&quot;.format(fileName, lineNum, funcName, error_class, detail)    # return 500 code    abort(500, errMsg)app = Flask(__name__)@app.route(&#39;/error_test_500&#39;,methods=[&#39;POST&#39;])def error_test_500():    post = request.json[0]    try:        return len(post.get(&#39;C&#39;))    except Exception as e:        abort_msg(e)if __name__ == &#39;__main__&#39;:    app.run(host=&#39;0.0.0.0&#39;,port=1234, debug=False)</code></pre><p>基本上主程式是相同的，故意 call 一個不存在的<code>len(post.get(&#39;C&#39;))</code> 讓他錯誤，但是這次加上了<code>try,except</code>，當他噴500時，就執行 <code>abort_msg(e)</code>處理錯誤的 function。</p><p>這個 <code>abort_msg</code> 基本上做了兩件事情：</p><ul><li>利用<code>traceback</code>、<code>sys</code>將錯誤資訊完整的抓出來組成字串</li><li>利用 flask 的 <code>abort</code> 方法主動拋出 500錯誤並附加上而外的字串訊息，而不是讓 python自己噴錯，直接看結果圖：</li></ul><p><img src="/medias/post_img/39347_2.jpg" alt="500 Internal Server Error"></p><p>是不是發現結果不是單純的 500 錯誤了呢！，這次還加上了<code>錯誤的位置、行數、型態、原因</code>等等，甚至還可以加上聯絡人的資訊，是不是相當的一目了然呢！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>以上為下篇的內容，簡易的分享如何在 API 發生錯誤時，得到更多細節有利於追朔錯誤。</p><blockquote><p><a href="https://flask-restplus.readthedocs.io/en/stable/errors.html" target="_blank" rel="noopener">https://flask-restplus.readthedocs.io/en/stable/errors.html</a></p></blockquote><blockquote><p><a href="https://dotblogs.com.tw/caubekimo/2018/09/17/145733" target="_blank" rel="noopener">https://dotblogs.com.tw/caubekimo/2018/09/17/145733</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> flask </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> error handling </tag>
+            
+            <tag> flask </tag>
+            
+            <tag> exception </tag>
+            
+            <tag> traceback </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Flask 系列 - Flask error handling 教學(ㄧ)</title>
+      <link href="/posts/34383/"/>
+      <url>/posts/34383/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Example-of-error-handling-in-flask-Part-I"><a href="#Example-of-error-handling-in-flask-Part-I" class="headerlink" title="Example of error handling in flask. (Part I)."></a>Example of error handling in flask. (Part I).</h1><p><strong>在本範例你會學到：</strong></p><ul><li>簡易的 Flask API 架設 (上篇) -&gt; 如果已經熟悉 flask 可直接跳下篇</li><li>使用 Flask lib 的 <code>abort</code> 控制錯誤訊息 (下篇)</li><li>使用 <code>traceback</code>、<code>sys</code> 套件追蹤自己想要的訊息 (下篇)</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>確認有安裝好 <code>python3</code> 環境(請捨棄 <code>python2</code>)</li><li>安裝 <code>flask</code>，本文使用 <code>flask==1.0.2</code></li><li>有個簡易的 <code>terminal</code> 或是 <code>jupyter</code> 環境</li><li>抱著輕鬆學習的心 </li></ul><h3 id="1-import-package"><a href="#1-import-package" class="headerlink" title="1.import package"></a><strong>1.import package</strong></h3><p>基本上就 import 下列的套件即可：</p><ul><li><code>flask</code> : 今天的主角，一定要用</li><li><code>traceback</code> : 今天的小重點，處理 <code>exception</code> 的好套件</li><li><code>sys</code> :也是小幫手之一</li></ul><pre><code class="python">from flask import Flask, request, abortimport tracebackimport sys</code></pre><h3 id="2-Flask-簡易教學"><a href="#2-Flask-簡易教學" class="headerlink" title="2.Flask 簡易教學"></a><strong>2.Flask 簡易教學</strong></h3><p>Flask 不是本文的重點，將會快速帶過如何確認架設成功與使用：</p><p>以下為 flask 標準的寫法，而其中的 <code>app = Flask(__name__)</code> 與 <code>@app.route(&#39;/&#39;)</code> 是什麼就暫時不贅述，聰明的你們在後面應該也會看得出來。</p><pre><code class="python">from flask import Flask, request, abortapp = Flask(__name__)@app.route(&#39;/&#39;)def index():    return &#39;connection is OK! &#39;if __name__ == &#39;__main__&#39;:    app.run(host=&#39;0.0.0.0&#39;,port=1234, debug=False)</code></pre><p>將以上的 code 在 terminal 或 jupyter 中執行，將會看到以下畫面：</p><p><img src="/medias/post_img/34383_1.jpg" alt="flask 執行畫面"></p><p>看到畫面後請再開啟一個全新的 terminal 並輸入:</p><pre><code>curl http://0.0.0.0:1234/</code></pre><p>理論上你將會收到 <code>connection is OK!</code> 的回傳值，這就代表一切 ok，基本上就確定了 API 連線是沒問題的。</p><h3 id="3-使用-post-方式打-API"><a href="#3-使用-post-方式打-API" class="headerlink" title="3.使用 post 方式打 API"></a><strong>3.使用 post 方式打 API</strong></h3><p>這部分進行一些資料的準備，其實也不難，在剛剛的程式中再加入以下片段，建立了<code>flask_api</code>並將水果清單打入，並直接回傳 A 所代表的水果，有沒有發現跟上面有什麼不同呢？</p><pre><code class="python">from flask import Flask, request, abortapp = Flask(__name__)@app.route(&#39;/flask_api&#39;,methods=[&#39;POST&#39;])def flask_api():    post = request.json[0]    return post.get(&#39;A&#39;)if __name__ == &#39;__main__&#39;:    app.run(host=&#39;0.0.0.0&#39;,port=1234, debug=False)</code></pre><p>在 terminal 執行打入水果清單：</p><pre><code>curl -d &#39;[{&quot;A&quot;: &quot;apple&quot;,&quot;B&quot;: &quot;banana&quot;}]&#39; -H &quot;Content-Type: application/json&quot; -X POST http://0.0.0.0:1234/flask_api</code></pre><p>將會得到 <code>apple</code> 的結果</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>以上為上篇的內容，簡易的分享簡單的使用 Flask 打造自己的 API，更多細節有時間將會再分享，這次將著重於 <code>error handling</code>教學的前置準備。</p><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> flask </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> error handling </tag>
+            
+            <tag> flask </tag>
+            
+            <tag> exception </tag>
+            
+            <tag> traceback </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>MAC terminal 的常用快捷鍵分享</title>
+      <link href="/posts/65431/"/>
+      <url>/posts/65431/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-hot-key-to-move-mouse-in-termal-with-mac"><a href="#How-to-use-hot-key-to-move-mouse-in-termal-with-mac" class="headerlink" title="How to use hot key to move mouse in termal with mac?"></a>How to use hot key to move mouse in termal with mac?</h1><p>日常寫 code 常常會用到 terminal，但是剛開始使用 mac 時真的會使用的一頭霧水，尤其是想要針對在<code>vim</code>中指令很長的程式進行修改的時候，按右鍵等待游標到達目的地是件很恐怖的事，只是想加個路徑名稱啊啊！！</p><p><strong>在本範例你會學到：</strong></p><ul><li>簡易的 terminal 游標上手操作</li><li>vim 中的簡易操作</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>一台 mac</li><li>歡樂愉快的學習精神</li></ul><h3 id="1-語法分享"><a href="#1-語法分享" class="headerlink" title="1.語法分享"></a><strong>1.語法分享</strong></h3><ul><li>快速飛躍<ul><li>Ctrl + A 游標飄向最前方</li><li>Ctrl + E 游標飄向最後方</li></ul></li><li>指定移標位置(超實用的一定要記住)<ul><li>按著 alt/option 在用滑鼠點擊你想要游標駐足的位置</li></ul></li></ul><h3 id="2-vim-中的操作"><a href="#2-vim-中的操作" class="headerlink" title="2.vim 中的操作"></a><strong>2.vim 中的操作</strong></h3><p>假設有一份文件叫做 <code>test.txt</code>，我們會使用 <code>vim test.txt</code> 開啟該文件，並再按下 <code>i</code>或<code>o</code>進行編輯，不過在<code>vim</code>環境中遇到上方一樣的問題，就無法用一樣的快捷鍵解決囉！</p><ul><li><p>簡單複習</p><ul><li>按下<code>ESC</code> -&gt; <code>shift</code>加上<code>:</code> 輸入 <code>q</code> 代表離開 <code>vim</code>環境 </li><li>按下<code>ESC</code> -&gt; <code>shift</code>加上<code>:</code> 輸入 <code>q!</code> 代表離開 <code>vim</code>環境並捨棄存檔</li><li>按下<code>ESC</code> -&gt; <code>shift</code>加上<code>:</code> 輸入 <code>wq</code> 代表離開 <code>vim</code>環境並存檔</li><li>按下<code>ESC</code> -&gt; <code>shift</code>加上<code>:</code> 輸入 <code>$</code> 代表當前畫面跳到文件的最底端</li><li>按下<code>ESC</code> -&gt; <code>shift</code>加上<code>:</code> 輸入 <code>noh</code> 代表取消 highlight文字的功能</li><li>按下<code>ESC</code> -&gt; <code>shift</code>加上<code>:</code> 輸入 <code>數字</code>代表當前畫面跳到指定的行數位置</li></ul></li><li><p>開大絕用滑鼠</p><ul><li>按下<code>ESC</code> -&gt; <code>shift</code>加上<code>:</code> 輸入 <code>set mouse=a</code>即可使用滑鼠來操作檔案囉! 可以任意移動滑鼠，反白想要複製或刪除的內容按下 <code>D (刪除)</code> 或是 <code>Y (複製)</code></li></ul></li></ul><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>自己經驗分享，有想到隨時更新，並且歡迎指正與分享更好的用法。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> tools </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 快捷鍵 </tag>
+            
+            <tag> hot key </tag>
+            
+            <tag> mac </tag>
+            
+            <tag> terminal </tag>
+            
+            <tag> vim </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pyspark 系列- 於pyspark中不同column的array操作intersect</title>
+      <link href="/posts/44088/"/>
+      <url>/posts/44088/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-intersect-two-array-of-different-column-in-pyspark-dataframe"><a href="#How-to-intersect-two-array-of-different-column-in-pyspark-dataframe" class="headerlink" title="How to intersect two array of different column in pyspark dataframe ?"></a>How to intersect two array of different column in pyspark dataframe ?</h1><p>大家應該都有相關的經驗在使用 spark 處理 array 類型資料時常常會遇到很多卡卡的問題，尤其在比較舊的 spark 版本基本上都只能自己寫 <code>udf</code> 解決一些問題。本篇將會分享如何針對兩個 column 的 array 進行 <code>intersect</code>，其中包含找到重複值 <code>array_intersect</code> 以及 找到不重複值的 <code>array_except</code>，此用法為 <code>spark 2.4</code> 才新增的用法，輕鬆地解決之前還要寫 udf 的麻煩。</p><p><strong>在本範例你會學到：</strong></p><ul><li><code>array_intersect</code> 使用方式</li><li><code>array_except</code> 使用方式</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>本範例部份 function 只適用於 <code>spark 版本 &gt;= 2.4</code></li><li>歡樂愉快的學習精神</li></ul><p>本文將建立一個簡單的範例，資料集如下：</p><pre><code class="python">#!/usr/bin/env python# -*- coding: utf-8 -*-from pyspark import SparkConf, SparkContextfrom pyspark.sql import SparkSessionimport pyspark.sql.functions as Ffrom pyspark.sql.types import *spark = SparkSession.builder.appName(&#39;intersect&#39;).getOrCreate()# Create datasetdf_array = spark.createDataFrame([([&quot;apple&quot;,&quot;papaya&quot;,&quot;bell fruit&quot;], [&quot;apple&quot;,&quot;papaya&quot;])], [&quot;fruit_1&quot;, &quot;fruit_2&quot;])# showdf_array.show(1,False)</code></pre><p><img src="/medias/post_img/44088_1.jpg" alt="原始資料"></p><h3 id="1-array-intersect"><a href="#1-array-intersect" class="headerlink" title="1. array_intersect"></a><strong>1. array_intersect</strong></h3><p><code>array_intersect</code> 的用法與概念相當的簡單，就如同 <code>python</code> 中的 <code>set(a) &amp; set(b)</code>，將會找出兩個資料及相同的值，下列範例會找到 <code>&quot;apple&quot;,&quot;papaya&quot;</code>：</p><pre><code class="python">df_array.withColumn(&#39;array_intersect&#39;,F.array_intersect(F.col(&#39;fruit_1&#39;),F.col(&#39;fruit_2&#39;))).show(1,False)</code></pre><p><img src="/medias/post_img/44088_2.jpg" alt="array_intersect"></p><h3 id="2-array-except"><a href="#2-array-except" class="headerlink" title="2. array_except"></a><strong>2. array_except</strong></h3><p>而 <code>array_except</code>則相反，將會留下兩個資料集沒有同時有相同的資料，如下所示，<code>bell fruit</code>只出現在了第二個 column，所以會被留下：</p><pre><code class="python">df_array.withColumn(&#39;array_except&#39;,F.array_except(F.col(&#39;fruit_1&#39;),F.col(&#39;fruit_2&#39;))).show(1,False)</code></pre><p><img src="/medias/post_img/44088_3.jpg" alt="array_except"></p><p>大功告成！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>在 <code>pyspark.sql.functions</code> 其實有許多好用的小 function 可以直接使用，也不用再自己辛苦的寫 <code>udf</code>(User Defined function)，在之後的介紹會再慢慢帶給大家。下方為今天介紹的兩種好用的小function。</p><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.array_intersect" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.array_intersect</a></p></blockquote><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.array_except" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.array_except</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+            <tag> intersect </tag>
+            
+            <tag> array_intersect </tag>
+            
+            <tag> array_except </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>GCP 系列- GCE 的 --metadata-from-file startup-script 沒有被執行</title>
+      <link href="/posts/28859/"/>
+      <url>/posts/28859/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Startup-script-doesn’t-seem-to-work-on-GCE-Google-Compute-Engine"><a href="#Startup-script-doesn’t-seem-to-work-on-GCE-Google-Compute-Engine" class="headerlink" title="Startup script doesn’t seem to work on GCE (Google Compute Engine)."></a>Startup script doesn’t seem to work on GCE (Google Compute Engine).</h1><p> 在 GCP 中的 GCE 建立 VM 時常會有要順便安裝或設置的套件與服務的需求，並將其打包成一個 <code>startup script</code> 送過去，但是時常會發生機器啟動後卻沒有順利地被安裝。最直接的原因就是 script 出錯或是根本沒被執行，本文將提供快速簡單的方法查證自己的 script 到底在哪裡出錯了。</p><p><strong>在本範例你會學到：</strong></p><ul><li>快速排除不明的 startup script 執行失敗</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>有 GCP 的帳號</li><li>有使用 GCE 的經驗/需求</li></ul><h3 id="1-簡易的使用-GCE-指令"><a href="#1-簡易的使用-GCE-指令" class="headerlink" title="1.簡易的使用 GCE 指令"></a><strong>1.簡易的使用 GCE 指令</strong></h3><p>在這裡稍微複習一下如何使用指令啟動 GCE 的 VM 指令：</p><ul><li><code>--project</code>: 專案名稱(GCP畫面上方就可以看到)</li><li><code>--address</code>: 是否要指定 IP 位置</li><li><code>--zone</code>: 選擇建立機器的區域</li><li><code>--machine-type</code>: 機器的類型</li><li><code>--network</code>: 網路相關設定</li><li><code>--service-account</code>: 服務帳號</li><li><code>--boot-disk-size</code>: 硬碟容量大小</li><li><code>--boot-disk-type</code>: 硬碟類型</li><li><code>--metadata-from-file startup-script</code>: 啟動機器第一個要執行的 script 位置</li></ul><p>完整的範例如下： </p><pre><code class="bash">gcloud compute --project=gce-test instances create test-vm \    --address=123.123.123.123 \    --zone=asia-east1-b \    --machine-type=n1-highcpu-4 \    --network=default --maintenance-policy=MIGRATE \    --service-account=your_service_account \    --scopes=https://www.googleapis.com/auth/cloud-platform \    --boot-disk-size=10GB --boot-disk-type=pd-standard     --metadata-from-file startup-script=/root/script/startupscript.sh</code></pre><p><strong>以上為常用的相關指令，其他指令放在下方參考資料請自行選用</strong></p><h3 id="2-查看未執行-startup-script-方式"><a href="#2-查看未執行-startup-script-方式" class="headerlink" title="2.查看未執行 startup-script 方式"></a><strong>2.查看未執行 startup-script 方式</strong></h3><p>如果順利地使用上方的方式啟動機器，並設置好自己要帶過去的 script 後，卻發現安裝的東西或是服務並沒有被啟動或設置，就可以使用以下指令(於啟動的 VM 環境中執行)：</p><pre><code class="bash">sudo journalctl -u google-startup-scripts.service</code></pre><p>這個指令會列出開機執行後所執行的相關指令，如果有相關的錯誤也會寫在上面，就是 log 檔的概念。基本上只要是 script 本身的問題都可以用這個方式找到原因，以上分享。</p><p>有任何問題歡迎與我聯絡，謝謝。</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>更多 GCE 指令請詳見：</p><blockquote><p><a href="https://cloud.google.com/compute/docs/gcloud-compute/" target="_blank" rel="noopener">https://cloud.google.com/compute/docs/gcloud-compute/</a></p></blockquote><p>Stackoverflow:</p><blockquote><p><a href="https://stackoverflow.com/questions/44084713/startup-script-doesnt-seem-to-work" target="_blank" rel="noopener">https://stackoverflow.com/questions/44084713/startup-script-doesnt-seem-to-work</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCE </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pyspark 系列 - collect_list 與 collect_set 實例教學</title>
+      <link href="/posts/53705/"/>
+      <url>/posts/53705/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-collect-list-amp-collect-set-in-pyspark-dataframe"><a href="#How-to-use-collect-list-amp-collect-set-in-pyspark-dataframe" class="headerlink" title="How to use collect_list &amp; collect_set in pyspark dataframe?"></a>How to use collect_list &amp; collect_set in pyspark dataframe?</h1><p>在使用 spark 操作 dataframe 時常常會做合併 (<code>groupby</code>與 <code>aggregation</code>) 與展開 (<code>explode</code>) 的動作，尤其在合併時就會考慮到要保留下原始資料還是要去重複的問題，本文將會介紹 <code>collect_list</code> 與<code>collect_set</code>的用法以及稍微提及可能會遇到的例外狀況的解決方式 (<code>array_distinct</code> 與 <code>flatten</code>)。</p><p><strong>在本範例你會學到：</strong></p><ul><li><code>collect_list</code> 使用方式</li><li><code>collect_set</code> 使用方式</li><li><code>array_distinct</code>(New in version spark 2.4) 使用方式</li><li><code>flatten</code>(New in version spark 2.4) 使用方式</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>本範例部份 function 可能只適用於 <code>spark 版本 &gt;= 2.4</code></li><li>歡樂愉快的學習精神</li></ul><p>本文將假設一個簡單的範例，學校相關單位做了一份問券調查，調查關於小學生一天之中早、午、晚餐分別喜歡吃哪些水果，再將這些結果整理與分析再利用。資料集如下：</p><pre><code class="python">#!/usr/bin/env python# -*- coding: utf-8 -*-from pyspark import SparkConf, SparkContextfrom pyspark.sql import SparkSessionimport pyspark.sql.functions as Ffrom pyspark.sql.types import *spark = SparkSession.builder.appName(&#39;collect_set_list&#39;).getOrCreate()# 創立資料集：假設有兩位學生的資料編號為1與2，早中晚都只有一種水果df = spark.createDataFrame([(1, &quot;apple&quot;),(1, &quot;guava&quot;),(1, &quot;apple&quot;),(2, &quot;pineapple&quot;),(2, &quot;guava&quot;),(2, &quot;guava&quot;)], [&quot;id&quot;, &quot;fruit&quot;])</code></pre><h3 id="1-collect-list"><a href="#1-collect-list" class="headerlink" title="1. collect_list"></a><strong>1. collect_list</strong></h3><p>若單純的想要知道每個學生喜歡水果的概覽，可以直接使用 <code>collect_list</code>：</p><pre><code class="python">df.groupBy(&#39;id&#39;).agg(F.collect_list(F.col(&#39;fruit&#39;)).alias(&#39;fruit_list&#39;)).show(2,False)</code></pre><p><img src="/medias/post_img/53705_1.jpg" alt="學生喜歡的水果概覽"></p><h3 id="2-collect-set"><a href="#2-collect-set" class="headerlink" title="2. collect_set"></a><strong>2. collect_set</strong></h3><p>可以發現，上方的例子學生如果某兩餐吃的一樣就會重複出現相同的水果，若想要知道水果的種類(distinct)就可以使用<code>collect_set</code>：</p><pre><code class="python">df.groupBy(&#39;id&#39;).agg(F.collect_set(F.col(&#39;fruit&#39;)).alias(&#39;fruit_list&#39;)).show(2,False)</code></pre><p><img src="/medias/post_img/53705_2.jpg" alt="個別學生喜歡的水果種類"></p><p><code>collect_set</code>的意義就是平常 <code>python</code>中常使用的 <code>set()</code>是一樣的概念，去除重複的資料。</p><h3 id="3-當-Array-遇上-collect-set-與-collect-list"><a href="#3-當-Array-遇上-collect-set-與-collect-list" class="headerlink" title="3. 當 Array 遇上 collect_set 與 collect_list"></a><strong>3. 當 Array 遇上 collect_set 與 collect_list</strong></h3><p>這裡就要提到實戰中常遇到的問題，如果我本身的資料就是一個 <code>array</code> 呢？在使用 collect_set 與 collect_list 會發生什麼事呢？我們往下看下去。接續上述的使用情境創造資料集，此時學生的每一餐都可以寫一個以上的水果的話：</p><pre><code class="python"># 學生每一餐都可以填超過一個種類以上的水果df_array = spark.createDataFrame([(1, [&quot;apple&quot;,&quot;papaya&quot;]),(1, [&quot;apple&quot;,&quot;guava&quot;]),(1, [&quot;peach&quot;,&quot;bell fruit&quot;]),(2, [&quot;pineapple&quot;,&quot;guava&quot;]),(2, [&quot;dragonfruit&quot;,&quot;guava&quot;]),(2, [&quot;orange&quot;,&quot;guava&quot;])], [&quot;id&quot;, &quot;fruit&quot;])</code></pre><p>我們就簡單的將前面的範例直接套下來，用一樣的方式使用<code>collect_list</code>：</p><pre><code class="python"># collect_listdf_array.groupBy(&#39;id&#39;).agg(F.collect_list(F.col(&#39;fruit&#39;)).alias(&#39;fruit_list&#39;)).show(2,False)</code></pre><p><img src="/medias/post_img/53705_3.jpg" alt="collect_list：一餐多種類"></p><p>與<code>collect_set</code>：</p><pre><code class="python"># collect_setdf_array.groupBy(&#39;id&#39;).agg(F.collect_set(F.col(&#39;fruit&#39;)).alias(&#39;fruit_list&#39;)).show(2,False)</code></pre><p><img src="/medias/post_img/53705_4.jpg" alt="collect_set：一餐多種類"></p><p>大家應該不難發現，其實上面兩個結果是完全相同的(除了array 內順序不同)，這是怎麼回事呢？</p><h3 id="4-使用-array-distinct-與-flatten-解決"><a href="#4-使用-array-distinct-與-flatten-解決" class="headerlink" title="4. 使用 array_distinct 與 flatten 解決"></a><strong>4. 使用 array_distinct 與 flatten 解決</strong></h3><p>因為他已經變成了 array 中的 array，在裡面的 array 都已經被視為不同的個體了，他不會自動的合併在一起(ex: <code>[&quot;apple&quot;,&quot;papaya&quot;]</code> 與 <code>[&quot;apple&quot;,&quot;guava&quot;]</code> 是兩個完全不同的內容):</p><pre><code class="python">[[&quot;apple&quot;,&quot;papaya&quot;],[&quot;apple&quot;,&quot;guava&quot;],[&quot;peach&quot;,&quot;bell fruit&quot;]]</code></pre><p>解決方式可以搭配之前所說的 <code>array_distinct</code> 與 <code>flatten</code> 來解決。 </p><ul><li><code>flatten</code> 主要作用是解開 array of array，ex: <code>[[&quot;apple&quot;,&quot;papaya&quot;],[&quot;apple&quot;,&quot;guava&quot;],[&quot;peach&quot;,&quot;bell fruit&quot;]]</code> 會被解開成 <code>[&quot;apple&quot;,&quot;papaya&quot;,&quot;apple&quot;,&quot;guava&quot;,&quot;peach&quot;,&quot;bell fruit&quot;]</code>。</li><li><code>array_distinct</code> 作用與 <code>set()</code> 相同，就是去重複拉！</li></ul><pre><code class="python">df_array.groupBy(&#39;id&#39;).agg(F.array_distinct(F.flatten(F.collect_set(&#39;fruit&#39;))).alias(&#39;fruit_list&#39;)).show(2,False)</code></pre><p><img src="/medias/post_img/53705_5.jpg" alt="array_distinct 與 flatten"></p><p>大功告成！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>在 <code>pyspark.sql.functions</code> 其實有許多好用的小 function 可以直接使用，也不用再自己辛苦的寫 <code>udf</code>(User Defined function)，在之後的介紹會再慢慢帶給大家。下方為今天介紹的四種好用的小function。</p><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.collect_list" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.collect_list</a></p></blockquote><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.collect_set" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.collect_set</a></p></blockquote><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.array_distinct" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.array_distinct</a></p></blockquote><blockquote><p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.flatten" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.flatten</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+            <tag> collect_list </tag>
+            
+            <tag> collect_set </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>GCP系列-使用 Dataproc initialization actions 安裝 python package</title>
+      <link href="/posts/50438/"/>
+      <url>/posts/50438/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-dataproc-initialization-actions-to-install-python-packages-on-cluser-on-all-workers"><a href="#How-to-use-dataproc-initialization-actions-to-install-python-packages-on-cluser-on-all-workers" class="headerlink" title="How to use dataproc initialization actions to install python packages on cluser (on all workers)?"></a>How to use dataproc initialization actions to install python packages on cluser (on all workers)?</h1><p>在 GCP 的 Dataproc 要啟動 pyspark 後只會有一些相關預設的 python 套件可以使用，如果要額外的 package 就要事後自行安裝，不過卻<code>只能在 master 安裝</code>(除非大大認真的每台都裝)，所以 gcp 有提供 <code>dataproc initialization actions</code> 方法可以在 launch 機器時就將所有的 package 安裝至每一台 worker 上面，此範例將會有兩種用法：<code>PIP_PACKAGES</code>, <code>CONDA_PACKAGES</code>。</p><p><strong>在本範例你會學到：</strong></p><ul><li>如何使用 dataproc initialization actions</li><li>安裝自己想要的 python 套件於 dataproc 上</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>熟知 dataproc 基本語法</li><li>有使用 GCP 服務的經驗</li><li>本範例使用 image 版本為 1.4（文章最後一張會解釋）</li></ul><p><strong>註：由於 gcp 語法改版的的頻率其實不低，可能過幾個月就會長得有點不一樣，請大家斟酌參考(也可以留言告知我)。</strong> </p><h3 id="1-基礎語法介紹"><a href="#1-基礎語法介紹" class="headerlink" title="1.基礎語法介紹"></a><strong>1.基礎語法介紹</strong></h3><p>在過去都需要自己去更改 google 所提供的 initialization 的相關檔案，將 <code>pip install ***</code> 放進去才能安裝自己想要的套件，現在<br> google 將它獨立的出來變成了參數可以使用，就不用頻繁地去更動 <code>sh</code> 檔案了。</p><ul><li>基礎範例</li></ul><pre><code class="bash">gcloud dataproc clusters create my-cluster \    --metadata &#39;PIP_PACKAGES=pandas&#39; \    --initialization-actions gs://$MY_BUCKET/python/pip-install.sh</code></pre><p>上方的 <code>gs://</code> 路徑可以直接指向 google 提供的檔案(<code>gs://dataproc-initialization-actions/python/pip-install.sh</code>)，也可以自己載回來自定義。</p><h3 id="2-指定版本號"><a href="#2-指定版本號" class="headerlink" title="2.指定版本號"></a><strong>2.指定版本號</strong></h3><p>其實跟 <code>pip</code> 要指定版本時蠻像的，只是記得版本號的等號 <code>==</code> 是兩個喔！</p><pre><code class="bash">gcloud dataproc clusters create my-cluster \    --metadata &#39;PIP_PACKAGES=pandas==0.23.0&#39; \    --initialization-actions gs://$MY_BUCKET/python/pip-install.sh</code></pre><h3 id="3-多套件同時安裝"><a href="#3-多套件同時安裝" class="headerlink" title="3.多套件同時安裝"></a><strong>3.多套件同時安裝</strong></h3><p>與上方大同小異，要注意的是套件彼此之間的分隔是用<code>一個空白</code></p><pre><code class="bash">gcloud dataproc clusters create my-cluster \    --metadata &#39;PIP_PACKAGES=pandas==0.23.0 scipy==1.1.0&#39; \    --initialization-actions gs://$MY_BUCKET/python/pip-install.sh</code></pre><h3 id="4-另一種方式"><a href="#4-另一種方式" class="headerlink" title="4.另一種方式"></a><strong>4.另一種方式</strong></h3><p>講到這前面其實還蠻簡單的吧，我們剩下一種就是 <code>CONDA_PACKAGES</code> 的方式，不過基本上就是一模一樣，將 <code>PIP_PACKAGES</code> 換掉就好，要注意的點是版本號的等號 <code>=</code> 是一個喔！<strong>(2020/04/14補充：經過實測單個或兩個等號都不會出錯，不知道之後會不會變動)</strong>：</p><pre><code class="bash">gcloud dataproc clusters create my-cluster \    --metadata &#39;CONDA_PACKAGES=pandas=0.23.0 scipy=1.1.0&#39; \    --initialization-actions gs://$MY_BUCKET/python/conda-install.sh</code></pre><h3 id="5-Image版本差異"><a href="#5-Image版本差異" class="headerlink" title="5.Image版本差異"></a><strong>5.Image版本差異</strong></h3><p>這裡要特別注意的是 dataproc 啟動時的 image 版本會影響 <code>python</code> 版本以及 <code>dataproc initialization actions</code> 與法上稍有不同。本文使用的是 <code>--image-version=1.4</code>(啟動時會是 python3)，這個版本下的語法就如前文所述，其他版本請見下方連結參考。</p><blockquote><p><a href="https://cloud.google.com/dataproc/docs/tutorials/python-configuration" target="_blank" rel="noopener">https://cloud.google.com/dataproc/docs/tutorials/python-configuration</a></p></blockquote><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://github.com/GoogleCloudPlatform/dataproc-initialization-actions/tree/master/python" target="_blank" rel="noopener">https://github.com/GoogleCloudPlatform/dataproc-initialization-actions/tree/master/python</a></p></blockquote><p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCP </tag>
+            
+            <tag> Dataproc </tag>
+            
+            <tag> pyspark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>keras系列 - keras model部署與序列化於spark進行預測</title>
+      <link href="/posts/63500/"/>
+      <url>/posts/63500/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-serialize-keras-model-and-apply-to-all-workers-on-spark"><a href="#How-to-serialize-keras-model-and-apply-to-all-workers-on-spark" class="headerlink" title="How to serialize keras model and apply to all workers on spark?"></a>How to serialize keras model and apply to all workers on spark?</h1><p>Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式(ex:broadcast、pickle)，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p><p><strong>在本範例你會學到：</strong></p><ul><li>各種傳遞檔案給 worker 的方式或套件<ul><li>broadcast </li><li><a href="https://github.com/maxpumperla/elephas" target="_blank" rel="noopener">elephas</a></li><li>SparkFile</li><li>pickle</li><li><a href="https://github.com/wwoods/keras_pickle_wrapper" target="_blank" rel="noopener">keras_pickle_wrapper</a></li><li>Deep Learning Pipelines for Apache Spark</li></ul></li></ul><p><strong>可能需要注意的地方：</strong></p><ul><li>各種套件或是方法可能因為作者或是版本更新而有不同結果，若有任何疑問歡迎與我聯絡。</li><li>spark 叢集的機器有兩種常見的說法，一個是 <code>worker</code>及<code>executor</code>，以下都用 <code>worker</code> 稱呼。</li><li>我使用的 keras model 大小超過 <code>6GB</code></li></ul><h3 id="1-broadcast"><a href="#1-broadcast" class="headerlink" title="1.broadcast"></a><strong>1.broadcast</strong></h3><p>這是一個 spark 常見的傳遞參數給 worker 的方式，這裡就簡略的介紹，有需要更多資訊請見官網 <a href="https://spark.apache.org/docs/latest/api/python/pyspark.html?highlight=broadcast#pyspark.Broadcast" target="_blank" rel="noopener">pyspark.Broadcast</a>。</p><p>個人常使用的情境是當我需要讀取一份不是 spark 所產生的分散式檔案時，又需要處理這份檔案得到某個清單(或是從 SQL 處理完的清單)，就會從 master 讀取進來，處理成我要的序列後再利用<code>broadcast</code>傳遞給所有 worker。</p><p>以下為使用方式:</p><pre><code class="python">#傳遞方式b = sc.broadcast([1, 2, 3, 4, 5])#取值方式b.value</code></pre><p>將參數傳入<code>sc.broadcast</code>後就會將相關資料帶到所有的 worker 上面，而取用的時候相當簡單， 用<code>b.value</code>就可以在每個 worker 取到值了。</p><p>不過此方法無法傳遞一個 model 過去，不符合需求。</p><h3 id="2-elephas"><a href="#2-elephas" class="headerlink" title="2.elephas"></a><strong>2.elephas</strong></h3><p><img src="https://github.com/maxpumperla/elephas/blob/master/elephas.gif?raw=true" alt="model serialize (圖源:來自於套件作者)"></p><p>這個套件的標題是<code>Distributed Deep Learning with Keras &amp; Spark</code>，這個看似非常符合需求的套件但並不適合所有的情境：</p><ul><li>適合利用 spark 線上預測、線上產生結果與 spark 的 ml 非常地相似，但目前無法留下 model (請見相關 <a href="https://github.com/maxpumperla/elephas/issues/98" target="_blank" rel="noopener">issue</a>)</li><li>是個前景看好的套件，不過目前並不符合我需要留下 model 的需求(若有理解錯誤請告知)</li></ul><h3 id="3-pickle"><a href="#3-pickle" class="headerlink" title="3.pickle"></a><strong>3.pickle</strong></h3><ul><li>網路上有非常多種 pickle 使用方式和介紹，他主要的功能就是編碼與序列化，反序列化，是各種模型非常常見的格式，大家應該相對熟悉。<ul><li>主要針對keras序列的方法都來自於作者 (<a href="http://zachmoshe.com/2017/04/03/pickling-keras-models.html" target="_blank" rel="noopener">相關介紹</a>)，有許多嘗試都是針對他的方法修改，例如<a href="https://stackoverflow.com/questions/50007126/pickling-monkey-patched-keras-model-for-use-in-pyspark" target="_blank" rel="noopener">此範例</a></li><li>實測上會一直遇到奇怪的問題，一直說無法 <code>serialize</code></li></ul></li></ul><pre><code class="bash">_pickle.PicklingError: Could not serialize object: error: &#39;I&#39; format requires 0 &lt;= number &lt;= 4294967295</code></pre><ul><li>根據過去的issue 確認 pickle 有大小上限 4G：<a href="https://github.com/numpy/numpy/issues/4481" target="_blank" rel="noopener">參考來源1</a>、<a href="https://stackoverflow.com/questions/31468117/python-3-can-pickle-handle-byte-objects-larger-than-4gb" target="_blank" rel="noopener">參考來源2</a></li></ul><p>最後不符合使用上的需求，模型檔案過大。</p><h3 id="4-keras-pickle-wrapper"><a href="#4-keras-pickle-wrapper" class="headerlink" title="4.keras pickle wrapper"></a><strong>4.keras pickle wrapper</strong></h3><p>有作者自己寫出了方便一點的方法，類似懶人包，不像之前自己打包 pickle 需要寫很多東西。</p><blockquote><p>簡易安裝介紹 <a href="https://github.com/wwoods/keras_pickle_wrapper" target="_blank" rel="noopener">https://github.com/wwoods/keras_pickle_wrapper</a></p></blockquote><p>簡單的把自己的 model 丟進去 <code>mw = KerasPickleWrapper(model)</code>就大概完成了，以下為完整範例：</p><pre><code class="python">from keras.models import *import picklefrom keras_pickle_wrapper import KerasPickleWrappermw = KerasPickleWrapper(model)data = pickle.dumps(mw)mw2 = pickle.loads(data)#進行預測，相關參數請自行修改a = mw2().predict([[title_0], [title_1], [title_2], [title_3], [title_4], [hour_matrix_array]], batch_size=1200, verbose=1)</code></pre><p>不過他的底層還是用 pickle 所以問題並沒有解決，只是操作上方便許多。不符合使用上的需求，檔案過大。</p><h3 id="5-SparkFile"><a href="#5-SparkFile" class="headerlink" title="5.SparkFile"></a><strong>5.SparkFile</strong></h3><p>SparkFile 也是常見的用法，是Spark 原生的套件，可以傳遞各種檔案到 worker（文件、py file)。一句語法就可以完成<code>spark.sparkContext.addPyFile(&quot;/root/test.py&quot;)</code><br>用法相對單純。</p><p>相對的我想要將我的 model 當成檔案傳過去，完整範例如下，將路徑改為自己的 model 路徑即可：</p><pre><code class="python">from pyspark import SparkFilesspark.sparkContext.addFile(&quot;/root/my_keras_model.h5&quot;)model_path = &#39;/root/my_keras_model.h5&#39;class Mymodel_Classifier:    clf = None    @staticmethod    def is_loaded():        return Mymodel_Classifier.clf is not None    @staticmethod    def load_models(config):        path = SparkFiles.get(config)        Mymodel_Classifier.clf = path# Executed once per interpreter Mymodel_Classifier.load_models(model_path)</code></pre><p>在測試的時候都可以正常的運行，換成我的 model，會有<code>OOM error</code>記憶體問題，更改 spark config 中的 memory 後並沒有改善，推測應該與 pickle 一樣 超過了可容許的大小。最後不符合使用上的需求，檔案過大。</p><h3 id="6-Deep-Learning-Pipelines-for-Apache-Spark"><a href="#6-Deep-Learning-Pipelines-for-Apache-Spark" class="headerlink" title="6.Deep Learning Pipelines for Apache Spark"></a><strong>6.Deep Learning Pipelines for Apache Spark</strong></h3><p>由 databrick 開發的套件，可以分散式訓練並讀取過去的 model 來預測</p><blockquote><p><a href="https://github.com/databricks/spark-deep-learning" target="_blank" rel="noopener">https://github.com/databricks/spark-deep-learning</a></p></blockquote><ul><li>文章中大多數都是關於image的相關應用 在<code>第二版 0.3.0</code>才出現 <code>KerasTransformer &amp; TFTransformer</code> 針對非image的資料訓練與處理</li><li>在安裝上必須確認版本問題是否一致，否則後續問題會非常的多</li><li>若是使用 <code>gcp</code>的<code>dataproc</code>，啟動 cluster 時記得要加上<code>properties</code>參數如下：</li></ul><pre><code class="bash"># 請自行更換相關版本號，包含spark與此套件--properties spark:spark.jars.packages=databricks:spark-deep-learning:1.0.0-spark2.3-s_2.11</code></pre><ul><li>使用pyspark啟動要自己指向路徑才讀得到，後續就會方便很多，簡單操作:</li></ul><pre><code class="python">import sys, glob, ossys.path.extend(glob.glob(os.path.join(os.path.expanduser(&quot;~&quot;), &quot;.ivy2/jars/*.jar&quot;))) num_features = 124num_examples = 1input_data = [{&quot;features&quot; : [0]*(num_features)} for i in range(num_examples)]input_df = sqlContext.createDataFrame(input_data)transformer = KerasTransformer(inputCol=&quot;features&quot;, outputCol=&quot;predictions&quot;, modelFile=model_path)final_df = transformer.transform(input_df)</code></pre><ul><li>跑官方的範例程式很順利，但是將自己的model放進去時遇到了幾個問題<ul><li>該套件無法接受多輸入與多輸出，也就是所有的輸入輸出都要自己合成一個array，相當不便，model必須重新訓練</li><li>重新訓練符合該模式後，預測時一直出問題:<a href="https://github.com/lanpa/tensorboardX/issues/52" target="_blank" rel="noopener">相關issue</a>。有兩種說法，一個是<code>tensorbroad</code>出問題，一個是他們使用了<code>protobuf</code>google 的套件，會出現錯誤<code>Protobuf has a hard limit of 2GB</code>。</li><li>仔細追 code 後發現 是<code>tensorflow graph</code>的問題，graph 有大小的限制，相關參考如下：</li></ul></li></ul><blockquote><p><a href="https://stackoverflow.com/questions/36349049/overcome-graphdef-cannot-be-larger-than-2gb-in-tensorflow" target="_blank" rel="noopener">https://stackoverflow.com/questions/36349049/overcome-graphdef-cannot-be-larger-than-2gb-in-tensorflow</a><br><a href="https://stackoverflow.com/questions/41439136/wide-deep-learning-for-large-data-error-graphdef-cannot-be-larger-than-2gb" target="_blank" rel="noopener">https://stackoverflow.com/questions/41439136/wide-deep-learning-for-large-data-error-graphdef-cannot-be-larger-than-2gb</a></p></blockquote><p>最後不符合使用上的需求，依然有大小的問題。</p><h3 id="結語"><a href="#結語" class="headerlink" title="結語"></a><strong>結語</strong></h3><ul><li>雖然目前的 survey 還是沒有辦法解決我的問題(model 過大無法分散)，不過過程中也發現了許多值得關注 repository，後續可期。</li><li>以後要產生模型時要特別注意整個模型的大小，盡量不要超過以上所有套件限制的大小，不然在分散運算會遭遇許多困難。</li><li>也提供目前的解決方式，由於服務都是在 gcp 上面進行，最後採用了gcp 的 <code>AI platform</code> (舊稱為 <code>ml engine</code>)，利用它上面的 <code>GPU</code> 資源來加速運算速度(就是花錢解決問題拉)！</li></ul><p>以上的分享有任何問題或是討論歡迎隨時與我聯絡。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> keras </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+            <tag> keras </tag>
+            
+            <tag> serialize </tag>
+            
+            <tag> spark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</title>
+      <link href="/posts/62615/"/>
+      <url>/posts/62615/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-tensorboard-Embedding-Projector-to-visualize-project-word2vec-model"><a href="#How-to-use-tensorboard-Embedding-Projector-to-visualize-project-word2vec-model" class="headerlink" title="How to use tensorboard(Embedding Projector) to visualize/project word2vec model?"></a>How to use tensorboard(Embedding Projector) to visualize/project word2vec model?</h1><p>  word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，在應用解釋時(給老闆、業務、行銷與客戶)其實蠻困擾的。此文章將利用 Tensorboard(Embedding Projector) 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係，來解決上述問題。</p><p><strong>在本範例你會學到：</strong></p><ul><li>如何使用 tensorboard</li><li>將 word2vec 詞向量視覺化</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>word2vec model (本篇不贅述該如何產生一個 word2vec model，若有需要的留言讓我知道)</li><li><strong>注意：本範例會有一點 <code>Tensorflow</code> 的用法，不懂也不會影響使用。</strong></li></ul><h3 id="1-套件準備"><a href="#1-套件準備" class="headerlink" title="1.套件準備"></a><strong>1.套件準備</strong></h3><p>在自己喜歡的環境內使用安裝以下套件，基本上就是 <code>tensorflow</code>、<code>gensim</code>、<code>numpy</code>，版本之間的衝突問題請依照自己環境選擇版本，網路上相關範本已經很多了：</p><pre><code class="bash">numpy==1.17.3tensorboard==1.15.0tensorflow==1.15.0tensorflow-estimator==1.15.1gensim==3.8.1</code></pre><h3 id="2-載入-word2vec-模型"><a href="#2-載入-word2vec-模型" class="headerlink" title="2.載入 word2vec 模型"></a><strong>2.載入 word2vec 模型</strong></h3><ul><li><code>log_dir</code> : Log 要存擋的地方</li><li><code>model_dir</code> : word2vec model 放置的地方(已經提前將模型放到該路徑下 <code>med250.model.bin</code>、<code>med250.model.bin.trainables.syn1neg.npy</code>、<code>med250.model.bin.wv.vectors.npy</code>)</li><li><code>metadata_name</code> : 要存下模型中的字詞對照</li><li><code>model_file</code> : med250.model.bin 所在位置</li></ul><pre><code class="python">import numpy as npimport tensorflow as tfimport osfrom gensim.models.word2vec import Word2Vecfrom tensorflow.contrib.tensorboard.plugins import projectorimport subprocesslog_dir = &#39;/home/word2vec_model/embedding_log_demo&#39;model_dir = &#39;/home/word2vec_model&#39;# 若路徑都不存在可以解開註解創立# if not os.path.exists(log_dir):#     os.mkdir(log_dir)#     os.mkdir(model_dir)metadata_name = &#39;metadata.tsv&#39;# load model model_file = &quot;/home/word2vec_model/med250.model.bin&quot;word2vec = Word2Vec.load(model_file)</code></pre><h3 id="3-處理向量與原對應字詞"><a href="#3-處理向量與原對應字詞" class="headerlink" title="3.處理向量與原對應字詞"></a><strong>3.處理向量與原對應字詞</strong></h3><ul><li>第一部分 <code>embedding</code> : 依順序存下向量</li><li>第二部分 : 存下每個向量原始的字詞意思(label)，存入先前的 <code>metadata_name</code></li></ul><pre><code class="python"># create a list of vectorsembedding = np.empty((len(word2vec.wv.vocab.keys()), word2vec.vector_size), dtype=np.float32)for i, word in enumerate(word2vec.wv.vocab.keys()):    embedding[i] = word2vec[word]# write labels with open(os.path.join(log_dir, metadata_name), &#39;w&#39;) as f:    for word in word2vec.wv.vocab.keys():        f.write(word + &#39;\n&#39;)</code></pre><h3 id="4-建立-Tensorboard"><a href="#4-建立-Tensorboard" class="headerlink" title="4.建立 Tensorboard"></a><strong>4.建立 Tensorboard</strong></h3><ul><li>第一部分：設置 session<ul><li>這部分如果已經對 <code>TensorFlow</code> 有初步的瞭解，可以再細部微調更多的東西，如果不懂也沒關係，照抄就好。</li></ul></li><li>第二部分 : 為 <code>projector</code> 投射/視覺化做準備<ul><li>同上，不懂就先照貼就好，名稱與前面的參數一致就行。</li></ul></li></ul><pre><code class="python"># setup a TensorFlow sessiontf.reset_default_graph()sess = tf.InteractiveSession()X = tf.Variable([0.0], name=&#39;embedding&#39;)place = tf.placeholder(tf.float32, shape=embedding.shape)set_x = tf.assign(X, place, validate_shape=False)sess.run(tf.global_variables_initializer())sess.run(set_x, feed_dict={place: embedding})# create a TensorFlow summary writersummary_writer = tf.summary.FileWriter(log_dir, sess.graph)config = projector.ProjectorConfig()embedding_conf = config.embeddings.add()embedding_conf.tensor_name = &#39;embedding:0&#39;embedding_conf.metadata_path = os.path.join(log_dir, metadata_name)projector.visualize_embeddings(summary_writer, config)</code></pre><h3 id="5-存擋"><a href="#5-存擋" class="headerlink" title="5.存擋"></a><strong>5.存擋</strong></h3><ul><li>將前面處理好的 <code>session</code> 存擋，以利多次使用。 </li></ul><pre><code class="python"># save the modelsaver = tf.train.Saver()saver.save(sess, os.path.join(log_dir, &quot;model.ckpt&quot;))</code></pre><h3 id="6-啟動-Tensorboard"><a href="#6-啟動-Tensorboard" class="headerlink" title="6.啟動 Tensorboard"></a><strong>6.啟動 Tensorboard</strong></h3><p>最後一步就要大功告成了，請開啟 terminal 輸入下方指令(不是在python環境喔)，將 <code>logdir</code> 指到前面指定的位置。(可以自己的環境需求加上 <code>--port</code>)</p><pre><code class="bash">tensorboard --logdir=&#39;/home/word2vec_model/embedding_log_demo/&#39;</code></pre><h3 id="Tensorboard-畫面展示"><a href="#Tensorboard-畫面展示" class="headerlink" title="Tensorboard 畫面展示"></a><strong>Tensorboard 畫面展示</strong></h3><p>等待一下就會出現要輸入的 <code>url</code>，畫面為我自己設定了<code>port 1234</code> 的url，請自行更改 <code>host</code>。</p><p><img src="/medias/post_img/62615_1.png" alt="啟動Tensorboard"></p><p>一開始會進入我們程式建立的 graphic 畫面</p><p><img src="/medias/post_img/62615_2.png" alt="初始畫面"></p><p>選擇右上方下拉選單，點擊 <code>projector</code></p><p><img src="/medias/post_img/62615_3.png" alt="選擇 projector"></p><p>系統將會開始載入，這會花一些時間，如果是在本機嘗試這個專案的朋友們請注意自己機器的 memory 大小，若不夠用可以將自己的 model 切小一點來嘗試</p><p><img src="/medias/post_img/62615_4.png" alt="載入畫面"></p><p>看到一坨藍藍的點點就是成功了</p><p><img src="/medias/post_img/62615_5.png" alt="載入成功"></p><p>維度太多其實很難看到什麼，所以可以利用右側的篩選像是 <code>zoom in</code> 的功能。</p><p>EX:我在 <code>Search</code> 輸入 <code>新北市</code>且選擇 <code>by label</code>後，再點擊 <code>isolate xx point</code>，就可以看到新北市其相關的字詞的距離</p><p><img src="/medias/post_img/62615_6.png" alt="Zoon in 側邊功能"></p><p>其他相關的按鈕與功能我認為蠻直覺的，我就不特別說明了，但如果有需要解釋也請讓我知道！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://eliyar.biz/using-pre-trained-gensim-word2vector-in-a-keras-model-and-visualizing/" target="_blank" rel="noopener">https://eliyar.biz/using-pre-trained-gensim-word2vector-in-a-keras-model-and-visualizing/</a></p></blockquote><p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> NLP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> word2vec </tag>
+            
+            <tag> nlp </tag>
+            
+            <tag> tensorboard </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pyspark 系列 - 在 lit 中使用 Array(Arraylist) 教學</title>
+      <link href="/posts/54688/"/>
+      <url>/posts/54688/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-pass-array-to-pyspark-lit-function"><a href="#How-to-pass-array-to-pyspark-lit-function" class="headerlink" title="How to pass array to pyspark lit function?"></a>How to pass array to pyspark lit function?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何使用 lit 函式</li><li>將 array 傳給 lit</li><li>解決以下問題</li></ul><pre><code class="python">py4j.protocol.Py4JJavaError: An error occurred while calling z:org.apache.spark.sql.functions.lit.: java.lang.RuntimeException: Unsupported literal type class java.util.ArrayList</code></pre><p><strong>在本範例你需要先準備好：</strong></p><ul><li>本範例部份function 可能只適用於 <code>spark 版本 &gt;= 2.4</code></li></ul><p><strong>以下目的是為了展示 lit 使用方式，其範例看起來可能有點傻，請見諒</strong></p><h3 id="1-如何使用-lit"><a href="#1-如何使用-lit" class="headerlink" title="1.如何使用 lit"></a><strong>1.如何使用 lit</strong></h3><p>由於 spark 在操作的時候都是以 <code>rdd</code> 或是 <code>dataframe</code> 的形式在使用，若不是這兩個形態是不能互相處理任何事情的，例如：</p><ul><li>若我想要新增一個數值在 dataframe 上，而且每個值都一樣，可以這麼做</li></ul><pre><code class="python">from pyspark import SparkConf, SparkContextfrom pyspark.sql import SparkSessionimport pyspark.sql.functions as Ffrom pyspark.sql.types import *spark = SparkSession.builder.appName(&#39;lit_example&#39;).getOrCreate()# Create dataframedf = spark.createDataFrame([(1, 2, 3, 4, 5, 6),(12, 24, 33, 44, 54, 66)], [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;])# 不能直接給值會報錯 # 會有以下錯誤： AssertionError: col should be Columndf_lit = df.withColumn(&#39;lit_column&#39;,2)# 正確寫法df_lit = df.withColumn(&#39;lit_column&#39;,F.lit(2))df_lit.show()</code></pre><p><img src="/medias/post_img/54688_1.png" alt="新增數值示意圖"></p><h3 id="2-lit-與-array-的使用方式"><a href="#2-lit-與-array-的使用方式" class="headerlink" title="2.lit 與 array 的使用方式"></a><strong>2.lit 與 array 的使用方式</strong></h3><ul><li>當我想要新增一個 array 的時候，就會遇到上方的錯誤訊息 <code>Unsupported literal type class java.util.ArrayList</code>。延續上方的例子：</li></ul><pre><code class="python"># Create dataframedf = spark.createDataFrame([(1, 2, 3, 4, 5, 6),(12, 24, 33, 44, 54, 66)], [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;])# 假設我要傳入這個listinput_list = [2,4,6,8]# 不能直接給list會報錯df_lit = df.withColumn(&#39;lit_column&#39;,F.lit(input_list))# 正確寫法df_lit = df.withColumn(&#39;lit_column&#39;,F.array([F.lit(x) for x in input_list]))df_lit.show()</code></pre><p><img src="/medias/post_img/54688_2.png" alt="新增 array 示意圖"></p><p>原理其實就是告知 dataframe 我要放入的資料是 <code>F.array</code> 型態，然後把資料裡所有的值都用 for loop 進行 lit 轉換成 dataframe 理解的型態就可使用 <code>F.array([F.lit(x) for x in input_list])</code>。</p><h3 id="相關參考"><a href="#相關參考" class="headerlink" title="相關參考"></a><strong>相關參考</strong></h3><p>就如前言所說，此範例傻傻的，其實也可以用 <code>udf</code> 解決，有興趣的可參考資料。</p><blockquote><p><a href="https://stackoverflow.com/questions/49683897/passing-array-to-python-spark-lit-function" target="_blank" rel="noopener">https://stackoverflow.com/questions/49683897/passing-array-to-python-spark-lit-function</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+            <tag> lit </tag>
+            
+            <tag> arraylist </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>pyspark系列 - 如何傳遞所有 column 給 UDF 實例</title>
+      <link href="/posts/50088/"/>
+      <url>/posts/50088/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-pass-all-dataframe-cloumns-to-UDF"><a href="#How-to-pass-all-dataframe-cloumns-to-UDF" class="headerlink" title="How to pass all dataframe cloumns to UDF?"></a>How to pass all dataframe cloumns to UDF?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>簡易UDF (User Define function) 使用方式</li><li>傳遞多參數給UDF</li></ul><h3 id="1-定義UDF"><a href="#1-定義UDF" class="headerlink" title="1.定義UDF"></a><strong>1.定義UDF</strong></h3><ul><li><p>用一個簡單加總所有欄位的 function 作為實現範例(當然有更好的方式做加總這個動作)。</p></li><li><p>熟悉 <code>python</code> 的人應該已經熟悉 <code>*columns</code> 的用法，代表所有的參數</p></li><li><p>有興趣可以參考以下網址，講的蠻詳盡的。</p><blockquote><p><a href="https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html" target="_blank" rel="noopener">https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html</a></p></blockquote></li></ul><pre><code class="python"># function for summingdef get_total(*columns):    total = 0    for col_value in columns:        total += col_value    return total# Define udf type and funcudf_get_total = F.udf(get_total,IntegerType())</code></pre><h3 id="2-將所有column傳給UDF"><a href="#2-將所有column傳給UDF" class="headerlink" title="2.將所有column傳給UDF"></a><strong>2.將所有column傳給UDF</strong></h3><ul><li><p>沒什麼特別的用法，就是用全部的欄位作為一個 list 傳入 <code>*[col for col in df.columns]</code></p></li><li><p>df.columns 為全部的欄位</p></li></ul><pre><code class="python">df.withColumn(&#39;sum&#39;,udf_get_total(*[col for col in df.columns])).show()</code></pre><h3 id="3-完整的範例"><a href="#3-完整的範例" class="headerlink" title="3.完整的範例"></a><strong>3.完整的範例</strong></h3><pre><code class="python">from pyspark import SparkConf, SparkContextfrom pyspark.sql import SparkSessionimport pyspark.sql.functions as Ffrom pyspark.sql.types import *spark = SparkSession.builder.appName(&#39;pass_columns&#39;).getOrCreate()# function for summingdef get_total(*columns):    total = 0    for col_value in columns:        total += col_value    return total# Create dataframedf = spark.createDataFrame([(1, 2, 3, 4, 5, 6),(12, 24, 33, 44, 54, 66)], [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;])# Define udf type and funcudf_get_total = F.udf(get_total,IntegerType())# pass all column to UDF and create a new column for summing result.df.withColumn(&#39;sum&#39;,udf_get_total(*[col for col in df.columns])).show()</code></pre><h3 id="4-資料與結果"><a href="#4-資料與結果" class="headerlink" title="4.資料與結果"></a><strong>4.資料與結果</strong></h3><p><img src="/medias/post_img/50088_1.png" alt="原始資料示意圖"><br><img src="/medias/post_img/50088_2.png" alt="最後結果示意圖"></p><p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> pyspark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> pyspark </tag>
+            
+            <tag> udf </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>使用 Docker 建立JupyterHub 與 OAuth 憑證安裝流程</title>
+      <link href="/posts/62028/"/>
+      <url>/posts/62028/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-docker-launch-JupyterHub-on-GCP-and-login-with-OAuth"><a href="#How-to-use-docker-launch-JupyterHub-on-GCP-and-login-with-OAuth" class="headerlink" title="How to use docker launch JupyterHub on GCP and login with OAuth?"></a>How to use docker launch JupyterHub on GCP and login with OAuth?</h1><p>由於公司有相關的需求，就埋頭來研究一下 JupyterHub 的安裝與建置，網路上雖然有很多相關的參考文章了依然的撞了很多牆，除了紀錄有點舊以外，官網的相關說明其實有些地方我也看得一頭霧水，所以來紀錄一下，最後也把相關設定包入 docker 以利後需使用，有任何錯誤歡迎指正。</p><p><strong>本文學習重點</strong></p><p>1.利用 docker 快速建立多人使用的 JupyterHub</p><p>2.使用 OAuth驗證 使用公司 gmail 作為登入帳號</p><p><strong>備註</strong>：<br>本教學使用的環境預設使用者已熟知於 <code>如何於GCP環境架設VM</code>，並對 <code>Docker</code> 有基礎的了解(使用自己的環境也不會有問題，都已 docker 化，可依需求調整 dockerfile)。</p><h2 id="1-安裝-Docker"><a href="#1-安裝-Docker" class="headerlink" title="1.安裝 Docker"></a>1.安裝 Docker</h2><p>若有安裝過了請跳過此步驟。</p><ul><li>docker : 前往 <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank" rel="noopener">docker 官網</a> 選擇自己合適的作業系統 (連結為 <code>ubuntu</code> 的範例)，跟著步驟安裝即可。</li><li>docker-compose : 前往 <a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">官網</a> 依照相對應 OS 安裝即可。</li></ul><h2 id="2-Clone-repository"><a href="#2-Clone-repository" class="headerlink" title="2.Clone repository"></a>2.Clone repository</h2><p>基本上都已經包好了，clone 下來就能使用</p><pre><code class="bash"> git clone https://github.com/ChiLunHuang/jupyterhub.git</code></pre><h2 id="3-env-設定"><a href="#3-env-設定" class="headerlink" title="3. .env 設定"></a>3. .env 設定</h2><p><code>cd</code> 進入資料夾操作，複製 .env 檔並依照需求填入相關參數</p><pre><code class="bash">  cp env.example .env</code></pre><ul><li><code>SHARE_FOLDER</code> 為所有使用者在 container 的 code ，方便未來移植、複製環境</li><li><code>port</code> 預設為 <code>8000</code> 可依需求更改 (gcp 環境新開 port 請更改防火牆設定) </li></ul><h2 id="4-OAuth-Authenticator-設定"><a href="#4-OAuth-Authenticator-設定" class="headerlink" title="4.OAuth Authenticator 設定"></a>4.OAuth Authenticator 設定</h2><p>這個部分就稍微複雜麻煩點了，由於 GCP 服務更新變動的相當平凡，網路教學可能隨時會過時導致資訊很不完整，請特別注意。</p><p>GCP 啟用 oauth 服務請見以下教學：</p><p>  1.在 GCP 左方導覽列中尋找 <code>API和服務</code></p><p>  <img src="/medias/post_img/gcp_api.png" alt="點擊API和服務"></p><p>  2.第一次使用要 先進入 <code>OAuth 同意畫面</code> 填入相關資料，還蠻容易理解的我就不多做說明。</p><p>  <img src="/medias/post_img/oauth_approve.png" alt="於同意畫面填寫資料"></p><p>  <strong>當中有個 <code>已授權網域</code> 請填寫公司的網域名稱，ex:google.com，否則下一步會出錯</strong></p><p>  2.接下來進入憑證的步驟，主要是要取得 certificate <code>用戶端 ID(client_id)</code> 與 <code>用戶端密碼(client_secret)</code> </p><ul><li><p>點擊導覽列的憑證 &gt; 點擊建立憑證按鈕 &gt; OAuth 用戶端ID</p><p><img src="/medias/post_img/add_oauth.png" alt="新增OAuth 用戶端ID"></p></li><li><p>填寫相關資料 (參考下圖)</p><ul><li>網路應用程式</li><li>名稱 </li><li>已授權的 JavaScript 來源 (請將範例中的網域位置換成自己相對應的網域且必須跟上一步驟的<code>已授權網域</code>相同，否則會跟我有一樣的錯誤訊息)</li></ul><blockquote><p>若上一步驟 <code>已授權網域</code> 填寫的是 <code>lab.tw</code>，這步驟可能就會如下圖一樣(hostname.domain)</p></blockquote><p><img src="/medias/post_img/add_oauth2.png" alt="填寫相關網域資料">   </p><p>相關資訊也可參考：<a href="https://cadlab.mde.tw/post/jupyterhub-oauth2-deng-ru-she-ding.html" target="_blank" rel="noopener">config 與 certificate 設定參考</a></p></li></ul><h2 id="5-jupyterhub-config-py-設定"><a href="#5-jupyterhub-config-py-設定" class="headerlink" title="5.jupyterhub_config.py 設定"></a>5.jupyterhub_config.py 設定</h2><ul><li><p>複製設定檔</p><pre><code class="bash">cp config_folder/example.jupyterhub_config.py config_folder/jupyterhub_config.py</code></pre></li><li><p><strong>若有使用 <code>docker-compose down</code> 再重新啟動後使用者資料都會重置， <code>config_folder</code> 資料夾內的資料也是方便未來移植、複製使用者資料</strong></p></li><li><p>設定上一步驟得到的憑證以及填入自己的 domain 、 host，需要設定的有 <code>oauth_callback_url</code>、<code>client_id</code>、<code>client_secret</code>、<code>hosted_domain</code>、<code>login_service</code></p><ul><li><code>oauth_callback_url</code>：填入剛剛申請憑證的那個 callback url</li><li><code>client_id</code>、<code>client_secret</code>:填入剛剛申請憑證的兩組號碼</li><li><code>hosted_domain</code>：允許進入網頁的domain，例如公司的 xxx.com，可設定多組使用逗號分隔  [‘hosted_domain 1’,’hosted_domain 2’]</li><li><code>login_service</code>：登入時的顯示資訊，自由更改</li></ul><pre><code class="python">from oauthenticator.google import LocalGoogleOAuthenticatorc.JupyterHub.authenticator_class = LocalGoogleOAuthenticator# use Google OAuthenticator for local usersc.JupyterHub.authenticator_class = &#39;oauthenticator.LocalGoogleOAuthenticator&#39;# Need to create certificate in gcp interface and get client_id, client_secretc.GoogleOAuthenticator.oauth_callback_url = &#39;http://your_domain_url:8000/hub/oauth_callback&#39;c.GoogleOAuthenticator.client_id = &#39;your_client_id&#39;c.GoogleOAuthenticator.client_secret = &#39;your_client_secret&#39;c.GoogleOAuthenticator.hosted_domain = [&#39;host_name&#39;]c.GoogleOAuthenticator.login_service = &#39;Login with email&#39;</code></pre><ul><li><p><strong>補充：</strong> 使用 Email 新增使用者可能會遇到下方訊息，<a href="https://professorkazarinoff.github.io/jupyterhub-engr114/google_oauth/" target="_blank" rel="noopener">解決方式參考</a></p><blockquote><p>Please enter a username matching the regular expression configured via the NAME_REGEX</p></blockquote><blockquote><p>要加入 c.Authenticator.add_user_cmd = [‘adduser’, ‘-q’, ‘–gecos’, ‘“”‘, ‘–disabled-password’, ‘–force-badname’]</p></blockquote></li><li><p>其他 config 設定例如白名單、黑名單(whitelist &amp; blacklist)基本上官網就很清楚了，就不贅述。如果沒有特別需求，直接使用 repo 裡的設定更改即可。</p></li></ul></li></ul><h2 id="6-啟動-Build-image-and-start-containers"><a href="#6-啟動-Build-image-and-start-containers" class="headerlink" title="6.啟動 Build image and start containers"></a>6.啟動 Build image and start containers</h2><pre><code class="bash">  docker-compose up -d</code></pre><ul><li>Build images：第一次啟動/或改動 <code>dockerfile</code> </li></ul><pre><code class="bash">  docker-compose up --build -d</code></pre><ul><li>手動重啟</li></ul><pre><code class="bash">  docker-compose restart</code></pre><h2 id="7-暫停-Stops-containers"><a href="#7-暫停-Stops-containers" class="headerlink" title="7.暫停 Stops containers"></a>7.暫停 Stops containers</h2><pre><code class="bash">  docker-compose down</code></pre><h2 id="8-JupyterHub-URL"><a href="#8-JupyterHub-URL" class="headerlink" title="8.JupyterHub URL"></a>8.JupyterHub URL</h2><p>  依需求更換 port，並確認是否可以連線</p><pre><code class="bash">  http://&lt;IP-Adress&gt;:8000</code></pre><h2 id="9-使用-OAuth-驗證帳號設定"><a href="#9-使用-OAuth-驗證帳號設定" class="headerlink" title="9.使用 OAuth 驗證帳號設定"></a>9.使用 OAuth 驗證帳號設定</h2><p>  在 admin 頁面新增即可</p><pre><code class="bash">  http://&lt;yourdomain.tw&gt;:8000/hub/admin</code></pre><h2 id="10-非使用-OAuth-驗證帳號設定-新增-刪除-修改"><a href="#10-非使用-OAuth-驗證帳號設定-新增-刪除-修改" class="headerlink" title="10.非使用 OAuth 驗證帳號設定(新增/刪除/修改)"></a>10.非使用 OAuth 驗證帳號設定(新增/刪除/修改)</h2><p>提供不使用 google gmail 作為帳號的方式：</p><p>  1.更新</p><pre><code class="bash">  sudo docker exec -it jupyterhub passwd &lt;user&gt;</code></pre><p>  2.新增</p><pre><code class="bash">  sudo docker exec -it jupyterhub useradd --create-home &lt;user&gt;  sudo docker exec -it jupyterhub passwd &lt;user&gt;</code></pre><p>  若有新增使用者必須在 admin 頁面也新增一樣名稱的使用者，否則 Jupyter 不會認得</p><pre><code class="bash">  http://&lt;IP-Adress&gt;:8000/hub/admin</code></pre><p>  3.刪除</p><p>  未確定該使用者的資料都不需要時請勿加上 <code>-r</code></p><pre><code class="bash">  sudo docker exec -it jupyterhub userdel &lt;user&gt;</code></pre><h3 id="參考資料與說明"><a href="#參考資料與說明" class="headerlink" title="參考資料與說明"></a>參考資料與說明</h3><ul><li>Config 設定上可以參考下方兩篇文章:</li></ul><blockquote><p><a href="https://github.com/jupyterhub/oauthenticator" target="_blank" rel="noopener">https://github.com/jupyterhub/oauthenticator</a><br><a href="https://cadlab.mde.tw/post/jupyterhub-oauth2-deng-ru-she-ding.html" target="_blank" rel="noopener">https://cadlab.mde.tw/post/jupyterhub-oauth2-deng-ru-she-ding.html</a></p></blockquote><ul><li><p>這個 <code>docker-compose.yml</code> 直接使用官網上的 <a href="https://hub.docker.com/r/jupyterhub/jupyterhub/" target="_blank" rel="noopener">image</a>，若有其他版本需求再自行更改 <code>Dockerfile</code>  </p></li><li><p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也請在 <a href="https://github.com/ChiLunHuang/jupyterhub" target="_blank" rel="noopener">github.com</a> 按個星星讓我知道，謝謝。</p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Jupyterhub </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCP </tag>
+            
+            <tag> jupyterhub </tag>
+            
+            <tag> docker </tag>
+            
+            <tag> oauth </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Github-SSH Deploy key 設定教學</title>
+      <link href="/posts/1127381336/"/>
+      <url>/posts/1127381336/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-set-Deploy-keys-to-deal-with-error-Permission-denied-publickey"><a href="#How-to-set-Deploy-keys-to-deal-with-error-Permission-denied-publickey" class="headerlink" title="How to set Deploy keys to deal with error: Permission denied (publickey)?"></a>How to set Deploy keys to deal with error: Permission denied (publickey)?</h1><p>在不熟悉的環境下使用 <code>git</code> 指令進行 <code>commit</code>、<code>push</code>、<code>pull</code>等等的指令可能會遇到權限問題而無法使用：</p><pre><code class="bash">On branch masternothing to commit, working directory cleanWarning: Permanently added the RSA host key for IP address &#39;xxx.xx.xxx.x&#39; to the list of known hosts.Permission denied (publickey).fatal: Could not read from remote repository.</code></pre><p>網路上依據不同情況有很多不同解決方式，本範例單純解決因為本機權限而造成的無法使用 <code>git</code> 相關動作的情形且為 <code>MacOS</code> 環境。</p><h3 id="1-於本機產生-ssh-key"><a href="#1-於本機產生-ssh-key" class="headerlink" title="1.於本機產生 ssh key"></a><strong>1.於本機產生 ssh key</strong></h3><p>打開 Terminal 輸入下述：</p><pre><code class="bash">ssh-keygen -t rsa -b 4096 -C &quot;github帳號mail&quot;</code></pre><p>ex: ssh-keygen -t rsa -b 4096 -C “<a href="mailto:test.developer@gmail.com" target="_blank" rel="noopener">test.developer@gmail.com</a>“</p><h3 id="2-設定路徑與密碼"><a href="#2-設定路徑與密碼" class="headerlink" title="2.設定路徑與密碼"></a><strong>2.設定路徑與密碼</strong></h3><p>可以都直接enter 或 yes，不用輸入任何路徑或是密碼。</p><h3 id="3-將-key-加入-ssh-agent"><a href="#3-將-key-加入-ssh-agent" class="headerlink" title="3.將 key 加入 ssh-agent"></a><strong>3.將 key 加入 ssh-agent</strong></h3><pre><code class="bash">eval &quot;$(ssh-agent -s)&quot;ssh-add ~/.ssh/id_rsa</code></pre><h3 id="4-把-SSH-Key-複製下來"><a href="#4-把-SSH-Key-複製下來" class="headerlink" title="4.把 SSH Key 複製下來"></a><strong>4.把 SSH Key 複製下來</strong></h3><pre><code class="bash">vim ~/.ssh/id_rsa.pub</code></pre><p>EX:</p><pre><code class="bash">ssh-rsa AFAAB3NzaC1yc2EAAAADAQABAAACAQDgyUQwYXGwERW/s4/0DVThkXFl1LHNss7Kz8gxMpieLCDF+5MZ+gl7/qewfq2/6aNfoJKizfUHX7ZBklm2Jj46OF+80zRtMhyJ8cI7oHWklVvUZ0csWHZVwN5PIxJ3/WtDtO/zD9OBF/6rCOVq9m1TBkWAgJL4ElnbECkkmR69Ujtpf/xgWQsqtHxPjfogTn5FdpPvmP/zQvTII7WwAZvCZNanX29DGnzuZ/XvdQ82xJuGK8pOPffi5lD760lybaVrYtfd+50aMrhGGrTwDE6J8ES3Ou9TzKA8ctm/12kCRXeM5QGaH5tqxGkl3cGU6kpPjMLq2s9fQwEQnv7tAz4lSmPoBNaDSqIWUzBBHq+6oqR0rtPtfwAXb3qVh20hpSgoDg5gMo3QelP6Q5YV7WaPE9kCd3TU8sVdXY8An2t6P0Zto6K4B9CAUalVLZVqU/kCz38iA/vq03iz3v+P3nAY7/WOUYQbXefN7lEBV5kpQfcWMMCl/6UiB7JzvtNUH7Q5bDkyONyzMct75aHeUVz4v6nR4O6mhvKJM0sBHvPWuHiD5CsJ9SHLE/quHRcnaM8ToeNYDUVeHEBl8SQNipv9SaU7TO7C2/lZCRzgFGQV9BKb9KA9V+8/wxF0Qn6j9GRI8YBOclaB6NOzoNEJfg6Kh2VYWzxBPiZ1noz+L6x7Ew== clh.developer@gmail.com</code></pre><h3 id="5-將-key-加入-Github-Deploy-Key"><a href="#5-將-key-加入-Github-Deploy-Key" class="headerlink" title="5.將 key 加入 Github Deploy Key"></a><strong>5.將 key 加入 Github Deploy Key</strong></h3><p>選取你要處理的 repo 進入 <code>Setting</code> → <code>Deploy Key</code> → <code>Add deploy key</code> → 取名字加入上面複製的 ssh key → 完成</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GitHub </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> github </tag>
+            
+            <tag> Deploy keys </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>GCP系列-如何使用 tracking UI 監控pyspark叢集 memory資源使用狀態於 Dataproc 中</title>
+      <link href="/posts/2671099804/"/>
+      <url>/posts/2671099804/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-monitor-usage-of-memory-of-workers-on-dataproc-spark-cluster"><a href="#How-to-monitor-usage-of-memory-of-workers-on-dataproc-spark-cluster" class="headerlink" title="How to monitor usage of memory of workers on dataproc(spark cluster)?"></a>How to monitor usage of memory of workers on dataproc(spark cluster)?</h1><p>有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀況，導致在調教機器數量(省錢)的時候會有一定的困擾。</p><p>以下教學將會示範如何在本機進行連線來查看機器使用狀況(本範例同時也可以在機器直接使用jupyter)。</p><h3 id="大致上可參考-GCP-官方頁面操作"><a href="#大致上可參考-GCP-官方頁面操作" class="headerlink" title="大致上可參考 GCP 官方頁面操作"></a>大致上可參考 GCP 官方頁面操作</h3><blockquote><p><a href="https://cloud.google.com/sdk/docs/quickstart-mac-os-x" target="_blank" rel="noopener">https://cloud.google.com/sdk/docs/quickstart-mac-os-x</a></p></blockquote><h3 id="1-確認-python-版本"><a href="#1-確認-python-版本" class="headerlink" title="1.確認 python 版本"></a><strong>1.確認 python 版本</strong></h3><p><code>python -V</code></p><h3 id="2-下載相對應的版本"><a href="#2-下載相對應的版本" class="headerlink" title="2.下載相對應的版本"></a><strong>2.下載相對應的版本</strong></h3><p>Mac OS X (x86_64) or Mac OS X (x86)</p><h3 id="3-安裝"><a href="#3-安裝" class="headerlink" title="3.安裝"></a><strong>3.安裝</strong></h3><p><code>./google-cloud-sdk/install.sh</code></p><h3 id="4-初始化-gcloud-指令"><a href="#4-初始化-gcloud-指令" class="headerlink" title="4.初始化 gcloud 指令"></a><strong>4.初始化 gcloud 指令</strong></h3><p><code>gcloud init</code></p><h3 id="5-與已建立的機器-ssh-連線"><a href="#5-與已建立的機器-ssh-連線" class="headerlink" title="5.與已建立的機器 ssh 連線"></a><strong>5.與已建立的機器 ssh 連線</strong></h3><pre><code class="bash">gcloud compute ssh  --zone=&lt;zone&gt; --ssh-flag=&quot;-D 1080&quot; --ssh-flag=&quot;-N&quot; --ssh-flag=&quot;-n&quot; &lt;ClusterName-m&gt;</code></pre><h3 id="6-開啟新瀏覽視窗"><a href="#6-開啟新瀏覽視窗" class="headerlink" title="6.開啟新瀏覽視窗"></a><strong>6.開啟新瀏覽視窗</strong></h3><pre><code class="bash">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server=&quot;socks5://localhost:1080&quot; --host-resolver-rules=&quot;MAP * 0.0.0.0 , EXCLUDE localhost&quot; --user-data-dir=/tmp/&lt;ClusterName-m&gt;</code></pre><h3 id="7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter"><a href="#7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter" class="headerlink" title="7. 在新瀏覽視窗啟動 TrackingUI or Jupyter"></a><strong>7. 在新瀏覽視窗啟動 TrackingUI or Jupyter</strong></h3><p>TrackingUI: <code>http://&lt;ClusterName-m&gt;:8088</code></p><p>Jupyter: <code>http://&lt;ClusterName-m&gt;:8123</code></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> GCP </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GCP </tag>
+            
+            <tag> Dataproc </tag>
+            
+            <tag> pyspark </tag>
+            
+            <tag> TrackingUI </tag>
+            
+            <tag> memory </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>

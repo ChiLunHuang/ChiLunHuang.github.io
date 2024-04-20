@@ -1,0 +1,944 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW,en,default">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="nlp, word2vec, tensorboard,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="NLP 系列 - Tensorboard 視覺化 word2vec 詞向量" />
+    <meta property="og:description" content="word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。" />
+    <meta property="og:image" content="/medias/featureimages/6.jpg" />
+    <meta property="og:site_name" content="Happy Coding Lab" />
+    <!-- Facebook end-->
+    <!-- Google Search console -->
+    <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
+    <!-- Google Search console end-->
+    <title>NLP 系列 - Tensorboard 視覺化 word2vec 詞向量 | Happy Coding Lab</title>
+    <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+    
+    <!-- AdSense -->
+    <script data-ad-client="ca-pub-6577966333850753" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- AdSense End-->
+
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <!-- GA & GTM-->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- GTM - Google Analytics -->
+
+<script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-MWS2LPV');
+</script>
+
+
+
+    <!-- GA & GTM END-->
+
+</head>
+
+
+<body>
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWS2LPV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript)測試 -->
+
+
+<!-- OneAD network-->
+<div id = "oneadMFSDFPTag"></div>
+<script type="text/javascript">
+  var custom_call = function (params) {
+    if (params.hasAd) {
+      console.log('MFS has AD')
+    } else {
+      console.log('MFS AD empty')
+    }
+  }
+  var _ONEAD = {};
+  _ONEAD.pub = {};
+  _ONEAD.pub.slotobj = document.getElementById("oneadMFSDFPTag");
+  _ONEAD.pub.slots = ["div-onead-ad"];
+  _ONEAD.pub.uid = "2000176";
+  _ONEAD.pub.external_url = "https://onead.onevision.com.tw/";
+  _ONEAD.pub.player_mode_div = "div-onead-ad";
+  _ONEAD.pub.player_mode = "mobile-fullscreen";
+  _ONEAD.pub.google_view_click = "%%CLICK_URL_UNESC%%";
+  _ONEAD.pub.google_view_pixel = "";
+  _ONEAD.pub.queryAdCallback = custom_call
+  var ONEAD_pubs = ONEAD_pubs || [];
+  ONEAD_pubs.push(_ONEAD);
+</script>
+<script type="text/javascript" src = "https://ad-specs.guoshipartners.com/static/js/onead-lib.min.js"></script>
+
+<!-- End OneAD network-->
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="container">
+            <div class="nav-wrapper">
+                <div class="brand-logo">
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <img src="/medias/logo.png" class="logo-img hide-on-small-only">
+                        
+                        <span class="logo-span">Happy Coding Lab</span>
+                    </a>
+                </div>
+                
+
+<a href="#" data-activates="mobile-nav" class="button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首頁</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>文章種類</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>文章書籤</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>文章歷程</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>關於我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>好站分享</span>
+        </a>
+    </li>
+    
+    <li>
+        <a id="toggleSearch" class="waves-effect waves-light">
+            <i id="searchIcon" class="mdi-action-search" title="文章查詢"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div class="side-nav" id="mobile-nav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Happy Coding Lab</div>
+        <div class="logo-desc">
+            
+            Happy Coding Lab，分享平日 Coding 的各種知識分享，快樂學習、快樂成長。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首頁
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                文章種類
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                文章書籤
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                文章歷程
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                關於我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                好站分享
+            </a>
+        </li>
+        
+        
+    </ul>
+
+    <div class="social-link">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+</div>
+
+            </div>
+        </div>
+
+        
+    </nav>
+</header>
+
+
+
+
+
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/6.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        NLP 系列 - Tensorboard 視覺化 word2vec 詞向量
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+</style>
+<div class="row">
+    <div class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/word2vec/" target="_blank">
+                                <span class="chip bg-color">word2vec</span>
+                            </a>
+                        
+                            <a href="/tags/nlp/" target="_blank">
+                                <span class="chip bg-color">nlp</span>
+                            </a>
+                        
+                            <a href="/tags/tensorboard/" target="_blank">
+                                <span class="chip bg-color">tensorboard</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/NLP/" class="post-category" target="_blank">
+                                NLP
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
+                    2019-11-26
+                </div>
+
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>瀏覽次數:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="5339419372"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+                <h1 id="How-to-use-tensorboard-Embedding-Projector-to-visualize-project-word2vec-model"><a href="#How-to-use-tensorboard-Embedding-Projector-to-visualize-project-word2vec-model" class="headerlink" title="How to use tensorboard(Embedding Projector) to visualize/project word2vec model?"></a>How to use tensorboard(Embedding Projector) to visualize/project word2vec model?</h1><p>  word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，在應用解釋時(給老闆、業務、行銷與客戶)其實蠻困擾的。此文章將利用 Tensorboard(Embedding Projector) 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係，來解決上述問題。</p>
+<p><strong>在本範例你會學到：</strong></p>
+<ul>
+<li>如何使用 tensorboard</li>
+<li>將 word2vec 詞向量視覺化</li>
+</ul>
+<p><strong>在本範例你需要先準備好：</strong></p>
+<ul>
+<li>word2vec model (本篇不贅述該如何產生一個 word2vec model，若有需要的留言讓我知道)</li>
+<li><strong>注意：本範例會有一點 <code>Tensorflow</code> 的用法，不懂也不會影響使用。</strong></li>
+</ul>
+<h3 id="1-套件準備"><a href="#1-套件準備" class="headerlink" title="1.套件準備"></a><strong>1.套件準備</strong></h3><p>在自己喜歡的環境內使用安裝以下套件，基本上就是 <code>tensorflow</code>、<code>gensim</code>、<code>numpy</code>，版本之間的衝突問題請依照自己環境選擇版本，網路上相關範本已經很多了：</p>
+<pre><code class="bash">numpy==1.17.3
+tensorboard==1.15.0
+tensorflow==1.15.0
+tensorflow-estimator==1.15.1
+gensim==3.8.1
+</code></pre>
+<h3 id="2-載入-word2vec-模型"><a href="#2-載入-word2vec-模型" class="headerlink" title="2.載入 word2vec 模型"></a><strong>2.載入 word2vec 模型</strong></h3><ul>
+<li><code>log_dir</code> : Log 要存擋的地方</li>
+<li><code>model_dir</code> : word2vec model 放置的地方(已經提前將模型放到該路徑下 <code>med250.model.bin</code>、<code>med250.model.bin.trainables.syn1neg.npy</code>、<code>med250.model.bin.wv.vectors.npy</code>)</li>
+<li><code>metadata_name</code> : 要存下模型中的字詞對照</li>
+<li><code>model_file</code> : med250.model.bin 所在位置</li>
+</ul>
+<pre><code class="python">import numpy as np
+import tensorflow as tf
+import os
+from gensim.models.word2vec import Word2Vec
+from tensorflow.contrib.tensorboard.plugins import projector
+import subprocess
+
+log_dir = &#39;/home/word2vec_model/embedding_log_demo&#39;
+model_dir = &#39;/home/word2vec_model&#39;
+
+# 若路徑都不存在可以解開註解創立
+# if not os.path.exists(log_dir):
+#     os.mkdir(log_dir)
+#     os.mkdir(model_dir)
+
+metadata_name = &#39;metadata.tsv&#39;
+
+# load model 
+model_file = &quot;/home/word2vec_model/med250.model.bin&quot;
+word2vec = Word2Vec.load(model_file)
+</code></pre>
+<h3 id="3-處理向量與原對應字詞"><a href="#3-處理向量與原對應字詞" class="headerlink" title="3.處理向量與原對應字詞"></a><strong>3.處理向量與原對應字詞</strong></h3><ul>
+<li>第一部分 <code>embedding</code> : 依順序存下向量</li>
+<li>第二部分 : 存下每個向量原始的字詞意思(label)，存入先前的 <code>metadata_name</code></li>
+</ul>
+<pre><code class="python"># create a list of vectors
+embedding = np.empty((len(word2vec.wv.vocab.keys()), word2vec.vector_size), dtype=np.float32)
+for i, word in enumerate(word2vec.wv.vocab.keys()):
+    embedding[i] = word2vec[word]
+
+# write labels 
+with open(os.path.join(log_dir, metadata_name), &#39;w&#39;) as f:
+    for word in word2vec.wv.vocab.keys():
+        f.write(word + &#39;\n&#39;)</code></pre>
+<h3 id="4-建立-Tensorboard"><a href="#4-建立-Tensorboard" class="headerlink" title="4.建立 Tensorboard"></a><strong>4.建立 Tensorboard</strong></h3><ul>
+<li>第一部分：設置 session<ul>
+<li>這部分如果已經對 <code>TensorFlow</code> 有初步的瞭解，可以再細部微調更多的東西，如果不懂也沒關係，照抄就好。</li>
+</ul>
+</li>
+<li>第二部分 : 為 <code>projector</code> 投射/視覺化做準備<ul>
+<li>同上，不懂就先照貼就好，名稱與前面的參數一致就行。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="python"># setup a TensorFlow session
+tf.reset_default_graph()
+sess = tf.InteractiveSession()
+X = tf.Variable([0.0], name=&#39;embedding&#39;)
+place = tf.placeholder(tf.float32, shape=embedding.shape)
+set_x = tf.assign(X, place, validate_shape=False)
+sess.run(tf.global_variables_initializer())
+sess.run(set_x, feed_dict={place: embedding})
+
+# create a TensorFlow summary writer
+summary_writer = tf.summary.FileWriter(log_dir, sess.graph)
+config = projector.ProjectorConfig()
+embedding_conf = config.embeddings.add()
+embedding_conf.tensor_name = &#39;embedding:0&#39;
+embedding_conf.metadata_path = os.path.join(log_dir, metadata_name)
+projector.visualize_embeddings(summary_writer, config)</code></pre>
+<h3 id="5-存擋"><a href="#5-存擋" class="headerlink" title="5.存擋"></a><strong>5.存擋</strong></h3><ul>
+<li>將前面處理好的 <code>session</code> 存擋，以利多次使用。 </li>
+</ul>
+<pre><code class="python"># save the model
+saver = tf.train.Saver()
+saver.save(sess, os.path.join(log_dir, &quot;model.ckpt&quot;))
+</code></pre>
+<h3 id="6-啟動-Tensorboard"><a href="#6-啟動-Tensorboard" class="headerlink" title="6.啟動 Tensorboard"></a><strong>6.啟動 Tensorboard</strong></h3><p>最後一步就要大功告成了，請開啟 terminal 輸入下方指令(不是在python環境喔)，將 <code>logdir</code> 指到前面指定的位置。(可以自己的環境需求加上 <code>--port</code>)</p>
+<pre><code class="bash">tensorboard --logdir=&#39;/home/word2vec_model/embedding_log_demo/&#39;
+</code></pre>
+<h3 id="Tensorboard-畫面展示"><a href="#Tensorboard-畫面展示" class="headerlink" title="Tensorboard 畫面展示"></a><strong>Tensorboard 畫面展示</strong></h3><p>等待一下就會出現要輸入的 <code>url</code>，畫面為我自己設定了<code>port 1234</code> 的url，請自行更改 <code>host</code>。</p>
+<p><img src="/medias/post_img/62615_1.png" alt="啟動Tensorboard"></p>
+<p>一開始會進入我們程式建立的 graphic 畫面</p>
+<p><img src="/medias/post_img/62615_2.png" alt="初始畫面"></p>
+<p>選擇右上方下拉選單，點擊 <code>projector</code></p>
+<p><img src="/medias/post_img/62615_3.png" alt="選擇 projector"></p>
+<p>系統將會開始載入，這會花一些時間，如果是在本機嘗試這個專案的朋友們請注意自己機器的 memory 大小，若不夠用可以將自己的 model 切小一點來嘗試</p>
+<p><img src="/medias/post_img/62615_4.png" alt="載入畫面"></p>
+<p>看到一坨藍藍的點點就是成功了</p>
+<p><img src="/medias/post_img/62615_5.png" alt="載入成功"></p>
+<p>維度太多其實很難看到什麼，所以可以利用右側的篩選像是 <code>zoom in</code> 的功能。</p>
+<p>EX:我在 <code>Search</code> 輸入 <code>新北市</code>且選擇 <code>by label</code>後，再點擊 <code>isolate xx point</code>，就可以看到新北市其相關的字詞的距離</p>
+<p><img src="/medias/post_img/62615_6.png" alt="Zoon in 側邊功能"></p>
+<p>其他相關的按鈕與功能我認為蠻直覺的，我就不特別說明了，但如果有需要解釋也請讓我知道！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
+<p><a href="https://eliyar.biz/using-pre-trained-gensim-word2vector-in-a-keras-model-and-visualizing/" target="_blank" rel="noopener">https://eliyar.biz/using-pre-trained-gensim-word2vector-in-a-keras-model-and-visualizing/</a></p>
+</blockquote>
+<p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;轉載與引用請註明作者:
+                    </span>
+                    <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/posts/62615/" class="b-link-green">NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</a>
+                </p>
+            </div>
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone, qq, weibo, douban"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="4984196151"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'https://chilunhuang.github.io/posts/62615/';
+        this.page.identifier = '/posts/62615/';
+        this.page.title = 'NLP 系列 - Tensorboard 視覺化 word2vec 詞向量';
+    };
+    let disqus_shortname = 'clhlab';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/posts/63500/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="keras系列 - keras model部署與序列化於spark進行預測">
+                        
+                        <span class="card-title">keras系列 - keras model部署與序列化於spark進行預測</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">How to serialize keras model and apply to all workers on spark?Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-29
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/keras/" class="post-category" target="_blank">
+                                    keras
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
+                    </a>
+                    
+                    <a href="/tags/keras/" target="_blank">
+                        <span class="chip bg-color">keras</span>
+                    </a>
+                    
+                    <a href="/tags/serialize/" target="_blank">
+                        <span class="chip bg-color">serialize</span>
+                    </a>
+                    
+                    <a href="/tags/spark/" target="_blank">
+                        <span class="chip bg-color">spark</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/posts/54688/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="pyspark 系列 - 在 lit 中使用 Array(Arraylist) 教學">
+                        
+                        <span class="card-title">pyspark 系列 - 在 lit 中使用 Array(Arraylist) 教學</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">How to pass array to pyspark lit function?在本範例你會學到：
+
+如何使用 lit 函式
+將 array 傳給 lit
+解決以下問題
+
+py4j.protocol.Py4JJavaError: An </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-26
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
+                    </a>
+                    
+                    <a href="/tags/lit/" target="_blank">
+                        <span class="chip bg-color">lit</span>
+                    </a>
+                    
+                    <a href="/tags/arraylist/" target="_blank">
+                        <span class="chip bg-color">arraylist</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 文章最下方廣告 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="3650099032"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('1000')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: Happy Coding Lab<br />'
+            + '作者: ChiLun Huang<br />'
+            + '超連結: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作權為作者所有，任何形式的轉載都請註明出處。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    </div>
+    <div class="col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目錄</div>
+            <div id="toc-content"></div>
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 文章右側廣告 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:250px;height:250px"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="8070019335"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+        </div>
+    </div>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+    });
+</script>
+
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright &copy; 2019-2020 | Powered by <a href="https://hexo.io/zh-tw/index.html" target="_blank">Hexo</a> | Theme by <a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a> | Photo by <a href="https://github.com/ChiLunHuang" target="_blank">Happy Coding Lab</a> 本站嚴禁任何圖像轉載使用
+
+            
+
+            
+			
+                <br>
+                
+                <span id="busuanzi_container_site_pv">
+                    總瀏覽人數 <span id="busuanzi_value_site_pv" class="white-color"></span>
+                </span>
+                
+                
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;文章查詢</span>
+            <input type="search" id="searchInput" name="s" placeholder="搜索關鍵字"
+                   class="search-input" autofocus="">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+
+<script src="/libs/materialize/js/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+
+    <script type="text/javascript" color="0,0,255" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,1192 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW,en,default">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="Happy Coding Lab，分享平日 Coding 的各種知識分享，快樂學習、快樂成長。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Happy Coding Lab" />
+    <meta property="og:description" content="Happy Coding Lab，分享平日 Coding 的各種知識分享，快樂學習、快樂成長。" />
+    <meta property="og:image" content="/medias/avatar.jpg" />
+    <meta property="og:site_name" content="Happy Coding Lab" />
+    <!-- Facebook end-->
+    <!-- Google Search console -->
+    <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
+    <!-- Google Search console end-->
+    <title>Happy Coding Lab</title>
+    <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+    
+    <!-- AdSense -->
+    <script data-ad-client="ca-pub-6577966333850753" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- AdSense End-->
+
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <!-- GA & GTM-->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- GTM - Google Analytics -->
+
+<script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-MWS2LPV');
+</script>
+
+
+
+    <!-- GA & GTM END-->
+
+</head>
+
+
+<body>
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWS2LPV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript)測試 -->
+
+
+<!-- OneAD network-->
+<div id = "oneadMFSDFPTag"></div>
+<script type="text/javascript">
+  var custom_call = function (params) {
+    if (params.hasAd) {
+      console.log('MFS has AD')
+    } else {
+      console.log('MFS AD empty')
+    }
+  }
+  var _ONEAD = {};
+  _ONEAD.pub = {};
+  _ONEAD.pub.slotobj = document.getElementById("oneadMFSDFPTag");
+  _ONEAD.pub.slots = ["div-onead-ad"];
+  _ONEAD.pub.uid = "2000176";
+  _ONEAD.pub.external_url = "https://onead.onevision.com.tw/";
+  _ONEAD.pub.player_mode_div = "div-onead-ad";
+  _ONEAD.pub.player_mode = "mobile-fullscreen";
+  _ONEAD.pub.google_view_click = "%%CLICK_URL_UNESC%%";
+  _ONEAD.pub.google_view_pixel = "";
+  _ONEAD.pub.queryAdCallback = custom_call
+  var ONEAD_pubs = ONEAD_pubs || [];
+  ONEAD_pubs.push(_ONEAD);
+</script>
+<script type="text/javascript" src = "https://ad-specs.guoshipartners.com/static/js/onead-lib.min.js"></script>
+
+<!-- End OneAD network-->
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="container">
+            <div class="nav-wrapper">
+                <div class="brand-logo">
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <img src="/medias/logo.png" class="logo-img hide-on-small-only">
+                        
+                        <span class="logo-span">Happy Coding Lab</span>
+                    </a>
+                </div>
+                
+
+<a href="#" data-activates="mobile-nav" class="button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首頁</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>文章種類</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>文章書籤</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>文章歷程</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>關於我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>好站分享</span>
+        </a>
+    </li>
+    
+    <li>
+        <a id="toggleSearch" class="waves-effect waves-light">
+            <i id="searchIcon" class="mdi-action-search" title="文章查詢"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div class="side-nav" id="mobile-nav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Happy Coding Lab</div>
+        <div class="logo-desc">
+            
+            Happy Coding Lab，分享平日 Coding 的各種知識分享，快樂學習、快樂成長。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首頁
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                文章種類
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                文章書籤
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                文章歷程
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                關於我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                好站分享
+            </a>
+        </li>
+        
+        
+    </ul>
+
+    <div class="social-link">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+</div>
+
+            </div>
+        </div>
+
+        
+    </nav>
+</header>
+
+<style type="text/css">
+    /* don't remove. */
+    .index-cover {
+        height: 100vh;
+    }
+</style>
+
+<div class="bg-cover index-cover about-cover" style="background-image: url('/medias/cover.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s10 offset-s1 m8 offset-m2 l8 offset-l2">
+                <div class="brand">
+                    <div class="title center-align">
+                    
+                        Happy Coding Lab
+                    
+                    </div>
+
+                    <div class="description center-align">
+                    
+                        Happy Coding Lab，分享平日 Coding 的各種知識分享，快樂學習、快樂成長。
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cover-btns">
+            <!-- <a href="#recommend-sections" class="waves-effect waves-light btn">
+                <i class="fa fa-angle-double-down"></i>繼續閱讀
+            </a> -->
+            <a href="https://www.linkedin.com/in/chi-lun-huang-391b5510a/" class="waves-effect waves-light btn" target="_blank">
+                <i class="fa fab fa-linkedin"></i>linkedin
+            </a>
+
+            
+            <a href="https://github.com/ChiLunHuang" class="waves-effect waves-light btn" target="_blank">
+                <i class="fa fa-github-alt"></i>GitHub
+            </a>
+            
+        </div>
+        <div class="cover-social-link">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+        
+    </div>
+</div>
+
+<script>
+// Dynamically switch banner pictures every day.
+$('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay() + '.jpg)');
+</script>
+
+<main class="content">
+
+    
+    <div class="index-card">
+        <div class="container ">
+            <div class="card">
+                <div class="card-content">
+                    
+
+                    
+
+                    
+
+                    <div id="recommend-sections" class="recommend">
+                        
+
+
+
+
+
+<div class="title"><i class="fa fa-thumbs-o-up"></i>&nbsp;&nbsp;好文推薦</div>
+
+<div class="row">
+
+    
+    
+    <div class="col s12" >
+        <div class="post-card" style="background-image: url('/medias/featureimages/7.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/GCP/" class="category" target="_blank">GCP</a>
+                    
+                </div>
+                <a href="/posts/50438/" target="_blank">
+                    <h3 class="post-title">GCP系列-使用 Dataproc initialization actions 安裝 python package</h3>
+                </a>
+                <p class="post-description">本範例將會教授如何使用 dataproc initialization actions 來安裝 python package 於 cluster，就可以在 launch spark 時安裝套件至每一台 worker 上面。</p>
+                <a href="/posts/50438/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #FF5E3A 0%, #FF2A68 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/6.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/NLP/" class="category" target="_blank">NLP</a>
+                    
+                </div>
+                <a href="/posts/62615/" target="_blank">
+                    <h3 class="post-title">NLP 系列 - Tensorboard 視覺化 word2vec 詞向量</h3>
+                </a>
+                <p class="post-description">word2vec 的應用已經相當的的普及，但是該模型為向量組成，充滿了一般人腦袋不可理解的維度與空間，此文章將利用 Tensorboard 將模型的向量投射到多維空間中，可以清晰地看得出詞與詞之間的相依關係。</p>
+                <a href="/posts/62615/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #EF4DB6 0%, #C643FC 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/3.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/keras/" class="category" target="_blank">keras</a>
+                    
+                </div>
+                <a href="/posts/63500/" target="_blank">
+                    <h3 class="post-title">keras系列 - keras model部署與序列化於spark進行預測</h3>
+                </a>
+                <p class="post-description">Keras 先天設計上無法序列化 (serialize)，只能在單機上使用 (利用cpu 或 gpu)。但我又有需要大量預測的需求，基本上查詢的到的方法都會有個類序列化的方式，將 model 傳遞到每個 worker上，達到分散的目的，本文將記錄嘗試的各種方式。</p>
+                <a href="/posts/63500/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #1AD6FD 0%, #1D62F0 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/5.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/pyspark/" class="category" target="_blank">pyspark</a>
+                    
+                </div>
+                <a href="/posts/54688/" target="_blank">
+                    <h3 class="post-title">pyspark 系列 - 在 lit 中使用 Array(Arraylist) 教學</h3>
+                </a>
+                <p class="post-description">想要使用 lit 增加欄位時，如果增加的是一個 array，spark 將會拋出錯誤 Unsupported literal type class java.util.ArrayList。本文章將簡單的示範該如何解決此問題。</p>
+                <a href="/posts/54688/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #FFCC00 0%, #FF9500 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/9.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/pyspark/" class="category" target="_blank">pyspark</a>
+                    
+                </div>
+                <a href="/posts/53705/" target="_blank">
+                    <h3 class="post-title">pyspark 系列 - collect_list 與 collect_set 實例教學</h3>
+                </a>
+                <p class="post-description">How to use collect_list &amp; collect_set in pyspark dataframe?在使用 spa</p>
+                <a href="/posts/53705/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #4cbf30 0%, #0f9d58 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/1.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/pyspark/" class="category" target="_blank">pyspark</a>
+                    
+                </div>
+                <a href="/posts/9025/" target="_blank">
+                    <h3 class="post-title">pyspark系列-字串轉時間格式 string to datetime or timestamp</h3>
+                </a>
+                <p class="post-description">本範例將會示範如何在 pyspark 中使用 to_date 方法將時間字串轉成 datetime 格式以及 unix_timestamp 方法轉 timestamp 格式。</p>
+                <a href="/posts/9025/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #C644FC 0%, #5856D6 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/2.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/pyspark/" class="category" target="_blank">pyspark</a>
+                    
+                </div>
+                <a href="/posts/29655/" target="_blank">
+                    <h3 class="post-title">pyspark系列-如何於 dataframe 增加索引(index)值或 row number</h3>
+                </a>
+                <p class="post-description">本範例將會示範如何在 pyspark dataframe 中加入 index 號碼。將會簡單的使用 Window 這個 lib 搭配 pyspark.sql.functions 中的 row_number 來進行操作。</p>
+                <a href="/posts/29655/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #55EFCB 0%, #5BCAFF 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/4.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/SEO/" class="category" target="_blank">SEO</a>
+                    
+                </div>
+                <a href="/posts/17948/" target="_blank">
+                    <h3 class="post-title">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</h3>
+                </a>
+                <p class="post-description">seo 改進的後期關鍵基本上都是想辦提昇網頁的整體載入效能，本文將分享使用 nginx 作為 server 時如何快速的將平常使用的 css, js 緩存，讓網頁讀取更快速，也不會造成server負擔。</p>
+                <a href="/posts/17948/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #FF5E3A 0%, #FF2A68 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col s12 m6" data-aos="zoom-in-up">
+        <div class="post-card" style="background-image: url('/medias/featureimages/5.jpg')">
+            <div class="post-body">
+                <div class="post-categories">
+                    
+                    <a href="/categories/SEO/" class="category" target="_blank">SEO</a>
+                    
+                </div>
+                <a href="/posts/43991/" target="_blank">
+                    <h3 class="post-title">seo-移除未使用的 css (purify css)</h3>
+                </a>
+                <p class="post-description">網頁的效能優化到最後可能會進入一個撞牆期，當該壓縮的都壓縮了，該緩存的也緩存了，但是 performance 還是不完美，這時還能做什麼呢？本篇就來告訴你一個小技巧，purify css！</p>
+                <a href="/posts/43991/" target="_blank"
+                        class="read-more btn waves-effect waves-light" style="background: linear-gradient(to right, #EF4DB6 0%, #C643FC 100%)">
+                    <i class="icon fa fa-eye fa-fw"></i>閱讀更多
+                </a>
+            </div>
+        </div>
+    </div>
+    
+
+</div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+
+    <!-- 所有文章卡片 -->
+    <article id="articles" class="container articles">
+        <div class="row article-row">
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/58469/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="NLP 系列- 如何在word2vec訓練時讓WikiCorpus保留數字(digit)?">
+                            
+                            <span class="card-title">NLP 系列- 如何在word2vec訓練時讓WikiCorpus保留數字(digit)?</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                訓練 word2vec model(後面簡稱w2v) 時的中文語料第一選擇通常就是 Wikipedia 的語料庫(最後一次查看有`3651160篇文章`)，而 w2v 本身又支援直接處理 wiki 的 bz2檔案產出對應格式的中文，不過他會先做一些預處理例如：移除標點符號、所有的數字，但我又想要留下這些東西怎麼辦呢？我們來繼續看下去！
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-02-04
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/NLP/" class="post-category" target="_blank">
+                                    NLP
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/wikicorpus/" target="_blank">
+                            <span class="chip bg-color">wikicorpus</span>
+                        </a>
+                        
+                        <a href="/tags/NLP/" target="_blank">
+                            <span class="chip bg-color">NLP</span>
+                        </a>
+                        
+                        <a href="/tags/word2vec/" target="_blank">
+                            <span class="chip bg-color">word2vec</span>
+                        </a>
+                        
+                        <a href="/tags/gensim/" target="_blank">
+                            <span class="chip bg-color">gensim</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/7838/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Django 系列- 如何在{{value}}中完整移除html tag?">
+                            
+                            <span class="card-title">Django 系列- 如何在{{value}}中完整移除html tag?</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                在顯示部落格的文章清單時常常會有顯示每篇文章開頭的簡短文字需求，內建的 `truncatechars` 將會是你的好朋友！不過使用的時候卻會把 HTML Tag 字元都算進去，使用起來相當不便，這時候就可以使用`striptags`來解決問題喔！
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2021-01-13
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Django/" class="post-category" target="_blank">
+                                    Django
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/django/" target="_blank">
+                            <span class="chip bg-color">django</span>
+                        </a>
+                        
+                        <a href="/tags/truncatechars/" target="_blank">
+                            <span class="chip bg-color">truncatechars</span>
+                        </a>
+                        
+                        <a href="/tags/striptags/" target="_blank">
+                            <span class="chip bg-color">striptags</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/36151/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="pyspark系列-如何使用pyspark連結clickhouse教學">
+                            
+                            <span class="card-title">pyspark系列-如何使用pyspark連結clickhouse教學</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                本文將簡單的示範如何在 pyspark 中對 clickhouse 進行讀取的動作。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-14
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/pyspark/" target="_blank">
+                            <span class="chip bg-color">pyspark</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/26469/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="pyspark系列-如何使用pyspark連結kafka教學">
+                            
+                            <span class="card-title">pyspark系列-如何使用pyspark連結kafka教學</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                本文將簡單的示範如何在 pyspark 中對 kafka 進行讀取與寫入的動作。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-14
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/pyspark/" target="_blank">
+                            <span class="chip bg-color">pyspark</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/17828/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="登山系列-玉山一日單攻(主峰)攻略&紀錄">
+                            
+                            <span class="card-title">登山系列-玉山一日單攻(主峰)攻略&紀錄</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                登上玉山的計畫從2020/03就開始了，但一路上可以的時間都一直抽不到簽，超級沒有籤運，與排雲山莊非常的沒有緣分，後來就開始改抽玉山單攻，很幸運的在8月改制後(先搶先贏改成電腦選)就中籤了，由於當初在網路上很多資料其實有點舊了，所以希望寫一篇來紀錄一下！
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-08
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/%E7%99%BB%E5%B1%B1%E7%B3%BB%E5%88%97/" class="post-category" target="_blank">
+                                    登山系列
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/%E7%8E%89%E5%B1%B1%E5%96%AE%E6%94%BB/" target="_blank">
+                            <span class="chip bg-color">玉山單攻</span>
+                        </a>
+                        
+                        <a href="/tags/%E7%99%BB%E5%B1%B1/" target="_blank">
+                            <span class="chip bg-color">登山</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/5/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?">
+                            
+                            <span class="card-title">Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                在 Django 中常常有獲取當下頁或是前一頁面網址 (url)的需求，例如輸入表單後的頁面重導、404頁面的重導。這個部分在 template 中以及 view.py 中都可以靠著 request 獲取資訊，我們就來看下去吧！
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-08-23
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Django/" class="post-category" target="_blank">
+                                    Django
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/django/" target="_blank">
+                            <span class="chip bg-color">django</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/52152/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?">
+                            
+                            <span class="card-title">Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                在顯示部落格的文章清單時常常會有顯示每篇文章開頭的簡短文字需求，而在 Django 中該如何實現？內建的 `truncatechars` 將會是你的好朋友！
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-08-23
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Django/" class="post-category" target="_blank">
+                                    Django
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/django/" target="_blank">
+                            <span class="chip bg-color">django</span>
+                        </a>
+                        
+                        <a href="/tags/filters/" target="_blank">
+                            <span class="chip bg-color">filters</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/24518/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Python 系列- 如何乾淨移除網址url中的追蹤碼?">
+                            
+                            <span class="card-title">Python 系列- 如何乾淨移除網址url中的追蹤碼?</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                在處理跟網址相關的程式的時候大家應該都會有一個困擾，明明就都會導到一樣的網址，但是網址卻都不一樣，因為後面帶了各式各樣的來源追蹤碼追蹤網站流量，最常見的就是 GA UTM 以及 facebook 的追蹤 tag 了，這樣會導致計算流量時重複計算的困擾，此篇小記事就是來解決這個問題的拉！
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-07-06
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Python/" class="post-category" target="_blank">
+                                    Python
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/urlparse/" target="_blank">
+                            <span class="chip bg-color">urlparse</span>
+                        </a>
+                        
+                        <a href="/tags/python/" target="_blank">
+                            <span class="chip bg-color">python</span>
+                        </a>
+                        
+                        <a href="/tags/utm/" target="_blank">
+                            <span class="chip bg-color">utm</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/14115/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件">
+                            
+                            <span class="card-title">GCP 系列-新增/啟動 Dataproc clusters 時帶入多個 properties 套件</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                本範例將會簡單示範如何在啟動 Dataproc cluster 語法中的`properties` 參數帶入多個不同套件，例如同時需要使用監控的 `stackdriver`、`kafka`以及`clickhouse`三個不同的套件，在 submit job 的時候就可以自動地帶入相關套件。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-14
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/GCP/" class="post-category" target="_blank">
+                                    GCP
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/GCP/" target="_blank">
+                            <span class="chip bg-color">GCP</span>
+                        </a>
+                        
+                        <a href="/tags/Dataproc/" target="_blank">
+                            <span class="chip bg-color">Dataproc</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/posts/29655/">
+                        <div class="card-image">
+                            
+                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="pyspark系列-如何於 dataframe 增加索引(index)值或 row number">
+                            
+                            <span class="card-title">pyspark系列-如何於 dataframe 增加索引(index)值或 row number</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                本範例將會示範如何在 pyspark dataframe 中加入 index 號碼。將會簡單的使用 Window 這個 lib 搭配 pyspark.sql.functions 中的 row_number 來進行操作。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-04
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/pyspark/" class="post-category" target="_blank">
+                                    pyspark
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/pyspark/" target="_blank">
+                            <span class="chip bg-color">pyspark</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </article>
+
+</main>
+
+
+<div class="container paging">
+    <div class="row">
+        <div class="col s6 m4 l4">
+            
+            <a class="left btn-floating btn-large disabled">
+                <i class="fa fa-angle-left"></i>
+            </a>
+            
+        </div>
+        <div class="page-info col m4 l4 hide-on-small-only">
+            <div class="center-align b-text-gray">1 / 4</div>
+        </div>
+        <div class="col s6 m4 l4">
+            
+            <a href="/page/2/"
+               class="right btn-floating btn-large waves-effect waves-light bg-color">
+                <i class="fa fa-angle-right"></i>
+            </a>
+            
+        </div>
+    </div>
+</div>
+
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright &copy; 2019-2020 | Powered by <a href="https://hexo.io/zh-tw/index.html" target="_blank">Hexo</a> | Theme by <a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a> | Photo by <a href="https://github.com/ChiLunHuang" target="_blank">Happy Coding Lab</a> 本站嚴禁任何圖像轉載使用
+
+            
+
+            
+			
+                <br>
+                
+                <span id="busuanzi_container_site_pv">
+                    總瀏覽人數 <span id="busuanzi_value_site_pv" class="white-color"></span>
+                </span>
+                
+                
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;文章查詢</span>
+            <input type="search" id="searchInput" name="s" placeholder="搜索關鍵字"
+                   class="search-input" autofocus="">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+
+<script src="/libs/materialize/js/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+
+    <script type="text/javascript" color="0,0,255" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+
+</body>
+</html>
