@@ -20,11 +20,11 @@
       
         <tags>
             
+            <tag> word2vec </tag>
+            
             <tag> wikicorpus </tag>
             
             <tag> NLP </tag>
-            
-            <tag> word2vec </tag>
             
             <tag> gensim </tag>
             
@@ -799,9 +799,9 @@
       
         <tags>
             
-            <tag> word2vec </tag>
-            
             <tag> nlp </tag>
+            
+            <tag> word2vec </tag>
             
             <tag> tensorboard </tag>
             

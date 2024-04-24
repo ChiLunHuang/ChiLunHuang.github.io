@@ -1,0 +1,898 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW,en,default">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="django,current url,url,path,build_absolute_uri, referrer,view.py,template,HttpRequest.META,技術分享,spark,pyspark,gcp,python,Happy Coding Lab,教學">
+    <meta name="description" content="在 Django 中常常有獲取當下頁或是前一頁面網址 (url)的需求，例如輸入表單後的頁面重導、404頁面的重導。這個部分在 template 中以及 view.py 中都可以靠著 request 獲取資訊，我們就來看下去吧！">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?" />
+    <meta property="og:description" content="在 Django 中常常有獲取當下頁或是前一頁面網址 (url)的需求，例如輸入表單後的頁面重導、404頁面的重導。這個部分在 template 中以及 view.py 中都可以靠著 request 獲取資訊，我們就來看下去吧！" />
+    <meta property="og:image" content="/medias/featureimages/2.jpg" />
+    <meta property="og:site_name" content="Happy Coding Lab" />
+    <!-- Facebook end-->
+    <!-- Google Search console -->
+    <meta name="google-site-verification" content="kZd_mNHwmrP23ia_FjnaA4EvfUpU7y63Mz_Sq28vHOA" />
+    <!-- Google Search console end-->
+    <title>Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url? | Happy Coding Lab</title>
+    <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+    
+    <!-- AdSense -->
+    <script data-ad-client="ca-pub-6577966333850753" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- AdSense End-->
+
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+    <!-- GA & GTM-->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- GTM - Google Analytics -->
+
+<script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-MWS2LPV');
+</script>
+
+
+
+    <!-- GA & GTM END-->
+
+</head>
+
+
+<body>
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWS2LPV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<!-- OneAD network-->
+<div id = "oneadMFSDFPTag"></div>
+<script type="text/javascript">
+  var custom_call = function (params) {
+    if (params.hasAd) {
+      console.log('MFS has AD')
+    } else {
+      console.log('MFS AD empty')
+    }
+  }
+  var _ONEAD = {};
+  _ONEAD.pub = {};
+  _ONEAD.pub.slotobj = document.getElementById("oneadMFSDFPTag");
+  _ONEAD.pub.slots = ["div-onead-ad"];
+  _ONEAD.pub.uid = "2000176";
+  _ONEAD.pub.external_url = "https://onead.onevision.com.tw/";
+  _ONEAD.pub.player_mode_div = "div-onead-ad";
+  _ONEAD.pub.player_mode = "mobile-fullscreen";
+  _ONEAD.pub.google_view_click = "%%CLICK_URL_UNESC%%";
+  _ONEAD.pub.google_view_pixel = "";
+  _ONEAD.pub.queryAdCallback = custom_call
+  var ONEAD_pubs = ONEAD_pubs || [];
+  ONEAD_pubs.push(_ONEAD);
+</script>
+<script type="text/javascript" src = "https://ad-specs.guoshipartners.com/static/js/onead-lib.min.js"></script>
+
+<!-- End OneAD network-->
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="container">
+            <div class="nav-wrapper">
+                <div class="brand-logo">
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <img src="/medias/logo.png" class="logo-img hide-on-small-only">
+                        
+                        <span class="logo-span">Happy Coding Lab</span>
+                    </a>
+                </div>
+                
+
+<a href="#" data-activates="mobile-nav" class="button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首頁</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>文章種類</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>文章書籤</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>文章歷程</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>關於我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>好站分享</span>
+        </a>
+    </li>
+    
+    <li>
+        <a id="toggleSearch" class="waves-effect waves-light">
+            <i id="searchIcon" class="mdi-action-search" title="文章查詢"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div class="side-nav" id="mobile-nav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Happy Coding Lab</div>
+        <div class="logo-desc">
+            
+            Happy Coding Lab，分享平日 Coding 的各種知識分享，快樂學習、快樂成長。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首頁
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                文章種類
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                文章書籤
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                文章歷程
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                關於我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                好站分享
+            </a>
+        </li>
+        
+        
+    </ul>
+
+    <div class="social-link">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+</div>
+
+            </div>
+        </div>
+
+        
+    </nav>
+</header>
+
+
+
+
+
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+</style>
+<div class="row">
+    <div class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/django/" target="_blank">
+                                <span class="chip bg-color">django</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Django/" class="post-category" target="_blank">
+                                Django
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>發佈日期:&nbsp;&nbsp;
+                    2020-08-23
+                </div>
+
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>瀏覽次數:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="5339419372"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+                <h1 id="How-to-get-current-url-in-template-or-view-py"><a href="#How-to-get-current-url-in-template-or-view-py" class="headerlink" title="How to get current url in template or view.py?"></a>How to get current url in template or view.py?</h1><p><strong>在本範例你會學到：</strong></p>
+<ul>
+<li>如何獲取當下頁面的 url</li>
+<li>如何獲取前一頁面的 url (referrer)</li>
+</ul>
+<p><strong>在本範例你需要先準備好：</strong></p>
+<ul>
+<li>可以使用 Django的環境或簡單範例</li>
+<li>本環境測試使用 <code>Django==3.0.7</code> 以上(含) </li>
+</ul>
+<h3 id="1-在-template-中"><a href="#1-在-template-中" class="headerlink" title="1.在 template 中"></a><strong>1.在 template 中</strong></h3><p>在 template 裡面有基本的三種使用方式，要依照網頁架構跟需求使用：</p>
+<p>假設以本站的某一篇文章為例子：</p>
+<p><code>https://chilunhuang.github.io/posts/52152/#toc-heading-5</code></p>
+<p>第一種去頭去尾(拿掉 http/https 以及 get 相關參數)：</p>
+<pre><code>{{request.path}}</code></pre><p>結果為：</p>
+<blockquote>
+<p>/posts/52152/</p>
+</blockquote>
+<p>第二種去頭(拿掉 http/https)：</p>
+<pre><code>{{request.get_full_path}}</code></pre><p>結果為：</p>
+<blockquote>
+<p>/posts/52152/#toc-heading-5</p>
+</blockquote>
+<p>第三種完整 url：</p>
+<pre><code>{{request.build_absolute_uri}}</code></pre><p>結果為：</p>
+<blockquote>
+<p><a href="https://chilunhuang.github.io/posts/52152/#toc-heading-5">https://chilunhuang.github.io/posts/52152/#toc-heading-5</a></p>
+</blockquote>
+<h3 id="2-在-view-py-中"><a href="#2-在-view-py-中" class="headerlink" title="2.在 view.py 中"></a><strong>2.在 view.py 中</strong></h3><p>其實基本上剛剛上面 template 的例子全部也都可以直接使用在 view.py 當中喔，只要把 <code>{{}}</code> 拿掉就可以使用了，<code>request</code> 大家應該也相對的很熟悉了，每一段 function 都要使用啊！</p>
+<p>就像下面判斷 GET/POST 的小範例一樣的用法：</p>
+<pre><code>if request.method == &#39;GET&#39;:
+    do_something()
+elif request.method == &#39;POST&#39;:
+    do_something_else()
+</code></pre><p>獲取方式就是下面這樣：</p>
+<pre><code>request.build_absolute_uri</code></pre><h3 id="3-取得前一頁網址-referrer"><a href="#3-取得前一頁網址-referrer" class="headerlink" title="3.取得前一頁網址(referrer)"></a><strong>3.取得前一頁網址(referrer)</strong></h3><p>這一段要介紹一個別東西： <code>HttpRequest.META</code><br>這個 library 可以獲取很多額外的資訊，例如：</p>
+<ul>
+<li>client’s user-agent  </li>
+<li>The IP address of the client.</li>
+<li>The hostname of the client.</li>
+<li>…</li>
+</ul>
+<p>更多功能請見官網：</p>
+<blockquote>
+<p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META</a></p>
+</blockquote>
+<p>這裡就示範我最常用的導回前一頁的功能，大家可能會想怎麼會有這個需求呢？通常填完表單就讓他再回到表單頁就好，那就簡單的 redirect 到  <code>request.build_absolute_uri</code> 就好，幹嘛需要 <code>referrer</code>？</p>
+<p>這麼做的原因是有些表單填完送出後是沒有真實頁面存在的，他就直接 call view.py 去執行相關的動作後就會結束，如果我倒回原來的頁面，網址其實是不對的，是不是很抽象？我來舉個例子：</p>
+<p>假設我在 <code>https://chilunhuang.github.io/</code> 有個表單，該表單是讓大家寄信問問題，送出後就會直接寄信給我以及 user，但該表單並沒有一個獨立頁面，而是嵌在 <code>https://chilunhuang.github.io/</code>，當表單送出時會導向一個頁面(<code>send_gmail/</code>)，以及執行已經在 view.py 中定義的 func(<code>send_gmail</code>)</p>
+<pre><code class="python"># 在 urls.py 中
+path(&#39;send_gmail/&#39;, send_gmail, name=&#39;send_gmail&#39;)</code></pre>
+<p>執行完畢後直接使用 <code>request.build_absolute_uri</code> 回到該頁面就會導向 <code>send_gmail/</code> 這個不存在的頁面去！所以才會有導向 <code>referrer</code> 的需求，那該如何是好呢？可以使用以下的語法(<code>HTTP_REFERER</code>)：</p>
+<pre><code class="python">HttpResponseRedirect(request.META.get(&#39;HTTP_REFERER&#39;, &#39;/&#39;))</code></pre>
+<p>使用上面的這個方法就可以直接回到 <code>send_gmail/</code> 前一頁的 <code>https://chilunhuang.github.io/</code>！</p>
+<p>以上為簡單的與 url path 相關的一些語法介紹，這裡面的水其實蠻深的，也有很多有趣的東西，有興趣的讀者可以自己好好的玩玩！</p>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>官方文件：</p>
+<blockquote>
+<p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/</a></p>
+</blockquote>
+<p>stackoverflow：</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template" target="_blank" rel="noopener">https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template</a></p>
+</blockquote>
+<p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我<code>隨便點個廣告</code>，謝謝。</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;轉載與引用請註明作者:
+                    </span>
+                    <a href="https://chilunhuang.github.io" class="b-link-green">Happy Coding Lab</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/posts/5/" class="b-link-green">Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?</a>
+                </p>
+            </div>
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone, qq, weibo, douban"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="4984196151"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'https://chilunhuang.github.io/posts/5/';
+        this.page.identifier = '/posts/5/';
+        this.page.title = 'Django 系列- 如何在 template 以及 view.py 中獲取當下/前一頁頁面的url?';
+    };
+    let disqus_shortname = 'clhlab';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/posts/17828/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="登山系列-玉山一日單攻(主峰)攻略&紀錄">
+                        
+                        <span class="card-title">登山系列-玉山一日單攻(主峰)攻略&紀錄</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">玉山一日單攻(主峰)攻略&amp;紀錄登上玉山的計畫從 2020/03 就開始了，但是可以的時間都一直抽不到簽，超級沒有籤運QQ，與排雲山莊非常的沒有緣分，只好開始準備玉山一日單攻抽籤。很幸運的在8月改制後(先搶先贏改成電腦選)就中籤了，也</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-10-08
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%99%BB%E5%B1%B1%E7%B3%BB%E5%88%97/" class="post-category" target="_blank">
+                                    登山系列
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%8E%89%E5%B1%B1%E5%96%AE%E6%94%BB/" target="_blank">
+                        <span class="chip bg-color">玉山單攻</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%99%BB%E5%B1%B1/" target="_blank">
+                        <span class="chip bg-color">登山</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/posts/52152/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?">
+                        
+                        <span class="card-title">Django 系列- 如何在清單中截斷、縮短(truncatechars)顯示的文章文字?</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">How to use truncate filter to  slice text of Django template tag?在本範例你會學到：
+
+部落格或網誌的文章清單中簡短顯示內容
+Django filters(過濾器) 的使用
+t</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-08-23
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Django/" class="post-category" target="_blank">
+                                    Django
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/django/" target="_blank">
+                        <span class="chip bg-color">django</span>
+                    </a>
+                    
+                    <a href="/tags/filters/" target="_blank">
+                        <span class="chip bg-color">filters</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 文章最下方廣告 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="3650099032"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('1000')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: Happy Coding Lab<br />'
+            + '作者: ChiLun Huang<br />'
+            + '超連結: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作權為作者所有，任何形式的轉載都請註明出處。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    </div>
+    <div class="col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目錄</div>
+            <div id="toc-content"></div>
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 文章右側廣告 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:250px;height:250px"
+     data-ad-client="ca-pub-6577966333850753"
+     data-ad-slot="8070019335"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+        </div>
+    </div>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+    });
+</script>
+
+    
+
+</main>
+
+
+
+<!-- OneAD network-->
+<div id="div-onead-draft"></div>
+<script type="text/javascript">
+  var custom_call = function (params) {
+      if (params.hasAd) {
+        console.log('TD has AD')
+      } else {
+        console.log('TD AD Empty')
+      }
+    }
+  ONEAD_TEXT = {};
+  ONEAD_TEXT.pub = {};
+  ONEAD_TEXT.pub.uid = "2000176";
+  ONEAD_TEXT.pub.slotobj = document.getElementById("div-onead-draft");
+  ONEAD_TEXT.pub.player_mode = "text-drive";
+  ONEAD_TEXT.pub.queryAdCallback = custom_call;
+  window.ONEAD_text_pubs = window.ONEAD_text_pubs || [];
+  ONEAD_text_pubs.push(ONEAD_TEXT);
+</script>
+<script src="https://ad-specs.guoshipartners.com/static/js/ad-serv.min.js"></script>
+
+<!-- End OneAD network-->
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright &copy; 2019-2020 | Powered by <a href="https://hexo.io/zh-tw/index.html" target="_blank">Hexo</a> | Theme by <a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a> | Photo by <a href="https://github.com/ChiLunHuang" target="_blank">Happy Coding Lab</a> 本站嚴禁任何圖像轉載使用
+
+            
+
+            
+			
+                <br>
+                
+                <span id="busuanzi_container_site_pv">
+                    總瀏覽人數 <span id="busuanzi_value_site_pv" class="white-color"></span>
+                </span>
+                
+                
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/ChiLunHuang" class="tooltipped" target="_blank" data-tooltip="GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:clh.developer@gmail.com" class="tooltipped" target="_blank" data-tooltip="與我聯絡" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;文章查詢</span>
+            <input type="search" id="searchInput" name="s" placeholder="搜索關鍵字"
+                   class="search-input" autofocus="">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+
+<script src="/libs/materialize/js/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+
+    <script type="text/javascript" color="0,0,255" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+
+</body>
+</html>
