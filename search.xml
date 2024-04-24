@@ -317,13 +317,13 @@
             
             <tag> GCP </tag>
             
+            <tag> DNS </tag>
+            
             <tag> SSL </tag>
             
             <tag> certbot </tag>
             
             <tag> letsencrypt </tag>
-            
-            <tag> DNS </tag>
             
         </tags>
       
