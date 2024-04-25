@@ -455,6 +455,28 @@ ssh-add ~/.ssh/id_rsa</code></pre>
 <pre><code class="bash">ssh-rsa AFAAB3NzaC1yc2EAAAADAQABAAACAQDgyUQwYXGwERW/s4/0DVThkXFl1LHNss7Kz8gxMpieLCDF+5MZ+gl7/qewfq2/6aNfoJKizfUHX7ZBklm2Jj46OF+80zRtMhyJ8cI7oHWklVvUZ0csWHZVwN5PIxJ3/WtDtO/zD9OBF/6rCOVq9m1TBkWAgJL4ElnbECkkmR69Ujtpf/xgWQsqtHxPjfogTn5FdpPvmP/zQvTII7WwAZvCZNanX29DGnzuZ/XvdQ82xJuGK8pOPffi5lD760lybaVrYtfd+50aMrhGGrTwDE6J8ES3Ou9TzKA8ctm/12kCRXeM5QGaH5tqxGkl3cGU6kpPjMLq2s9fQwEQnv7tAz4lSmPoBNaDSqIWUzBBHq+6oqR0rtPtfwAXb3qVh20hpSgoDg5gMo3QelP6Q5YV7WaPE9kCd3TU8sVdXY8An2t6P0Zto6K4B9CAUalVLZVqU/kCz38iA/vq03iz3v+P3nAY7/WOUYQbXefN7lEBV5kpQfcWMMCl/6UiB7JzvtNUH7Q5bDkyONyzMct75aHeUVz4v6nR4O6mhvKJM0sBHvPWuHiD5CsJ9SHLE/quHRcnaM8ToeNYDUVeHEBl8SQNipv9SaU7TO7C2/lZCRzgFGQV9BKb9KA9V+8/wxF0Qn6j9GRI8YBOclaB6NOzoNEJfg6Kh2VYWzxBPiZ1noz+L6x7Ew== clh.developer@gmail.com</code></pre>
 <h3 id="5-將-key-加入-Github-Deploy-Key"><a href="#5-將-key-加入-Github-Deploy-Key" class="headerlink" title="5.將 key 加入 Github Deploy Key"></a><strong>5.將 key 加入 Github Deploy Key</strong></h3><p>選取你要處理的 repo 進入 <code>Setting</code> → <code>Deploy Key</code> → <code>Add deploy key</code> → 取名字加入上面複製的 ssh key → 完成</p>
 
+                <!-- OneAD network-->
+                <div id="div-onead-draft"></div>
+<script type="text/javascript">
+  var custom_call = function (params) {
+      if (params.hasAd) {
+        console.log('TD has AD')
+      } else {
+        console.log('TD AD Empty')
+      }
+    }
+  ONEAD_TEXT = {};
+  ONEAD_TEXT.pub = {};
+  ONEAD_TEXT.pub.uid = "2000176";
+  ONEAD_TEXT.pub.slotobj = document.getElementById("div-onead-draft");
+  ONEAD_TEXT.pub.player_mode = "text-drive";
+  ONEAD_TEXT.pub.queryAdCallback = custom_call;
+  window.ONEAD_text_pubs = window.ONEAD_text_pubs || [];
+  ONEAD_text_pubs.push(ONEAD_TEXT);
+</script>
+<script src="https://ad-specs.guoshipartners.com/static/js/ad-serv.min.js"></script>
+
+                <!-- End OneAD network-->
             </div>
             <hr/>
 
@@ -661,28 +683,6 @@ ssh-add ~/.ssh/id_rsa</code></pre>
 </script>
 
 
-    <!-- OneAD network-->
-    <div id="div-onead-draft"></div>
-<script type="text/javascript">
-  var custom_call = function (params) {
-      if (params.hasAd) {
-        console.log('TD has AD')
-      } else {
-        console.log('TD AD Empty')
-      }
-    }
-  ONEAD_TEXT = {};
-  ONEAD_TEXT.pub = {};
-  ONEAD_TEXT.pub.uid = "2000176";
-  ONEAD_TEXT.pub.slotobj = document.getElementById("div-onead-draft");
-  ONEAD_TEXT.pub.player_mode = "text-drive";
-  ONEAD_TEXT.pub.queryAdCallback = custom_call;
-  window.ONEAD_text_pubs = window.ONEAD_text_pubs || [];
-  ONEAD_text_pubs.push(ONEAD_TEXT);
-</script>
-<script src="https://ad-specs.guoshipartners.com/static/js/ad-serv.min.js"></script>
-
-    <!-- End OneAD network-->
 </div>
 
 

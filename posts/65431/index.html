@@ -490,6 +490,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </ul>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>自己經驗分享，有想到隨時更新，並且歡迎指正與分享更好的用法。</p>
 
+                <!-- OneAD network-->
+                <div id="div-onead-draft"></div>
+<script type="text/javascript">
+  var custom_call = function (params) {
+      if (params.hasAd) {
+        console.log('TD has AD')
+      } else {
+        console.log('TD AD Empty')
+      }
+    }
+  ONEAD_TEXT = {};
+  ONEAD_TEXT.pub = {};
+  ONEAD_TEXT.pub.uid = "2000176";
+  ONEAD_TEXT.pub.slotobj = document.getElementById("div-onead-draft");
+  ONEAD_TEXT.pub.player_mode = "text-drive";
+  ONEAD_TEXT.pub.queryAdCallback = custom_call;
+  window.ONEAD_text_pubs = window.ONEAD_text_pubs || [];
+  ONEAD_text_pubs.push(ONEAD_TEXT);
+</script>
+<script src="https://ad-specs.guoshipartners.com/static/js/ad-serv.min.js"></script>
+
+                <!-- End OneAD network-->
             </div>
             <hr/>
 
@@ -695,28 +717,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </script>
 
 
-    <!-- OneAD network-->
-    <div id="div-onead-draft"></div>
-<script type="text/javascript">
-  var custom_call = function (params) {
-      if (params.hasAd) {
-        console.log('TD has AD')
-      } else {
-        console.log('TD AD Empty')
-      }
-    }
-  ONEAD_TEXT = {};
-  ONEAD_TEXT.pub = {};
-  ONEAD_TEXT.pub.uid = "2000176";
-  ONEAD_TEXT.pub.slotobj = document.getElementById("div-onead-draft");
-  ONEAD_TEXT.pub.player_mode = "text-drive";
-  ONEAD_TEXT.pub.queryAdCallback = custom_call;
-  window.ONEAD_text_pubs = window.ONEAD_text_pubs || [];
-  ONEAD_text_pubs.push(ONEAD_TEXT);
-</script>
-<script src="https://ad-specs.guoshipartners.com/static/js/ad-serv.min.js"></script>
-
-    <!-- End OneAD network-->
 </div>
 
 
