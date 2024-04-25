@@ -20,11 +20,11 @@
       
         <tags>
             
-            <tag> word2vec </tag>
-            
             <tag> wikicorpus </tag>
             
             <tag> NLP </tag>
+            
+            <tag> word2vec </tag>
             
             <tag> gensim </tag>
             
@@ -410,11 +410,11 @@
             
             <tag> seo </tag>
             
-            <tag> performance </tag>
-            
             <tag> nginx </tag>
             
             <tag> Cache-Control </tag>
+            
+            <tag> performance </tag>
             
         </tags>
       
@@ -441,9 +441,9 @@
             
             <tag> seo </tag>
             
-            <tag> lazyload </tag>
-            
             <tag> performance </tag>
+            
+            <tag> lazyload </tag>
             
         </tags>
       
@@ -472,13 +472,13 @@
             
             <tag> seo </tag>
             
+            <tag> nginx </tag>
+            
             <tag> performance </tag>
             
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
-            
-            <tag> nginx </tag>
             
         </tags>
       
@@ -799,9 +799,9 @@
       
         <tags>
             
-            <tag> nlp </tag>
-            
             <tag> word2vec </tag>
+            
+            <tag> nlp </tag>
             
             <tag> tensorboard </tag>
             
