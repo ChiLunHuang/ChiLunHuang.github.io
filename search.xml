@@ -20,11 +20,11 @@
       
         <tags>
             
-            <tag> word2vec </tag>
-            
             <tag> wikicorpus </tag>
             
             <tag> NLP </tag>
+            
+            <tag> word2vec </tag>
             
             <tag> gensim </tag>
             
@@ -317,13 +317,13 @@
             
             <tag> GCP </tag>
             
-            <tag> DNS </tag>
-            
             <tag> SSL </tag>
             
             <tag> certbot </tag>
             
             <tag> letsencrypt </tag>
+            
+            <tag> DNS </tag>
             
         </tags>
       
@@ -410,11 +410,40 @@
             
             <tag> seo </tag>
             
-            <tag> nginx </tag>
-            
             <tag> performance </tag>
             
+            <tag> nginx </tag>
+            
             <tag> Cache-Control </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
+      <link href="/posts/53969/"/>
+      <url>/posts/53969/</url>
+      
+        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre><code class="html">&lt;script src=&quot;/static/vendor/lazyload/lazysizes.min.js&quot;&gt;&lt;/script&gt;</code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre><code class="html"># 原來寫法&lt;img class=&quot;&quot; src=&quot;/static/img/hcl.jpg&quot; alt=&quot;&quot;&gt;</code></pre><pre><code class="html"># 新方式&lt;img class=&quot;lazyload&quot; data-src=&quot;/static/img/hcl.jpg&quot; alt=&quot;&quot;&gt;</code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> SEO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> seo </tag>
+            
+            <tag> lazyload </tag>
+            
+            <tag> performance </tag>
             
         </tags>
       
@@ -443,42 +472,13 @@
             
             <tag> seo </tag>
             
-            <tag> text compression </tag>
-            
-            <tag> GZIP </tag>
+            <tag> performance </tag>
             
             <tag> nginx </tag>
             
-            <tag> performance </tag>
+            <tag> text compression </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>seo系列 - Image Lazy Load 延遲載入圖片</title>
-      <link href="/posts/53969/"/>
-      <url>/posts/53969/</url>
-      
-        <content type="html"><![CDATA[<h1 id="How-to-use-image-lazy-load-to-speed-up-performance-of-website"><a href="#How-to-use-image-lazy-load-to-speed-up-performance-of-website" class="headerlink" title="How to use image lazy load to speed up performance of website?"></a>How to use image lazy load to speed up performance of website?</h1><p><strong>在本範例你會學到：</strong></p><ul><li>如何用最簡單的方式提升多圖的網頁速度</li><li>使用 <code>image lazy load</code> 改造網頁</li></ul><p><strong>在本範例你需要先準備好：</strong></p><ul><li>對 <code>javascript</code> 有基本的認識(至少要知道應該要把檔案放在哪)</li><li>對 <code>html</code> 要有基本的認識 </li><li>需要下載的 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a> 檔案</li></ul><p>網頁圖片就是需要這麼多，圖片也都壓至最小，也都用了 jpg 檔了，但還是很慢怎麼辦，這時候就可以使用小撇步，<code>網頁滑到哪，圖片載到哪</code>！利用延遲載入的方式，讓一開始進入入口網頁時會順利許多，也不會造成 server 讀取圖片負擔過大，趕快來實作吧！</p><h3 id="1-找到當前的-baseline"><a href="#1-找到當前的-baseline" class="headerlink" title="1.找到當前的 baseline"></a><strong>1.找到當前的 baseline</strong></h3><p>想要加快速度就要先知道當下最差的狀況是什麼(baseline)，我們可以很簡單的在瀏覽器按下<code>右鍵</code> &gt; <code>選擇檢查</code> &gt; 切換頁簽到<code>Network</code> &gt; <code>重新整理頁面</code> &gt; 右下角就會有一個網頁載入時間 <code>Load</code>等等相關資訊，本範例約為 1s。</p><p>大家載入網頁很常會發生文字等等的相關訊息馬上就出來，但圖片、網頁的樣式、動畫等需要 css、js 輔助的就會反應比較遲鈍，這兩種狀況就會將載入時間分為下列兩種：</p><ul><li><p><code>Load</code> : load 事件是加載完成圖片、js、css 資源才會被觸發</p></li><li><p><code>DOMContentLoaded</code> : 是在 HTML 檔的加載並解析完成時觸發，不需等待圖片與 js、css</p></li><li><p>其他數值解釋可參考 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing" target="_blank" rel="noopener">google官方文件</a> </p></li></ul><p>簡單來說，要解決圖片載入過久問題，要看的就是 <code>Load</code>！</p><p><img src="/medias/post_img/53969_1.jpg" alt="檢查網頁初始速度範例"></p><h3 id="2-下載檔案"><a href="#2-下載檔案" class="headerlink" title="2.下載檔案"></a><strong>2.下載檔案</strong></h3><p>上方已經請大家先下載 <a href="https://github.com/aFarkas/lazysizes/blob/gh-pages/lazysizes.min.js" target="_blank" rel="noopener">lazysizes.min.js</a>，請將該 <code>js</code> 放到自己網頁相對的目錄下(每個人網頁架構不同就不再贅述)。</p><h3 id="3-修改-HTML"><a href="#3-修改-HTML" class="headerlink" title="3.修改 HTML"></a><strong>3.修改 HTML</strong></h3><p>這裡有兩個步驟，也相當簡單：</p><ul><li>將剛剛的 <code>lazysizes.min.js</code> 加入網頁當中</li></ul><pre><code class="html">&lt;script src=&quot;/static/vendor/lazyload/lazysizes.min.js&quot;&gt;&lt;/script&gt;</code></pre><ul><li>修改 <code>&lt;img&gt;</code> 撰寫方式<ul><li>於 <code>class</code> 加入 <code>lazyload</code></li><li>將 <code>src</code> 改為 <code>data-src</code></li></ul></li></ul><pre><code class="html"># 原來寫法&lt;img class=&quot;&quot; src=&quot;/static/img/hcl.jpg&quot; alt=&quot;&quot;&gt;</code></pre><pre><code class="html"># 新方式&lt;img class=&quot;lazyload&quot; data-src=&quot;/static/img/hcl.jpg&quot; alt=&quot;&quot;&gt;</code></pre><p>以上大功告成，重新刷新頁面看看<code>Load</code>秒數是不是有降低呢？<br>大家也可以開著網頁<code>檢查</code>的模式，慢慢地滾動頁面，也會看到圖片一張一張的載進來，而不是一開始就全部一卡車的載入網頁！</p><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote><p><a href="https://dotblogs.com.tw/shadow/2019/10/19/210514" target="_blank" rel="noopener">https://dotblogs.com.tw/shadow/2019/10/19/210514</a></p></blockquote><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> SEO </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> seo </tag>
-            
-            <tag> performance </tag>
-            
-            <tag> lazyload </tag>
+            <tag> GZIP </tag>
             
         </tags>
       
@@ -799,9 +799,9 @@
       
         <tags>
             
-            <tag> nlp </tag>
-            
             <tag> word2vec </tag>
+            
+            <tag> nlp </tag>
             
             <tag> tensorboard </tag>
             
