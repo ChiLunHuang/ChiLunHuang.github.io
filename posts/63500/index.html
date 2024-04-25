@@ -297,6 +297,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
+<!-- OneAD network-->
+<div id="div-onead-draft"></div>
+<script type="text/javascript">
+  var custom_call = function (params) {
+      if (params.hasAd) {
+        console.log('TD has AD')
+      } else {
+        console.log('TD AD Empty')
+      }
+    }
+  ONEAD_TEXT = {};
+  ONEAD_TEXT.pub = {};
+  ONEAD_TEXT.pub.uid = "2000176";
+  ONEAD_TEXT.pub.slotobj = document.getElementById("div-onead-draft");
+  ONEAD_TEXT.pub.player_mode = "text-drive";
+  ONEAD_TEXT.pub.queryAdCallback = custom_call;
+  window.ONEAD_text_pubs = window.ONEAD_text_pubs || [];
+  ONEAD_text_pubs.push(ONEAD_TEXT);
+</script>
+<script src="https://ad-specs.guoshipartners.com/static/js/ad-serv.min.js"></script>
+
+<!-- End OneAD network-->
+
 
 
 <main class="post-container content">
@@ -726,12 +749,12 @@ final_df = transformer.transform(input_df)</code></pre>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/word2vec/" target="_blank">
-                        <span class="chip bg-color">word2vec</span>
-                    </a>
-                    
                     <a href="/tags/nlp/" target="_blank">
                         <span class="chip bg-color">nlp</span>
+                    </a>
+                    
+                    <a href="/tags/word2vec/" target="_blank">
+                        <span class="chip bg-color">word2vec</span>
                     </a>
                     
                     <a href="/tags/tensorboard/" target="_blank">
@@ -856,29 +879,6 @@ final_df = transformer.transform(input_df)</code></pre>
 </script>
 
     
-
-    <!-- OneAD network-->
-    <div id="div-onead-draft"></div>
-<script type="text/javascript">
-  var custom_call = function (params) {
-      if (params.hasAd) {
-        console.log('TD has AD')
-      } else {
-        console.log('TD AD Empty')
-      }
-    }
-  ONEAD_TEXT = {};
-  ONEAD_TEXT.pub = {};
-  ONEAD_TEXT.pub.uid = "2000176";
-  ONEAD_TEXT.pub.slotobj = document.getElementById("div-onead-draft");
-  ONEAD_TEXT.pub.player_mode = "text-drive";
-  ONEAD_TEXT.pub.queryAdCallback = custom_call;
-  window.ONEAD_text_pubs = window.ONEAD_text_pubs || [];
-  ONEAD_text_pubs.push(ONEAD_TEXT);
-</script>
-<script src="https://ad-specs.guoshipartners.com/static/js/ad-serv.min.js"></script>
-
-    <!-- End OneAD network-->
 
 </main>
 

@@ -20,11 +20,11 @@
       
         <tags>
             
+            <tag> word2vec </tag>
+            
             <tag> wikicorpus </tag>
             
             <tag> NLP </tag>
-            
-            <tag> word2vec </tag>
             
             <tag> gensim </tag>
             
@@ -474,11 +474,11 @@
             
             <tag> performance </tag>
             
-            <tag> nginx </tag>
-            
             <tag> text compression </tag>
             
             <tag> GZIP </tag>
+            
+            <tag> nginx </tag>
             
         </tags>
       
@@ -799,9 +799,9 @@
       
         <tags>
             
-            <tag> word2vec </tag>
-            
             <tag> nlp </tag>
+            
+            <tag> word2vec </tag>
             
             <tag> tensorboard </tag>
             
