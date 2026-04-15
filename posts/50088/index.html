@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -421,49 +421,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </li>
 <li><p>有興趣可以參考以下網址，講的蠻詳盡的。</p>
 <blockquote>
-<p><a href="https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html" target="_blank" rel="noopener">https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html">https://skylinelimit.blogspot.com/2018/04/python-args-kwargs.html</a></p>
 </blockquote>
 </li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># function for summing</span>
-<span class="token keyword">def</span> <span class="token function">get_total</span><span class="token punctuation">(</span><span class="token operator">*</span>columns<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    total <span class="token operator">=</span> <span class="token number">0</span>
-    <span class="token keyword">for</span> col_value <span class="token keyword">in</span> columns<span class="token punctuation">:</span>
-        total <span class="token operator">+=</span> col_value
-    <span class="token keyword">return</span> total
-
-<span class="token comment" spellcheck="true"># Define udf type and func</span>
-udf_get_total <span class="token operator">=</span> F<span class="token punctuation">.</span>udf<span class="token punctuation">(</span>get_total<span class="token punctuation">,</span>IntegerType<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># function for summing</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_total</span>(<span class="params">*columns</span>):</span><br><span class="line">    total = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> col_value <span class="keyword">in</span> columns:</span><br><span class="line">        total += col_value</span><br><span class="line">    <span class="keyword">return</span> total</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define udf type and func</span></span><br><span class="line">udf_get_total = F.udf(get_total,IntegerType())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h3 id="2-將所有column傳給UDF"><a href="#2-將所有column傳給UDF" class="headerlink" title="2.將所有column傳給UDF"></a><strong>2.將所有column傳給UDF</strong></h3><ul>
 <li><p>沒什麼特別的用法，就是用全部的欄位作為一個 list 傳入 <code>*[col for col in df.columns]</code></p>
 </li>
 <li><p>df.columns 為全部的欄位</p>
 </li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python">df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'sum'</span><span class="token punctuation">,</span>udf_get_total<span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">[</span>col <span class="token keyword">for</span> col <span class="token keyword">in</span> df<span class="token punctuation">.</span>columns<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="3-完整的範例"><a href="#3-完整的範例" class="headerlink" title="3.完整的範例"></a><strong>3.完整的範例</strong></h3><pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> pyspark <span class="token keyword">import</span> SparkConf<span class="token punctuation">,</span> SparkContext
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql <span class="token keyword">import</span> SparkSession
-<span class="token keyword">import</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>functions <span class="token keyword">as</span> F
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>types <span class="token keyword">import</span> <span class="token operator">*</span>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df.withColumn(<span class="string">&#x27;sum&#x27;</span>,udf_get_total(*[col <span class="keyword">for</span> col <span class="keyword">in</span> df.columns])).show()</span><br></pre></td></tr></table></figure>
 
-spark <span class="token operator">=</span> SparkSession<span class="token punctuation">.</span>builder<span class="token punctuation">.</span>appName<span class="token punctuation">(</span><span class="token string">'pass_columns'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>getOrCreate<span class="token punctuation">(</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># function for summing</span>
-<span class="token keyword">def</span> <span class="token function">get_total</span><span class="token punctuation">(</span><span class="token operator">*</span>columns<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    total <span class="token operator">=</span> <span class="token number">0</span>
-    <span class="token keyword">for</span> col_value <span class="token keyword">in</span> columns<span class="token punctuation">:</span>
-        total <span class="token operator">+=</span> col_value
-    <span class="token keyword">return</span> total
-
-<span class="token comment" spellcheck="true"># Create dataframe</span>
-df <span class="token operator">=</span> spark<span class="token punctuation">.</span>createDataFrame<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">,</span> <span class="token number">33</span><span class="token punctuation">,</span> <span class="token number">44</span><span class="token punctuation">,</span> <span class="token number">54</span><span class="token punctuation">,</span> <span class="token number">66</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">"A"</span><span class="token punctuation">,</span> <span class="token string">"B"</span><span class="token punctuation">,</span> <span class="token string">"C"</span><span class="token punctuation">,</span> <span class="token string">"D"</span><span class="token punctuation">,</span> <span class="token string">"E"</span><span class="token punctuation">,</span> <span class="token string">"F"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># Define udf type and func</span>
-udf_get_total <span class="token operator">=</span> F<span class="token punctuation">.</span>udf<span class="token punctuation">(</span>get_total<span class="token punctuation">,</span>IntegerType<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># pass all column to UDF and create a new column for summing result.</span>
-df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'sum'</span><span class="token punctuation">,</span>udf_get_total<span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">[</span>col <span class="token keyword">for</span> col <span class="token keyword">in</span> df<span class="token punctuation">.</span>columns<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-完整的範例"><a href="#3-完整的範例" class="headerlink" title="3.完整的範例"></a><strong>3.完整的範例</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark <span class="keyword">import</span> SparkConf, SparkContext</span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">spark = SparkSession.builder.appName(<span class="string">&#x27;pass_columns&#x27;</span>).getOrCreate()</span><br><span class="line"></span><br><span class="line"><span class="comment"># function for summing</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_total</span>(<span class="params">*columns</span>):</span><br><span class="line">    total = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> col_value <span class="keyword">in</span> columns:</span><br><span class="line">        total += col_value</span><br><span class="line">    <span class="keyword">return</span> total</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create dataframe</span></span><br><span class="line">df = spark.createDataFrame([(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>),(<span class="number">12</span>, <span class="number">24</span>, <span class="number">33</span>, <span class="number">44</span>, <span class="number">54</span>, <span class="number">66</span>)], [<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;D&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="string">&quot;F&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define udf type and func</span></span><br><span class="line">udf_get_total = F.udf(get_total,IntegerType())</span><br><span class="line"></span><br><span class="line"><span class="comment"># pass all column to UDF and create a new column for summing result.</span></span><br><span class="line">df.withColumn(<span class="string">&#x27;sum&#x27;</span>,udf_get_total(*[col <span class="keyword">for</span> col <span class="keyword">in</span> df.columns])).show()</span><br></pre></td></tr></table></figure>
 <h3 id="4-資料與結果"><a href="#4-資料與結果" class="headerlink" title="4.資料與結果"></a><strong>4.資料與結果</strong></h3><p><img src="/medias/post_img/50088_1.png" alt="原始資料示意圖"><br><img src="/medias/post_img/50088_2.png" alt="最後結果示意圖"></p>
 <p>以上為簡略的說明，若有疑問請在留言區發問，若是文章有幫助到你也可以讓我知道。</p>
 
@@ -512,7 +483,7 @@ df<span class="token punctuation">.</span>withColumn<span class="token punctuati
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>
@@ -639,12 +610,12 @@ py4j.protocol.Py4JJavaError: An </div>
                         <span class="chip bg-color">GCP</span>
                     </a>
                     
-                    <a href="/tags/docker/" target="_blank">
-                        <span class="chip bg-color">docker</span>
-                    </a>
-                    
                     <a href="/tags/jupyterhub/" target="_blank">
                         <span class="chip bg-color">jupyterhub</span>
+                    </a>
+                    
+                    <a href="/tags/docker/" target="_blank">
+                        <span class="chip bg-color">docker</span>
                     </a>
                     
                     <a href="/tags/oauth/" target="_blank">

@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -355,12 +355,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/python/" target="_blank">
-                                <span class="chip bg-color">python</span>
-                            </a>
-                        
                             <a href="/tags/urlparse/" target="_blank">
                                 <span class="chip bg-color">urlparse</span>
+                            </a>
+                        
+                            <a href="/tags/python/" target="_blank">
+                                <span class="chip bg-color">python</span>
                             </a>
                         
                             <a href="/tags/utm/" target="_blank">
@@ -423,7 +423,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <li>本環境測試使用 <code>python3.6</code> 以上(含)</li>
 </ul>
 <h3 id="1-何謂-UTM"><a href="#1-何謂-UTM" class="headerlink" title="1.何謂 UTM"></a><strong>1.何謂 UTM</strong></h3><p>在處理跟網址相關的程式的時候大家應該都會有一個困擾，明明就都會導到一樣的網址，但是網址卻都不一樣，因為後面帶了各式各樣的來源追蹤碼追蹤網站流量，最常見的就是 Google GA 的<code>UTM</code> 以及 <code>facebook</code> 的追蹤 tag 了，這樣就會導致計算流量時重複計算的困擾:</p>
-<pre><code>https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789#fb_comment_id=0987</code></pre><pre><code>https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789</code></pre><pre><code>https://www.google.com/?utm_source=123&amp;utm_medium=456</code></pre><p>上述的三個例子，都會導向同一個頁面，但是由於網址不同，在計算流量時就會出問題！！</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">https</span>://www.google.com/?utm_source=<span class="number">123</span>&amp;utm_medium=<span class="number">456</span>&amp;fbclid=<span class="number">789</span>#fb_comment_id=<span class="number">0987</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">https</span>://www.google.com/?utm_source=<span class="number">123</span>&amp;utm_medium=<span class="number">456</span>&amp;fbclid=<span class="number">789</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">https</span>://www.google.com/?utm_source=<span class="number">123</span>&amp;utm_medium=<span class="number">456</span></span><br></pre></td></tr></table></figure>
+<p>上述的三個例子，都會導向同一個頁面，但是由於網址不同，在計算流量時就會出問題！！</p>
 <p>這個標記能幹嘛呢？</p>
 <blockquote>
 <p>Google Analytics 提供給分析人員可以自訂寫入的連結標</p>
@@ -434,68 +437,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <ul>
 <li>簡單的 import</li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> urllib<span class="token punctuation">.</span>parse <span class="token keyword">import</span> urlparse<span class="token punctuation">,</span> urlunparse<span class="token punctuation">,</span> parse_qs<span class="token punctuation">,</span> urlencode<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse, urlunparse, parse_qs, urlencode</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>使用 <code>urlparse(url)</code> 解析網址 </li>
 </ul>
 <p>可以看到他將網址切分成了不同的部分，<code>scheme</code>、<code>netloc</code>、<code>path</code>、<code>params</code>、<code>query</code>、<code>fragment</code>，也可以看得出來我們真正需要的網址是在前半部，後面的<code>params</code>、<code>query</code>、<code>fragment</code>都是要移除掉的部分。</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># 將剛剛的範例放進去</span>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 將剛剛的範例放進去</span></span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789#fb_comment_id=0987&#x27;</span></span><br><span class="line">url_component = urlparse(url)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 結果</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>ParseResult(scheme=<span class="string">&#x27;https&#x27;</span>, netloc=<span class="string">&#x27;www.google.com&#x27;</span>, path=<span class="string">&#x27;/&#x27;</span>, params=<span class="string">&#x27;&#x27;</span>, query=<span class="string">&#x27;utm_source=123&amp;utm_medium=456&amp;fbclid=789&#x27;</span>, fragment=<span class="string">&#x27;fb_comment_id=0987&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
-url <span class="token operator">=</span> <span class="token string">'https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789#fb_comment_id=0987'</span>
-url_component <span class="token operator">=</span> urlparse<span class="token punctuation">(</span>url<span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># 結果</span>
-<span class="token operator">>></span><span class="token operator">></span> ParseResult<span class="token punctuation">(</span>scheme<span class="token operator">=</span><span class="token string">'https'</span><span class="token punctuation">,</span> netloc<span class="token operator">=</span><span class="token string">'www.google.com'</span><span class="token punctuation">,</span> path<span class="token operator">=</span><span class="token string">'/'</span><span class="token punctuation">,</span> params<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span> query<span class="token operator">=</span><span class="token string">'utm_source=123&amp;utm_medium=456&amp;fbclid=789'</span><span class="token punctuation">,</span> fragment<span class="token operator">=</span><span class="token string">'fb_comment_id=0987'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ul>
 <li>定義想要移除的 tag、query 或關鍵字 </li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python">stripKeys<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">"utm_source"</span><span class="token punctuation">,</span><span class="token string">"utm_medium"</span><span class="token punctuation">,</span><span class="token string">"utm_campaign"</span><span class="token punctuation">,</span><span class="token string">"utm_term"</span><span class="token punctuation">,</span><span class="token string">"utm_content"</span><span class="token punctuation">,</span><span class="token string">"fbclid"</span><span class="token punctuation">,</span><span class="token string">"fb_comment_id"</span><span class="token punctuation">,</span><span class="token string">"ref"</span><span class="token punctuation">,</span><span class="token string">"fb_action_ids"</span><span class="token punctuation">,</span><span class="token string">"fb_action_types"</span><span class="token punctuation">,</span><span class="token string">"fb_source"</span><span class="token punctuation">,</span><span class="token string">"fb_ref"</span><span class="token punctuation">,</span><span class="token string">"fb_node"</span><span class="token punctuation">,</span><span class="token string">"action_object_map"</span><span class="token punctuation">,</span><span class="token string">"action_type_map"</span><span class="token punctuation">,</span><span class="token string">"action_ref_map"</span><span class="token punctuation">,</span><span class="token string">"from"</span><span class="token punctuation">,</span><span class="token string">"_fstview"</span><span class="token punctuation">,</span><span class="token string">"openExternalBrowser"</span><span class="token punctuation">,</span><span class="token string">"_gl"</span><span class="token punctuation">,</span><span class="token string">"time"</span><span class="token punctuation">,</span><span class="token string">"utm_compaign"</span><span class="token punctuation">,</span><span class="token string">"gclid"</span><span class="token punctuation">,</span><span class="token string">"ct"</span><span class="token punctuation">,</span><span class="token string">"redirect"</span><span class="token punctuation">]</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">stripKeys=[<span class="string">&quot;utm_source&quot;</span>,<span class="string">&quot;utm_medium&quot;</span>,<span class="string">&quot;utm_campaign&quot;</span>,<span class="string">&quot;utm_term&quot;</span>,<span class="string">&quot;utm_content&quot;</span>,<span class="string">&quot;fbclid&quot;</span>,<span class="string">&quot;fb_comment_id&quot;</span>,<span class="string">&quot;ref&quot;</span>,<span class="string">&quot;fb_action_ids&quot;</span>,<span class="string">&quot;fb_action_types&quot;</span>,<span class="string">&quot;fb_source&quot;</span>,<span class="string">&quot;fb_ref&quot;</span>,<span class="string">&quot;fb_node&quot;</span>,<span class="string">&quot;action_object_map&quot;</span>,<span class="string">&quot;action_type_map&quot;</span>,<span class="string">&quot;action_ref_map&quot;</span>,<span class="string">&quot;from&quot;</span>,<span class="string">&quot;_fstview&quot;</span>,<span class="string">&quot;openExternalBrowser&quot;</span>,<span class="string">&quot;_gl&quot;</span>,<span class="string">&quot;time&quot;</span>,<span class="string">&quot;utm_compaign&quot;</span>,<span class="string">&quot;gclid&quot;</span>,<span class="string">&quot;ct&quot;</span>,<span class="string">&quot;redirect&quot;</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>使用 <code>parse_qs</code> 移除想要移除的參數</li>
 </ul>
 <p>示範只移除 <code>query</code> 的部分 (<code>url_component.query</code>)</p>
-<pre class="line-numbers language-python"><code class="language-python">query <span class="token operator">=</span> parse_qs<span class="token punctuation">(</span>url_component<span class="token punctuation">.</span>query<span class="token punctuation">,</span> keep_blank_values<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">query = parse_qs(url_component.query, keep_blank_values=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> keys <span class="keyword">in</span> stripKeys:</span><br><span class="line">    query.pop(keys, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 此時 query 為空</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>query</span><br><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
 
-<span class="token keyword">for</span> keys <span class="token keyword">in</span> stripKeys<span class="token punctuation">:</span>
-    query<span class="token punctuation">.</span>pop<span class="token punctuation">(</span>keys<span class="token punctuation">,</span> None<span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># 此時 query 為空</span>
-<span class="token operator">>></span><span class="token operator">></span> query
-<span class="token punctuation">{</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ul>
 <li>最後將原本的 query 取代掉</li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python">url_component <span class="token operator">=</span> url_component<span class="token punctuation">.</span>_replace<span class="token punctuation">(</span>query<span class="token operator">=</span>urlencode<span class="token punctuation">(</span>query<span class="token punctuation">,</span> <span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token keyword">print</span><span class="token punctuation">(</span>urlunparse<span class="token punctuation">(</span>url_component<span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">url_component = url_component._replace(query=urlencode(query, <span class="literal">True</span>))</span><br><span class="line"><span class="built_in">print</span>(urlunparse(url_component))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>最後結果</li>
 </ul>
-<pre><code>https://www.google.com/#fb_comment_id=0987</code></pre><p>可以明顯地看到只剩下 <code>FB 的 fragment</code> 還在網址後面(這部分就交給大家自己練習)，UTM 的部分都已經被移除囉！是不是蠻容易的呢？</p>
-<h3 id="3-完整範例"><a href="#3-完整範例" class="headerlink" title="3.完整範例"></a><strong>3.完整範例</strong></h3><pre class="line-numbers language-python"><code class="language-python">
-<span class="token keyword">from</span> urllib<span class="token punctuation">.</span>parse <span class="token keyword">import</span> urlparse<span class="token punctuation">,</span> urlunparse<span class="token punctuation">,</span> parse_qs<span class="token punctuation">,</span> urlencode
+<figure class="highlight avrasm"><table><tr><td class="code"><pre><span class="line"><span class="symbol">https:</span>//www.google.com/<span class="meta">#fb_comment_id=0987</span></span><br></pre></td></tr></table></figure>
 
-url <span class="token operator">=</span> <span class="token string">'https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789#fb_comment_id=0987'</span>
+<p>可以明顯地看到只剩下 <code>FB 的 fragment</code> 還在網址後面(這部分就交給大家自己練習)，UTM 的部分都已經被移除囉！是不是蠻容易的呢？</p>
+<h3 id="3-完整範例"><a href="#3-完整範例" class="headerlink" title="3.完整範例"></a><strong>3.完整範例</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse, urlunparse, parse_qs, urlencode</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;https://www.google.com/?utm_source=123&amp;utm_medium=456&amp;fbclid=789#fb_comment_id=0987&#x27;</span></span><br><span class="line"></span><br><span class="line">url_component = urlparse(url)</span><br><span class="line"></span><br><span class="line">stripKeys=[<span class="string">&quot;utm_source&quot;</span>,<span class="string">&quot;utm_medium&quot;</span>,<span class="string">&quot;utm_campaign&quot;</span>,<span class="string">&quot;utm_term&quot;</span>,<span class="string">&quot;utm_content&quot;</span>,<span class="string">&quot;fbclid&quot;</span>,<span class="string">&quot;fb_comment_id&quot;</span>,<span class="string">&quot;ref&quot;</span>,<span class="string">&quot;fb_action_ids&quot;</span>,<span class="string">&quot;fb_action_types&quot;</span>,<span class="string">&quot;fb_source&quot;</span>,<span class="string">&quot;fb_ref&quot;</span>,<span class="string">&quot;fb_node&quot;</span>,<span class="string">&quot;action_object_map&quot;</span>,<span class="string">&quot;action_type_map&quot;</span>,<span class="string">&quot;action_ref_map&quot;</span>,<span class="string">&quot;from&quot;</span>,<span class="string">&quot;_fstview&quot;</span>,<span class="string">&quot;openExternalBrowser&quot;</span>,<span class="string">&quot;_gl&quot;</span>,<span class="string">&quot;time&quot;</span>,<span class="string">&quot;utm_compaign&quot;</span>,<span class="string">&quot;gclid&quot;</span>,<span class="string">&quot;ct&quot;</span>,<span class="string">&quot;redirect&quot;</span>]</span><br><span class="line"></span><br><span class="line">query = parse_qs(url_component.query, keep_blank_values=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> keys <span class="keyword">in</span> stripKeys:</span><br><span class="line">    query.pop(keys, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">url_component = url_component._replace(query=urlencode(query, <span class="literal">True</span>))</span><br><span class="line"><span class="built_in">print</span>(urlunparse(url_component))</span><br></pre></td></tr></table></figure>
 
-url_component <span class="token operator">=</span> urlparse<span class="token punctuation">(</span>url<span class="token punctuation">)</span>
 
-stripKeys<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">"utm_source"</span><span class="token punctuation">,</span><span class="token string">"utm_medium"</span><span class="token punctuation">,</span><span class="token string">"utm_campaign"</span><span class="token punctuation">,</span><span class="token string">"utm_term"</span><span class="token punctuation">,</span><span class="token string">"utm_content"</span><span class="token punctuation">,</span><span class="token string">"fbclid"</span><span class="token punctuation">,</span><span class="token string">"fb_comment_id"</span><span class="token punctuation">,</span><span class="token string">"ref"</span><span class="token punctuation">,</span><span class="token string">"fb_action_ids"</span><span class="token punctuation">,</span><span class="token string">"fb_action_types"</span><span class="token punctuation">,</span><span class="token string">"fb_source"</span><span class="token punctuation">,</span><span class="token string">"fb_ref"</span><span class="token punctuation">,</span><span class="token string">"fb_node"</span><span class="token punctuation">,</span><span class="token string">"action_object_map"</span><span class="token punctuation">,</span><span class="token string">"action_type_map"</span><span class="token punctuation">,</span><span class="token string">"action_ref_map"</span><span class="token punctuation">,</span><span class="token string">"from"</span><span class="token punctuation">,</span><span class="token string">"_fstview"</span><span class="token punctuation">,</span><span class="token string">"openExternalBrowser"</span><span class="token punctuation">,</span><span class="token string">"_gl"</span><span class="token punctuation">,</span><span class="token string">"time"</span><span class="token punctuation">,</span><span class="token string">"utm_compaign"</span><span class="token punctuation">,</span><span class="token string">"gclid"</span><span class="token punctuation">,</span><span class="token string">"ct"</span><span class="token punctuation">,</span><span class="token string">"redirect"</span><span class="token punctuation">]</span>
 
-query <span class="token operator">=</span> parse_qs<span class="token punctuation">(</span>url_component<span class="token punctuation">.</span>query<span class="token punctuation">,</span> keep_blank_values<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
-
-<span class="token keyword">for</span> keys <span class="token keyword">in</span> stripKeys<span class="token punctuation">:</span>
-    query<span class="token punctuation">.</span>pop<span class="token punctuation">(</span>keys<span class="token punctuation">,</span> None<span class="token punctuation">)</span>
-
-url_component <span class="token operator">=</span> url_component<span class="token punctuation">.</span>_replace<span class="token punctuation">(</span>query<span class="token operator">=</span>urlencode<span class="token punctuation">(</span>query<span class="token punctuation">,</span> <span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token keyword">print</span><span class="token punctuation">(</span>urlunparse<span class="token punctuation">(</span>url_component<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>什麼是 UTM</p>
 <blockquote>
-<p><a href="https://www.hellosanta.com.tw/news/what-is-utm" target="_blank" rel="noopener">https://www.hellosanta.com.tw/news/what-is-utm</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.hellosanta.com.tw/news/what-is-utm">https://www.hellosanta.com.tw/news/what-is-utm</a></p>
 </blockquote>
 <p>UTM 的參數 (GA官方文件)</p>
 <blockquote>
-<p><a href="https://support.google.com/analytics/answer/1033863?hl=zh-Hant" target="_blank" rel="noopener">https://support.google.com/analytics/answer/1033863?hl=zh-Hant</a></p>
+<p><a target="_blank" rel="noopener" href="https://support.google.com/analytics/answer/1033863?hl=zh-Hant">https://support.google.com/analytics/answer/1033863?hl=zh-Hant</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -544,7 +526,7 @@ url_component <span class="token operator">=</span> url_component<span class="to
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

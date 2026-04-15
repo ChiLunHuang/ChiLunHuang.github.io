@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -447,15 +447,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <p>看到這踏家或許有些疑問為什麼我一直要特別強調 DNS 呢？因為這個方法只適用於<code>有使用 GCP Cloud DNS 才能使用喔</code>。如果是正常的方式網路上已經超級多方法了(這也是我一直沒發現用錯方法的原因)，我這邊就不特別在寫一篇了，不過基本上語法都是一樣的，到官網上看稍微修改也是可以使用的。</p>
 <h3 id="2-手動申請與續約"><a href="#2-手動申請與續約" class="headerlink" title="2.手動申請與續約"></a><strong>2.手動申請與續約</strong></h3><p>這邊還是稍微講述一下簡單的手動模式，給不需要自動更新或是單純測試的夥伴們可以先用這個方法測試喔！！</p>
 <p>先安裝套件：</p>
-<pre><code>pip install certbot
-</code></pre><p>直接進入主題下語法：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">pip <span class="keyword">install</span> certbot</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>直接進入主題下語法：</p>
 <ul>
 <li>–dry-run: 代表不會真的執行，試跑與法有沒有錯誤可以使用</li>
 <li>-d: 有多少個 domain 就寫幾個</li>
 <li>–server: 照抄就好</li>
 </ul>
 <p>要特別注意這邊是使用 <code>dns</code>喔！</p>
-<pre><code>certbot certonly --server https://acme-v02.api.letsencrypt.org/directory --manual --preferred-challenges dns  -d test.com.tw -d www.test.com.tw --dry-run</code></pre><p>接下來就是比較麻煩也可能會出錯的地方：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">certbot certonly <span class="params">--server</span> https:<span class="string">//acme-v02.api.letsencrypt.org/directory</span> <span class="params">--manual</span> <span class="params">--preferred-challenges</span> dns  -d test.com.tw -d www.test.com.tw <span class="params">--dry-run</span></span><br></pre></td></tr></table></figure>
+
+<p>接下來就是比較麻煩也可能會出錯的地方：</p>
 <ul>
 <li>按下 enter 後直接到 GCP Cloud DNS 頁面(<a href="https://chilunhuang.github.io/posts/22148/">不知道我在講什麼請看這篇</a>)選擇目前要使用的區域(domain)</li>
 <li>按下<code>新增紀錄集</code>，並依照剛剛 enter 後 terminal 的指示新增<code>資源記錄類型</code>中的<code>TXT</code>，並將 terminal 中的序號填入<code>TXT 資料</code>並按下建立，並等待至少30秒，讓它生效(此步驟需要等待時間生效，直接繼續在 terminal 按 enter 可能會設定失敗)</li>
@@ -463,29 +465,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </ul>
 <p>以上步驟如果有訊息說失敗，可以再試一次，有可能是等待時間不夠長，不過依據經驗30秒是足夠的。</p>
 <p>設定完成就會見到以下訊息：</p>
-<pre><code>IMPORTANT NOTES:
- - Congratulations! Your certificate and chain have been saved at:
-   /etc/letsencrypt/live/test.com.tw/fullchain.pem
-   Your key file has been saved at:
-   /etc/letsencrypt/live/test.com.tw/privkey.pem
-   Your cert will expire on 2020-06-29. To obtain a new or tweaked
-   version of this certificate in the future, simply run certbot
-   again. To non-interactively renew *all* of your certificates, run
-   &quot;certbot renew&quot;
- - If you like Certbot, please consider supporting our work by:
-
-
-   Donating to ISRG / Let&#39;s Encrypt:   https://letsencrypt.org/donate
-   Donating to EFF:                    https://eff.org/donate-le</code></pre><p>該訊息基本上包含兩件事：</p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">IMPORTANT <span class="keyword">NOTES</span>:</span><br><span class="line"> - Congratulations! Your certificate and chain have been saved at:</span><br><span class="line">   /etc/letsencrypt/live/<span class="keyword">test</span>.com.<span class="keyword">tw</span>/fullchain.pem</span><br><span class="line">   Your key <span class="keyword">file</span> has been saved at:</span><br><span class="line">   /etc/letsencrypt/live/<span class="keyword">test</span>.com.<span class="keyword">tw</span>/privkey.pem</span><br><span class="line">   Your cert will expire <span class="keyword">on</span> 2020-06-29. To obtain a new or tweaked</span><br><span class="line">   <span class="keyword">version</span> of this certificate <span class="keyword">in</span> the future, simply <span class="keyword">run</span> certbot</span><br><span class="line">   again. To non-interactively renew *all* of your certificates, <span class="keyword">run</span></span><br><span class="line">   <span class="string">&quot;certbot renew&quot;</span></span><br><span class="line"> - <span class="keyword">If</span> you like Certbot, please consider supporting our work <span class="keyword">by</span>:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   Donating to ISRG / Let&#x27;s Encrypt:   https:<span class="comment">//letsencrypt.org/donate</span></span><br><span class="line">   Donating to EFF:                    https:<span class="comment">//eff.org/donate-le</span></span><br></pre></td></tr></table></figure>
+<p>該訊息基本上包含兩件事：</p>
 <ul>
 <li>該憑證的到期日，三個月後就會作廢</li>
 <li>該憑證的產生位置(<code>*.pem</code>)，可以依需求放到自己相對應的伺服器位置(Nginx or Apache)</li>
 </ul>
 <p>若是需要手動續約，也非常簡單 (正式的時候要把<code>--dry-run</code>拿掉喔！)：</p>
-<pre><code>sudo certbot renew --dry-run</code></pre><h3 id="3-自動更新"><a href="#3-自動更新" class="headerlink" title="3.自動更新"></a><strong>3.自動更新</strong></h3><p>網路上有非常多手動/自動更新的方法，小弟在使用每一篇文章都會看到的 <code>sudo certbot renew</code> 從來都沒有成功過，一直都抱一樣的錯誤訊息，所以非常苦惱，不想要三個月就手動一次，後來才發現原來 Google 有相對應的套件可以使用啊！！</p>
+<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">sudo certbot renew <span class="comment">--dry-run</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-自動更新"><a href="#3-自動更新" class="headerlink" title="3.自動更新"></a><strong>3.自動更新</strong></h3><p>網路上有非常多手動/自動更新的方法，小弟在使用每一篇文章都會看到的 <code>sudo certbot renew</code> 從來都沒有成功過，一直都抱一樣的錯誤訊息，所以非常苦惱，不想要三個月就手動一次，後來才發現原來 Google 有相對應的套件可以使用啊！！</p>
 <p>直接切入主題：</p>
 <p>1.安裝</p>
-<pre><code>pip install certbot-dns-google</code></pre><p>2.設定 Google Credentials，取得金鑰 json</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">pip <span class="keyword">install</span> certbot-dns-google</span><br></pre></td></tr></table></figure>
+<p>2.設定 Google Credentials，取得金鑰 json</p>
 <p><strong>每次都有的貼心小提醒：GCP頁面變動相當的大，可能短短幾個月步驟就不一樣了，請大家多注意！</strong></p>
 <ul>
 <li>於 GCP 導覽列中找到 <code>API 和服務</code>選擇<code>憑證</code></li>
@@ -494,15 +487,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <p><img src="/medias/post_img/51659_2.jpg" alt="設定步驟"></p>
 <ul>
 <li>輸入名稱</li>
-<li>進入<code>將專案存取權授予這個服務帳戶</code>要進行角色選擇，可以<a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">依照官網自己決定</a>，或是可以跟著本篇設定即可，這裡可能要花點時間找到想要的角色:</li>
+<li>進入<code>將專案存取權授予這個服務帳戶</code>要進行角色選擇，可以<a target="_blank" rel="noopener" href="https://certbot-dns-google.readthedocs.io/en/stable/">依照官網自己決定</a>，或是可以跟著本篇設定即可，這裡可能要花點時間找到想要的角色:</li>
 </ul>
-<pre><code>dns.changes.create
-dns.changes.get
-dns.managedZones.list
-dns.resourceRecordSets.create
-dns.resourceRecordSets.delete
-dns.resourceRecordSets.list
-dns.resourceRecordSets.update</code></pre><ul>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">dns<span class="selector-class">.changes</span><span class="selector-class">.create</span></span><br><span class="line">dns<span class="selector-class">.changes</span><span class="selector-class">.get</span></span><br><span class="line">dns<span class="selector-class">.managedZones</span><span class="selector-class">.list</span></span><br><span class="line">dns<span class="selector-class">.resourceRecordSets</span><span class="selector-class">.create</span></span><br><span class="line">dns<span class="selector-class">.resourceRecordSets</span><span class="selector-class">.delete</span></span><br><span class="line">dns<span class="selector-class">.resourceRecordSets</span><span class="selector-class">.list</span></span><br><span class="line">dns<span class="selector-class">.resourceRecordSets</span>.update</span><br></pre></td></tr></table></figure>
+<ul>
 <li>最後一步驟有一個建立金鑰，按下去選擇 <code>json</code> 並下載</li>
 <li>得到金鑰後，將剛剛的金鑰 json 檔放到網頁伺服器的(vm)的相對應位置(自行決定)，並輸入下列語法：<ul>
 <li><code>-d</code>: 更改網域位置</li>
@@ -510,40 +498,48 @@ dns.resourceRecordSets.update</code></pre><ul>
 </ul>
 </li>
 </ul>
-<pre><code>certbot certonly --dns-google --dns-google-credentials /etc/letsencrypt/renewal/fabled-mystery-264984-6tg78hcd467.json -d www.test.com.tw. -d test.com.tw. --dry-run</code></pre><p>基本上會跟上方手動很像，不過這個的好處就是不用自己輸入 <code>TXT</code> 金鑰囉！！執行指令後可以在 <code>GCP Cloud DNS</code>頁面看到它運作的情況，會自動幫你新增，沒收到任何錯誤訊息就是成功囉，如果有遇到錯誤可以先在執行一次看看，通常就會解決了。</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">certbot certonly <span class="attr">--dns-google</span> <span class="attr">--dns-google-credentials</span> /etc/letsencrypt/renewal/fabled-mystery-<span class="number">264984</span>-<span class="number">6</span>tg78hcd467<span class="selector-class">.json</span> -d www<span class="selector-class">.test</span><span class="selector-class">.com</span><span class="selector-class">.tw</span>. -d test<span class="selector-class">.com</span><span class="selector-class">.tw</span>. <span class="attr">--dry-run</span></span><br></pre></td></tr></table></figure>
+
+<p>基本上會跟上方手動很像，不過這個的好處就是不用自己輸入 <code>TXT</code> 金鑰囉！！執行指令後可以在 <code>GCP Cloud DNS</code>頁面看到它運作的情況，會自動幫你新增，沒收到任何錯誤訊息就是成功囉，如果有遇到錯誤可以先在執行一次看看，通常就會解決了。</p>
 <p>3.將 ssl 憑證放入相對應位置</p>
 <p>這個步驟跟上方的手動設定基本上功能一樣，完成後將剛剛產生的 <code>fullchain.pem</code>、<code>privkey.pem</code>放到伺服器相對位置下，以<code>Nginx</code>為例子，將下列設定加入設定檔 <code>/etc/nginx/nginx.conf</code>中：</p>
-<pre><code>ssl_certificate /etc/letsencrypt/live/test.com.tw/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><p>4.更新憑證</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">ssl_certificate <span class="regexp">/etc/</span>letsencrypt<span class="regexp">/live/</span>test.com.tw/fullchain.pem;</span><br><span class="line">ssl_certificate_key <span class="regexp">/etc/</span>letsencrypt<span class="regexp">/live/</span>test.com.tw/privkey.pem;</span><br></pre></td></tr></table></figure>
+
+<p>4.更新憑證</p>
 <p>基本上上面都沒問題，這步驟也會順利：</p>
 <p><code>certbot renew --dry-run</code></p>
 <h3 id="4-確認憑證狀態"><a href="#4-確認憑證狀態" class="headerlink" title="4.確認憑證狀態"></a><strong>4.確認憑證狀態</strong></h3><p>這步驟就是簡單地使用網頁去驗證剛剛產生的憑證是否狀態正常且生效:</p>
 <ul>
 <li>將下列的 <code>www.test.com.tw</code> 換成自己的網址即可使用</li>
 </ul>
-<pre><code>https://www.ssllabs.com/ssltest/analyze.html?d=www.test.com.tw&amp;latest</code></pre><ul>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">https:<span class="regexp">//</span>www.ssllabs.com<span class="regexp">/ssltest/</span>analyze.html?d=www.test.com.tw&amp;latest</span><br></pre></td></tr></table></figure>
+<ul>
 <li>若沒問題就會看到以下畫面</li>
 </ul>
 <p><img src="/medias/post_img/51659_3.jpg" alt="成功畫面"></p>
 <p>在主機上也可測試剛剛申請的是否成功與狀態顯示：</p>
-<pre><code>sudo certbot certificates</code></pre><h3 id="5-自動更新憑證"><a href="#5-自動更新憑證" class="headerlink" title="5.自動更新憑證"></a><strong>5.自動更新憑證</strong></h3><p>最後的重點就是不想要三個月就執行以上的步驟一次，所以在主機上設定 <code>cron job</code>讓他自己去更新：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> certbot certificates</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="5-自動更新憑證"><a href="#5-自動更新憑證" class="headerlink" title="5.自動更新憑證"></a><strong>5.自動更新憑證</strong></h3><p>最後的重點就是不想要三個月就執行以上的步驟一次，所以在主機上設定 <code>cron job</code>讓他自己去更新：</p>
 <p>進入主機並輸入(不同OS方法有所差異，請斟酌參考)</p>
-<pre><code>crontab -e</code></pre><p>輸入相對應的更新日期以及月份就大功告成囉，若不懂怎麼設定可以參考下方參考資料的連結！請記得正式的情況<code>--dry-run</code>要拿掉喔！</p>
+<figure class="highlight ebnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">crontab -e</span></span><br></pre></td></tr></table></figure>
+<p>輸入相對應的更新日期以及月份就大功告成囉，若不懂怎麼設定可以參考下方參考資料的連結！請記得正式的情況<code>--dry-run</code>要拿掉喔！</p>
 <p>以上都完成後，就可以去看看有沒有變成綠色小鎖頭了(https)。</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>特別感謝作者<code>tn710617</code>在憑證設定部分給予大大的幫助</p>
 <blockquote>
-<p><a href="https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials" target="_blank" rel="noopener">https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials</a></p>
+<p><a target="_blank" rel="noopener" href="https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials">https://tn710617.github.io/zh-tw/letsEncryptWildcard/#%E8%A8%AD%E5%AE%9A-Google-Credentials</a></p>
 </blockquote>
 <p>排程設定教學</p>
 <blockquote>
-<p><a href="https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/" target="_blank" rel="noopener">https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/">https://www.rusnake.com/2017/04/28/centos-7-nginx-%E5%AE%89%E8%A3%9D-letsencrypt-%E6%86%91%E8%AD%89/</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://andyyou.github.io/2019/04/13/how-to-use-certbot/" target="_blank" rel="noopener">https://andyyou.github.io/2019/04/13/how-to-use-certbot/</a></p>
+<p><a target="_blank" rel="noopener" href="https://andyyou.github.io/2019/04/13/how-to-use-certbot/">https://andyyou.github.io/2019/04/13/how-to-use-certbot/</a></p>
 </blockquote>
 <p>certbot-dns-google 詳細設定</p>
 <blockquote>
-<p><a href="https://certbot-dns-google.readthedocs.io/en/stable/" target="_blank" rel="noopener">https://certbot-dns-google.readthedocs.io/en/stable/</a></p>
+<p><a target="_blank" rel="noopener" href="https://certbot-dns-google.readthedocs.io/en/stable/">https://certbot-dns-google.readthedocs.io/en/stable/</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -592,7 +588,7 @@ ssl_certificate_key /etc/letsencrypt/live/test.com.tw/privkey.pem;</code></pre><
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

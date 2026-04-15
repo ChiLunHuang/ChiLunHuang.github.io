@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -359,12 +359,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <span class="chip bg-color">mac</span>
                             </a>
                         
-                            <a href="/tags/M1/" target="_blank">
-                                <span class="chip bg-color">M1</span>
-                            </a>
-                        
                             <a href="/tags/docker/" target="_blank">
                                 <span class="chip bg-color">docker</span>
+                            </a>
+                        
+                            <a href="/tags/M1/" target="_blank">
+                                <span class="chip bg-color">M1</span>
                             </a>
                         
                             <a href="/tags/mysql/" target="_blank">
@@ -433,32 +433,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <h3 id="1-編輯-docker-compose-yml"><a href="#1-編輯-docker-compose-yml" class="headerlink" title="1.編輯 docker-compose.yml"></a><strong>1.編輯 docker-compose.yml</strong></h3><p>這部分其實非常的簡單，只要將原本的 docker-compose.yml 加上一句語法就可以解決了！</p>
 <p>原本應該大概會長這樣子：</p>
 <p>docker-compose.yml </p>
-<pre><code>services:
-  redis:
-    image: &quot;redis:5&quot;
-    ports:
-         - &quot;6379:6379&quot;
-    restart: always 
-  db:
-    image: mysql:5.7
-    environment:
-    ...</code></pre><p>在這個情況下執行就會遇到標題的錯誤：</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="symbol">services:</span></span><br><span class="line"><span class="symbol">  redis:</span></span><br><span class="line"><span class="symbol">    image:</span> <span class="string">&quot;redis:5&quot;</span></span><br><span class="line"><span class="symbol">    ports:</span></span><br><span class="line">         - <span class="string">&quot;6379:6379&quot;</span></span><br><span class="line"><span class="symbol">    restart:</span> always </span><br><span class="line"><span class="symbol">  db:</span></span><br><span class="line"><span class="symbol">    image:</span> mysql:<span class="number">5.7</span></span><br><span class="line"><span class="symbol">    environment:</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>在這個情況下執行就會遇到標題的錯誤：</p>
 <p><code>no matching manifest for linux/arm64/v8 in the manifest list entries</code></p>
 <p>這時候只要將 <code>platform: linux/amd64</code> 加上去就可以正常執行囉！</p>
 <p>請看下方範例：</p>
-<pre><code>services:
-  redis:
-    image: &quot;redis:5&quot;
-    ports:
-         - &quot;6379:6379&quot;
-    restart: always 
-  db:
-    image: mysql:5.7
-    platform: linux/amd64
-    environment:
-    ...</code></pre><h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>GitHub</p>
+<figure class="highlight nix"><table><tr><td class="code"><pre><span class="line"><span class="params">services:</span></span><br><span class="line">  <span class="params">redis:</span></span><br><span class="line">    <span class="params">image:</span> <span class="string">&quot;redis:5&quot;</span></span><br><span class="line">    <span class="params">ports:</span></span><br><span class="line">         <span class="operator">-</span> <span class="string">&quot;6379:6379&quot;</span></span><br><span class="line">    <span class="params">restart:</span> always </span><br><span class="line">  <span class="params">db:</span></span><br><span class="line">    <span class="params">image:</span> mysql:<span class="number">5.7</span></span><br><span class="line">    <span class="params">platform:</span> linux<span class="symbol">/amd64</span></span><br><span class="line">    <span class="params">environment:</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>GitHub</p>
 <blockquote>
-<p><a href="https://github.com/docker-library/mysql/issues/318" target="_blank" rel="noopener">https://github.com/docker-library/mysql/issues/318</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/docker-library/mysql/issues/318">https://github.com/docker-library/mysql/issues/318</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -507,7 +491,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>
@@ -642,12 +626,12 @@ Mac系列</div>
                         <span class="chip bg-color">mac</span>
                     </a>
                     
-                    <a href="/tags/M1/" target="_blank">
-                        <span class="chip bg-color">M1</span>
-                    </a>
-                    
                     <a href="/tags/docker/" target="_blank">
                         <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                    <a href="/tags/M1/" target="_blank">
+                        <span class="chip bg-color">M1</span>
                     </a>
                     
                 </div>

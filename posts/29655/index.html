@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -416,7 +416,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <li>歡樂愉快的學習精神</li>
 </ul>
 <h3 id="1-常見的新增-index-方法"><a href="#1-常見的新增-index-方法" class="headerlink" title="1.常見的新增 index 方法"></a><strong>1.常見的新增 index 方法</strong></h3><p>在網路上搜尋建立 index 索引的相關方法，一定會搜索到 <code>monotonically_increasing_id</code> 這個方法，但是若沒有仔細看文件，有可能會無法達到預期的效果喔！！</p>
-<p>根據文件(<a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id" target="_blank" rel="noopener">官網連結</a>)有三個重點：</p>
+<p>根據文件(<a target="_blank" rel="noopener" href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id">官網連結</a>)有三個重點：</p>
 <blockquote>
 <p>The generated ID is guaranteed to be monotonically increasing and unique, but not consecutive. </p>
 </blockquote>
@@ -434,48 +434,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <p>綜合以上說法，簡單來說，如果你想要的效果是一個連續的索引號碼，<code>1, 2, 3......100</code>，此方法就不符合需求，他是會跳號的！但如果是單純的需要產生一個唯一的 id，不在意號碼產生方式，那此方法就會相當的合適。</p>
 <h3 id="2-row-number-新增-index-方法"><a href="#2-row-number-新增-index-方法" class="headerlink" title="2.row_number 新增 index 方法"></a><strong>2.row_number 新增 index 方法</strong></h3><p>第二種方法之於第一種的不同就是，<code>row_number</code>可以依照自己所需要的條件進行排序，也可以依照不同的 <code>key</code> 來排序(同時有很多個1,2,3…)</p>
 <p>我們來定義一個簡單的範例，搭配 <code>Window()</code> 的方法會有更多的變化：</p>
-<pre class="line-numbers language-python"><code class="language-python"> <span class="token comment" spellcheck="true">#!/usr/bin/env python</span>
-<span class="token comment" spellcheck="true"># -*- coding: utf-8 -*-</span>
-<span class="token keyword">from</span> pyspark <span class="token keyword">import</span> SparkConf<span class="token punctuation">,</span> SparkContext
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql <span class="token keyword">import</span> SparkSession
-<span class="token keyword">import</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>functions <span class="token keyword">as</span> F
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>types <span class="token keyword">import</span> <span class="token operator">*</span>
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql <span class="token keyword">import</span> Window
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"> <span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pyspark <span class="keyword">import</span> SparkConf, SparkContext</span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> Window</span><br><span class="line"></span><br><span class="line">spark = SparkSession.builder.appName(<span class="string">&#x27;index_num&#x27;</span>).getOrCreate()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create dataset</span></span><br><span class="line">df = spark.createDataFrame([(<span class="string">&quot;Jolin&quot;</span>, <span class="string">&quot;bell fruit&quot;</span>, <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;2020/05/26&quot;</span>), \</span><br><span class="line">        (<span class="string">&quot;John&quot;</span>, <span class="string">&quot;bell fruit&quot;</span>, <span class="string">&quot;banana&quot;</span>, <span class="string">&quot;2020/05/27&quot;</span>), \</span><br><span class="line">        (<span class="string">&quot;Lisa&quot;</span>, <span class="string">&quot;banana&quot;</span>, <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;2020/05/28&quot;</span>), \</span><br><span class="line">        ], [<span class="string">&quot;name&quot;</span>, <span class="string">&quot;fruit_1&quot;</span>, <span class="string">&quot;fruit_2&quot;</span>, <span class="string">&quot;date&quot;</span>])</span><br></pre></td></tr></table></figure>
 
-spark <span class="token operator">=</span> SparkSession<span class="token punctuation">.</span>builder<span class="token punctuation">.</span>appName<span class="token punctuation">(</span><span class="token string">'index_num'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>getOrCreate<span class="token punctuation">(</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># Create dataset</span>
-df <span class="token operator">=</span> spark<span class="token punctuation">.</span>createDataFrame<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token string">"Jolin"</span><span class="token punctuation">,</span> <span class="token string">"bell fruit"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/26"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
-        <span class="token punctuation">(</span><span class="token string">"John"</span><span class="token punctuation">,</span> <span class="token string">"bell fruit"</span><span class="token punctuation">,</span> <span class="token string">"banana"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/27"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
-        <span class="token punctuation">(</span><span class="token string">"Lisa"</span><span class="token punctuation">,</span> <span class="token string">"banana"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/28"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
-        <span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">"name"</span><span class="token punctuation">,</span> <span class="token string">"fruit_1"</span><span class="token punctuation">,</span> <span class="token string">"fruit_2"</span><span class="token punctuation">,</span> <span class="token string">"date"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>首先，我使用 <code>w = Window().orderBy(F.lit(&quot;name&quot;))</code>來定義一個編碼的 slide window ，且使用 <code>name</code> 這個 column 進行排序。</p>
 <p>接下來針對 df 進行 <code>orderBy</code> 的動作，寫新增一個 id 欄位給索引值(index)，裡面的直將會依照條件 <code>F.row_number().over(w)</code> 填入號碼 1,2,3…</p>
-<pre class="line-numbers language-python"><code class="language-python">w <span class="token operator">=</span> Window<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>orderBy<span class="token punctuation">(</span>F<span class="token punctuation">.</span>lit<span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-df_order <span class="token operator">=</span> df<span class="token punctuation">.</span>orderBy<span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">,</span> ascending<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>\
-    <span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">,</span> F<span class="token punctuation">.</span>row_number<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>over<span class="token punctuation">(</span>w<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">w = Window().orderBy(F.lit(<span class="string">&quot;name&quot;</span>))</span><br><span class="line">df_order = df.orderBy(<span class="string">&quot;name&quot;</span>, ascending=<span class="literal">True</span>)\</span><br><span class="line">    .withColumn(<span class="string">&quot;id&quot;</span>, F.row_number().over(w))</span><br></pre></td></tr></table></figure>
+
 <p>而得到最後的結果如下：</p>
 <p><img src="/medias/post_img/29655_1.jpg" alt="排序結果"></p>
 <p>這是個相對簡單的範例，個人最常使用的情境是處理 <code>session</code> 問題時，要<code>排序使用者不同 session 中的瀏覽順序</code>就可以用此方法簡單的完成 dataframe 的 index 排序，而且是可以針對不同 key 值的條件新增，而不會是單純的從頭 1,2,3…到尾，而是可以像下面的例子：</p>
-<pre><code>----------------------
-| session| url| index|
-----------------------
-|   scfer|   A|     1|
-|   scfer|   B|     2|
-|   scfer|   C|     3|
-|   tuikg|   B|     1|
-|   tuikg|   C|     2|
-|   redcv|   B|     1|
-|   redcv|   C|     2|
-|   redcv|   D|     3|
-----------------------</code></pre><p>以上就是簡單的介紹！</p>
+<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">----------------------</span><br><span class="line">|<span class="string"> session</span>|<span class="string"> url</span>|<span class="string"> index</span>|</span><br><span class="line">----------------------</span><br><span class="line">|<span class="string">   scfer</span>|<span class="string">   A</span>|<span class="string">     1</span>|</span><br><span class="line">|<span class="string">   scfer</span>|<span class="string">   B</span>|<span class="string">     2</span>|</span><br><span class="line">|<span class="string">   scfer</span>|<span class="string">   C</span>|<span class="string">     3</span>|</span><br><span class="line">|<span class="string">   tuikg</span>|<span class="string">   B</span>|<span class="string">     1</span>|</span><br><span class="line">|<span class="string">   tuikg</span>|<span class="string">   C</span>|<span class="string">     2</span>|</span><br><span class="line">|<span class="string">   redcv</span>|<span class="string">   B</span>|<span class="string">     1</span>|</span><br><span class="line">|<span class="string">   redcv</span>|<span class="string">   C</span>|<span class="string">     2</span>|</span><br><span class="line">|<span class="string">   redcv</span>|<span class="string">   D</span>|<span class="string">     3</span>|</span><br><span class="line">----------------------</span><br></pre></td></tr></table></figure>
+
+<p>以上就是簡單的介紹！</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 <p>在 <code>pyspark.sql.functions</code> 其實有許多好用的小 function 可以直接使用，也不用再自己辛苦的寫 <code>udf</code>(User Defined function)，在之後的介紹會再慢慢帶給大家。下方為今天介紹的兩種好用的小function。</p>
 <blockquote>
-<p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id</a></p>
+<p><a target="_blank" rel="noopener" href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.monotonically_increasing_id</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.row_number" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.row_number</a></p>
+<p><a target="_blank" rel="noopener" href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.row_number">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.row_number</a></p>
 </blockquote>
 
             </div>
@@ -523,7 +500,7 @@ df_order <span class="token operator">=</span> df<span class="token punctuation"
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

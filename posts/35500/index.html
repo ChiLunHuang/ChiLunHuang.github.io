@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -423,13 +423,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </ul>
 <p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決安裝 wget 遇到的錯誤問題！</p>
 <h3 id="1-安裝-wget"><a href="#1-安裝-wget" class="headerlink" title="1.安裝 wget"></a><strong>1.安裝 wget</strong></h3><p>正常在 mac 安裝 wget 會直接下 </p>
-<pre><code>brew install wget</code></pre><p>但是卻會不如預期的出現錯誤：</p>
-<pre><code>Error: Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)!
-To rerun under ARM use:
-    arch -arm64 brew install ...
-To install under x86_64, install Homebrew into /usr/local.</code></pre><p>過他的提示也蠻明確的，在 ARM 的系統下，必須使用新的語法 <code>arch -arm64 brew install</code> 來進行安裝。</p>
+<figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line"><span class="keyword">brew </span><span class="keyword">install </span>wget</span><br></pre></td></tr></table></figure>
+
+<p>但是卻會不如預期的出現錯誤：</p>
+<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Error: </span>Cannot install under Rosetta 2 in ARM default prefix (/opt/homebrew)!</span><br><span class="line">To rerun under ARM use:</span><br><span class="line">    arch -arm64 brew install ...</span><br><span class="line">To install under x86_64, install Homebrew into /usr/local.</span><br></pre></td></tr></table></figure>
+
+<p>過他的提示也蠻明確的，在 ARM 的系統下，必須使用新的語法 <code>arch -arm64 brew install</code> 來進行安裝。</p>
 <p>把與法修正成：</p>
-<pre><code>arch -arm64 brew install wget</code></pre><p>這樣就可以正常安裝了喔～ 其他常用的語法也都可以直接加上上面的  <code>arch -arm64 brew install</code> 進行安裝。</p>
+<figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">arch -arm64 <span class="keyword">brew </span><span class="keyword">install </span>wget</span><br></pre></td></tr></table></figure>
+
+<p>這樣就可以正常安裝了喔～ 其他常用的語法也都可以直接加上上面的  <code>arch -arm64 brew install</code> 進行安裝。</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>無</p>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -478,7 +481,7 @@ To install under x86_64, install Homebrew into /usr/local.</code></pre><p>過他
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

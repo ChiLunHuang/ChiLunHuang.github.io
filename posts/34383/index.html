@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -436,39 +436,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <li><code>traceback</code> : 今天的小重點，處理 <code>exception</code> 的好套件</li>
 <li><code>sys</code> :也是小幫手之一</li>
 </ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> request<span class="token punctuation">,</span> abort
-<span class="token keyword">import</span> traceback
-<span class="token keyword">import</span> sys<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, abort</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">import</span> sys</span><br></pre></td></tr></table></figure>
+
 <h3 id="2-Flask-簡易教學"><a href="#2-Flask-簡易教學" class="headerlink" title="2.Flask 簡易教學"></a><strong>2.Flask 簡易教學</strong></h3><p>Flask 不是本文的重點，將會快速帶過如何確認架設成功與使用：</p>
 <p>以下為 flask 標準的寫法，而其中的 <code>app = Flask(__name__)</code> 與 <code>@app.route(&#39;/&#39;)</code> 是什麼就暫時不贅述，聰明的你們在後面應該也會看得出來。</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> request<span class="token punctuation">,</span> abort
-
-app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
-@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span>
-<span class="token keyword">def</span> <span class="token function">index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">return</span> <span class="token string">'connection is OK! '</span>
-
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">1234</span><span class="token punctuation">,</span> debug<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, abort</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;connection is OK! &#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>,port=<span class="number">1234</span>, debug=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
 <p>將以上的 code 在 terminal 或 jupyter 中執行，將會看到以下畫面：</p>
 <p><img src="/medias/post_img/34383_1.jpg" alt="flask 執行畫面"></p>
 <p>看到畫面後請再開啟一個全新的 terminal 並輸入:</p>
-<pre><code>curl http://0.0.0.0:1234/</code></pre><p>理論上你將會收到 <code>connection is OK!</code> 的回傳值，這就代表一切 ok，基本上就確定了 API 連線是沒問題的。</p>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">curl http<span class="punctuation">:</span><span class="comment">//0.0.0.0:1234/</span></span><br></pre></td></tr></table></figure>
+<p>理論上你將會收到 <code>connection is OK!</code> 的回傳值，這就代表一切 ok，基本上就確定了 API 連線是沒問題的。</p>
 <h3 id="3-使用-post-方式打-API"><a href="#3-使用-post-方式打-API" class="headerlink" title="3.使用 post 方式打 API"></a><strong>3.使用 post 方式打 API</strong></h3><p>這部分進行一些資料的準備，其實也不難，在剛剛的程式中再加入以下片段，建立了<code>flask_api</code>並將水果清單打入，並直接回傳 A 所代表的水果，有沒有發現跟上面有什麼不同呢？</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> request<span class="token punctuation">,</span> abort
-
-app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
-
-@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/flask_api'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token keyword">def</span> <span class="token function">flask_api</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    post <span class="token operator">=</span> request<span class="token punctuation">.</span>json<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    <span class="token keyword">return</span> post<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'A'</span><span class="token punctuation">)</span>
-
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">1234</span><span class="token punctuation">,</span> debug<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, abort</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/flask_api&#x27;</span>,methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">flask_api</span>():</span><br><span class="line">    post = request.json[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> post.get(<span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>,port=<span class="number">1234</span>, debug=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
 <p>在 terminal 執行打入水果清單：</p>
-<pre><code>curl -d &#39;[{&quot;A&quot;: &quot;apple&quot;,&quot;B&quot;: &quot;banana&quot;}]&#39; -H &quot;Content-Type: application/json&quot; -X POST http://0.0.0.0:1234/flask_api
-</code></pre><p>將會得到 <code>apple</code> 的結果</p>
+<figure class="highlight scilab"><table><tr><td class="code"><pre><span class="line">curl -d <span class="string">&#x27;[&#123;&quot;</span>A<span class="string">&quot;: &quot;</span>apple<span class="string">&quot;,&quot;</span>B<span class="string">&quot;: &quot;</span>banana<span class="string">&quot;&#125;]&#x27;</span> -H <span class="string">&quot;Content-Type: application/json&quot;</span> -X POST http:<span class="comment">//0.0.0.0:1234/flask_api</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>將會得到 <code>apple</code> 的結果</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>以上為上篇的內容，簡易的分享簡單的使用 Flask 打造自己的 API，更多細節有時間將會再分享，這次將著重於 <code>error handling</code>教學的前置準備。</p>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -517,7 +499,7 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -359,12 +359,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <span class="chip bg-color">mac</span>
                             </a>
                         
-                            <a href="/tags/M1/" target="_blank">
-                                <span class="chip bg-color">M1</span>
-                            </a>
-                        
                             <a href="/tags/docker/" target="_blank">
                                 <span class="chip bg-color">docker</span>
+                            </a>
+                        
+                            <a href="/tags/M1/" target="_blank">
+                                <span class="chip bg-color">M1</span>
                             </a>
                         
                     </div>
@@ -423,15 +423,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </ul>
 <p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性，在安裝開發環境的時候很多人應該都撞了不少牆，今天就來簡單介紹大家常用的 <code>docker</code> 安裝吧！</p>
 <h3 id="1-安裝-Rosetta-2"><a href="#1-安裝-Rosetta-2" class="headerlink" title="1.安裝 Rosetta 2"></a><strong>1.安裝 Rosetta 2</strong></h3><p>這個東西老實說我不太知道是幹嘛的，還沒特別研究，有空閒我會再補充，不過在安裝其他程式的時候也會遇到他(ex:下一篇會介紹的 python install pandas 問題)。而在 docker 的官網上也已經列出了相關的 issue 給大家參考，就照著範例安裝吧：</p>
-<pre><code>softwareupdate --install-rosetta</code></pre><h3 id="2-下載-docker-dmg"><a href="#2-下載-docker-dmg" class="headerlink" title="2.下載 docker dmg"></a><strong>2.下載 docker dmg</strong></h3><p>這邊有釋出了一個 preview 版本(<a href="https://docs.docker.com/docker-for-mac/apple-m1/#docker-desktop-preview-310" target="_blank" rel="noopener">官網下載點 Apple M1 tech preview build</a>)，請各位自行下載。</p>
+<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">softwareupdate <span class="comment">--install-rosetta</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="2-下載-docker-dmg"><a href="#2-下載-docker-dmg" class="headerlink" title="2.下載 docker dmg"></a><strong>2.下載 docker dmg</strong></h3><p>這邊有釋出了一個 preview 版本(<a target="_blank" rel="noopener" href="https://docs.docker.com/docker-for-mac/apple-m1/#docker-desktop-preview-310">官網下載點 Apple M1 tech preview build</a>)，請各位自行下載。</p>
 <h3 id="3-啟動"><a href="#3-啟動" class="headerlink" title="3.啟動"></a><strong>3.啟動</strong></h3><p>一切就緒後，點兩下啟動 docker 鯨魚圖案，正常的依照正常程序安裝就可以了！過程中可能會問一些警告性的問題，都按確定或是ok就可以了！</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>下載點</p>
 <blockquote>
-<p><a href="https://docs.docker.com/docker-for-mac/apple-m1/" target="_blank" rel="noopener">https://docs.docker.com/docker-for-mac/apple-m1/</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.docker.com/docker-for-mac/apple-m1/">https://docs.docker.com/docker-for-mac/apple-m1/</a></p>
 </blockquote>
 <p>相關部落格</p>
 <blockquote>
-<p><a href="https://www.docker.com/blog/apple-silicon-m1-chips-and-docker/" target="_blank" rel="noopener">https://www.docker.com/blog/apple-silicon-m1-chips-and-docker/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.docker.com/blog/apple-silicon-m1-chips-and-docker/">https://www.docker.com/blog/apple-silicon-m1-chips-and-docker/</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -480,7 +483,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>
@@ -551,12 +554,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <span class="chip bg-color">mac</span>
                     </a>
                     
-                    <a href="/tags/M1/" target="_blank">
-                        <span class="chip bg-color">M1</span>
-                    </a>
-                    
                     <a href="/tags/docker/" target="_blank">
                         <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                    <a href="/tags/M1/" target="_blank">
+                        <span class="chip bg-color">M1</span>
                     </a>
                     
                     <a href="/tags/mysql/" target="_blank">

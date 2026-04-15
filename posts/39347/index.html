@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -432,19 +432,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </ul>
 <h3 id="4-正常的錯誤訊息"><a href="#4-正常的錯誤訊息" class="headerlink" title="4.正常的錯誤訊息"></a><strong>4.正常的錯誤訊息</strong></h3><p>接續前一篇的的範例，若還不知道如何建立 flask api 的朋友可以先看這篇<br><a href="https://chilunhuang.github.io/posts/34383/">Flask 系列 - Flask error handling 教學(ㄧ)</a> </p>
 <p>以下就用簡單的例子噴錯給大家看，故意在程式裡面要取得清單不存在的 <code>C</code>的長度</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> request<span class="token punctuation">,</span> abort
-
-app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
-
-@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/error_test_500'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token keyword">def</span> <span class="token function">error_test_500</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    post <span class="token operator">=</span> request<span class="token punctuation">.</span>json<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    <span class="token keyword">return</span> len<span class="token punctuation">(</span>post<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'C'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">1234</span><span class="token punctuation">,</span> debug<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, abort</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/error_test_500&#x27;</span>,methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">error_test_500</span>():</span><br><span class="line">    post = request.json[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">len</span>(post.get(<span class="string">&#x27;C&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>,port=<span class="number">1234</span>, debug=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
 <p>在 terminal 執行打入水果清單：</p>
-<pre><code>curl -d &#39;[{&quot;A&quot;: &quot;apple&quot;,&quot;B&quot;: &quot;banana&quot;}]&#39; -H &quot;Content-Type: application/json&quot; -X POST http://0.0.0.0:1234/error_test_500</code></pre><p>將會乾淨利落的得到 <code>500 Internal Server Error</code></p>
+<figure class="highlight scilab"><table><tr><td class="code"><pre><span class="line">curl -d <span class="string">&#x27;[&#123;&quot;</span>A<span class="string">&quot;: &quot;</span>apple<span class="string">&quot;,&quot;</span>B<span class="string">&quot;: &quot;</span>banana<span class="string">&quot;&#125;]&#x27;</span> -H <span class="string">&quot;Content-Type: application/json&quot;</span> -X POST http:<span class="comment">//0.0.0.0:1234/error_test_500</span></span><br></pre></td></tr></table></figure>
+<p>將會乾淨利落的得到 <code>500 Internal Server Error</code></p>
 <p><img src="/medias/post_img/39347_1.jpg" alt="500 Internal Server Error"></p>
 <p>而你的 terminal 會得到正確的錯誤訊息： <code>TypeError: object of type &#39;NoneType&#39; has no len()</code></p>
 <h3 id="5-為錯誤訊息加油添醋"><a href="#5-為錯誤訊息加油添醋" class="headerlink" title="5.為錯誤訊息加油添醋"></a><strong>5.為錯誤訊息加油添醋</strong></h3><p>上面的範例噴錯的問題在實際應用 api 很常見，在 <code>docker</code> 或 <code>VM</code> 環境中我們無法用<code>debug</code>模式盯著，也不能隨便的 access 主機，後端人員突然跟你說噴錯又只拿到500 或 400 根本不知道是哪裡錯誤。</p>
@@ -452,40 +443,8 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
 <p>所以 <code>API</code> 所帶出來的錯誤訊息就相當的重要，好的訊息可以大幅壓縮找蟲的時間啊，以下就教大家用比較簡單的方式獲取錯誤訊。</p>
 <p>接下來壓軸出場的就是<code>traceback</code>、<code>sys</code>了，看字面意思其實也蠻好懂的，他們可以追朔所有的系統錯誤訊息，包含 <code>行數</code>、<code>class</code>、<code>錯誤歷經的所有function</code>、<code>錯誤訊息</code>等等的資訊，相當實用。</p>
 <p>先放上完整範例再來一步一步解釋：</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> request<span class="token punctuation">,</span> abort
-<span class="token keyword">import</span> traceback
-<span class="token keyword">import</span> sys
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, abort</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">abort_msg</span>(<span class="params">e</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;500 bad request for exception</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        500 and msg which caused problems</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    error_class = e.__class__.__name__ <span class="comment"># 引發錯誤的 class</span></span><br><span class="line">    detail = e.args[<span class="number">0</span>] <span class="comment"># 得到詳細的訊息</span></span><br><span class="line">    cl, exc, tb = sys.exc_info() <span class="comment"># 得到錯誤的完整資訊 Call Stack</span></span><br><span class="line">    lastCallStack = traceback.extract_tb(tb)[-<span class="number">1</span>] <span class="comment"># 取得最後一行的錯誤訊息</span></span><br><span class="line">    fileName = lastCallStack[<span class="number">0</span>] <span class="comment"># 錯誤的檔案位置名稱</span></span><br><span class="line">    lineNum = lastCallStack[<span class="number">1</span>] <span class="comment"># 錯誤行數 </span></span><br><span class="line">    funcName = lastCallStack[<span class="number">2</span>] <span class="comment"># function 名稱</span></span><br><span class="line">    <span class="comment"># generate the error message</span></span><br><span class="line">    errMsg = <span class="string">&quot;Exception raise in file: &#123;&#125;, line &#123;&#125;, in &#123;&#125;: [&#123;&#125;] &#123;&#125;. Please contact the member who is the person in charge of project!&quot;</span>.<span class="built_in">format</span>(fileName, lineNum, funcName, error_class, detail)</span><br><span class="line">    <span class="comment"># return 500 code</span></span><br><span class="line">    abort(<span class="number">500</span>, errMsg)</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/error_test_500&#x27;</span>,methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">error_test_500</span>():</span><br><span class="line">    post = request.json[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(post.get(<span class="string">&#x27;C&#x27;</span>))</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        abort_msg(e)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>,port=<span class="number">1234</span>, debug=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
 
-<span class="token keyword">def</span> <span class="token function">abort_msg</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token triple-quoted-string string">"""500 bad request for exception
-
-    Returns:
-        500 and msg which caused problems
-    """</span>
-    error_class <span class="token operator">=</span> e<span class="token punctuation">.</span>__class__<span class="token punctuation">.</span>__name__ <span class="token comment" spellcheck="true"># 引發錯誤的 class</span>
-    detail <span class="token operator">=</span> e<span class="token punctuation">.</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># 得到詳細的訊息</span>
-    cl<span class="token punctuation">,</span> exc<span class="token punctuation">,</span> tb <span class="token operator">=</span> sys<span class="token punctuation">.</span>exc_info<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true"># 得到錯誤的完整資訊 Call Stack</span>
-    lastCallStack <span class="token operator">=</span> traceback<span class="token punctuation">.</span>extract_tb<span class="token punctuation">(</span>tb<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># 取得最後一行的錯誤訊息</span>
-    fileName <span class="token operator">=</span> lastCallStack<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># 錯誤的檔案位置名稱</span>
-    lineNum <span class="token operator">=</span> lastCallStack<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># 錯誤行數 </span>
-    funcName <span class="token operator">=</span> lastCallStack<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># function 名稱</span>
-    <span class="token comment" spellcheck="true"># generate the error message</span>
-    errMsg <span class="token operator">=</span> <span class="token string">"Exception raise in file: {}, line {}, in {}: [{}] {}. Please contact the member who is the person in charge of project!"</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span>fileName<span class="token punctuation">,</span> lineNum<span class="token punctuation">,</span> funcName<span class="token punctuation">,</span> error_class<span class="token punctuation">,</span> detail<span class="token punctuation">)</span>
-    <span class="token comment" spellcheck="true"># return 500 code</span>
-    abort<span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">,</span> errMsg<span class="token punctuation">)</span>
-
-app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
-
-@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/error_test_500'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token keyword">def</span> <span class="token function">error_test_500</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    post <span class="token operator">=</span> request<span class="token punctuation">.</span>json<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    <span class="token keyword">try</span><span class="token punctuation">:</span>
-        <span class="token keyword">return</span> len<span class="token punctuation">(</span>post<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'C'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token keyword">except</span> Exception <span class="token keyword">as</span> e<span class="token punctuation">:</span>
-        abort_msg<span class="token punctuation">(</span>e<span class="token punctuation">)</span>
-
-<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
-    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">1234</span><span class="token punctuation">,</span> debug<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>基本上主程式是相同的，故意 call 一個不存在的<code>len(post.get(&#39;C&#39;))</code> 讓他錯誤，但是這次加上了<code>try,except</code>，當他噴500時，就執行 <code>abort_msg(e)</code>處理錯誤的 function。</p>
 <p>這個 <code>abort_msg</code> 基本上做了兩件事情：</p>
 <ul>
@@ -496,10 +455,10 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
 <p>是不是發現結果不是單純的 500 錯誤了呢！，這次還加上了<code>錯誤的位置、行數、型態、原因</code>等等，甚至還可以加上聯絡人的資訊，是不是相當的一目了然呢！</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>以上為下篇的內容，簡易的分享如何在 API 發生錯誤時，得到更多細節有利於追朔錯誤。</p>
 <blockquote>
-<p><a href="https://flask-restplus.readthedocs.io/en/stable/errors.html" target="_blank" rel="noopener">https://flask-restplus.readthedocs.io/en/stable/errors.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://flask-restplus.readthedocs.io/en/stable/errors.html">https://flask-restplus.readthedocs.io/en/stable/errors.html</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://dotblogs.com.tw/caubekimo/2018/09/17/145733" target="_blank" rel="noopener">https://dotblogs.com.tw/caubekimo/2018/09/17/145733</a></p>
+<p><a target="_blank" rel="noopener" href="https://dotblogs.com.tw/caubekimo/2018/09/17/145733">https://dotblogs.com.tw/caubekimo/2018/09/17/145733</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -548,7 +507,7 @@ app <span class="token operator">=</span> Flask<span class="token punctuation">(
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

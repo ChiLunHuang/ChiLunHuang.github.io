@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -424,26 +424,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </ul>
 <p>Mac系列新機，均搭載蘋果專為Mac設計的首款晶片M1，以Arm架構設計Apple Silicon處理器的晶片M1，可以擁有更好的效能體驗，不過一開始卻有許多的災情尤其是很多程式的相容性。這篇將會講述如何解決安裝 python 套件 <code>pandas</code> 遇到的錯誤問題！</p>
 <h3 id="1-錯誤代碼"><a href="#1-錯誤代碼" class="headerlink" title="1.錯誤代碼"></a><strong>1.錯誤代碼</strong></h3><p>換了新的 mac 之後安裝 python 常用的套件 pandas 會遇到下方的錯誤：</p>
-<pre class="line-numbers language-sh"><code class="language-sh">pip install pandas<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<pre><code>ERROR: Command errored out with exit status 1: command: &#39;C:\Users\Tomas Kloucek\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\python.exe&#39; &#39;C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.240.0_x64__qbz5n2kfra8p0\lib\site-packages\pip&#39; install --ignore-installed --no-user --prefix &#39;C:\Users\Tomas Kloucek\AppData\Local\Temp\pip-build-env-5func91g\overlay&#39; --no-warn-script-location --no-binary :none: --only-binary :none: -i https://pypi.org/simple -- setuptools wheel &#39;Cython&gt;=0.29.21,&lt;3&#39; &#39;numpy==1.15.4; python_version==&#39;&quot;&#39;&quot;&#39;3.6&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.15.4; python_version==&#39;&quot;&#39;&quot;&#39;3.7&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.17.3; python_version&gt;=&#39;&quot;&#39;&quot;&#39;3.8&#39;&quot;&#39;&quot;&#39; and platform_system!=&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.16.0; python_version==&#39;&quot;&#39;&quot;&#39;3.6&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.16.0; python_version==&#39;&quot;&#39;&quot;&#39;3.7&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; &#39;numpy==1.17.3; python_version&gt;=&#39;&quot;&#39;&quot;&#39;3.8&#39;&quot;&#39;&quot;&#39; and platform_system==&#39;&quot;&#39;&quot;&#39;AIX&#39;&quot;&#39;&quot;&#39;&#39; cwd: None Complete output (25 lines): Ignoring numpy: markers &#39;python_version == &quot;3.6&quot; and platform_system != &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.7&quot; and platform_system != &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.6&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version == &quot;3.7&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Ignoring numpy: markers &#39;python_version &gt;= &quot;3.8&quot; and platform_system == &quot;AIX&quot;&#39; don&#39;t match your environment Collecting setuptools Using cached setuptools-50.3.0-py3-none-any.whl (785 kB) Collecting wheel Using cached wheel-0.35.1-py2.py3-none-any.whl (33</code></pre><h3 id="2-了解與錯誤嘗試"><a href="#2-了解與錯誤嘗試" class="headerlink" title="2.了解與錯誤嘗試"></a><strong>2.了解與錯誤嘗試</strong></h3><p>一開始還看不出個所以然，感覺就是跟什麼套件的版本相依性有關係，但是怎麼重新裝他上面提及的套件都沒有用，參照一些有相關錯誤碼的文章也不行，例如：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">pip install pandas</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">ERROR</span>: Command errored out with exit status <span class="number">1</span>: command: &#x27;C:\Users\Tomas Kloucek\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.<span class="number">3</span>.<span class="number">9</span>_qbz5n2kfra8p0\python.exe&#x27; &#x27;C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.<span class="number">3</span>.<span class="number">9</span>_<span class="number">3.9.240.0</span>_x64__qbz5n2kfra8p0\lib\site-packages\pip&#x27; install --ignore-installed --no-user --prefix &#x27;C:\Users\Tomas Kloucek\AppData\Local\Temp\pip-build-env-<span class="number">5</span>func91g\overlay&#x27; --no-warn-script-location --no-binary :none: --only-binary :none: -i https://pypi.org/simple -- setuptools wheel &#x27;Cython&gt;=<span class="number">0</span>.<span class="number">29</span>.<span class="number">21</span>,&lt;<span class="number">3</span>&#x27; &#x27;numpy==<span class="number">1</span>.<span class="number">15</span>.<span class="number">4</span>; python_version==&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;<span class="number">3</span>.<span class="number">6</span>&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27; and platform_system!=&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;AIX&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;&#x27; &#x27;numpy==<span class="number">1</span>.<span class="number">15</span>.<span class="number">4</span>; python_version==&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;<span class="number">3</span>.<span class="number">7</span>&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27; and platform_system!=&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;AIX&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;&#x27; &#x27;numpy==<span class="number">1</span>.<span class="number">17</span>.<span class="number">3</span>; python_version&gt;=&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;<span class="number">3</span>.<span class="number">8</span>&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27; and platform_system!=&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;AIX&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;&#x27; &#x27;numpy==<span class="number">1</span>.<span class="number">16</span>.<span class="number">0</span>; python_version==&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;<span class="number">3</span>.<span class="number">6</span>&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27; and platform_system==&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;AIX&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;&#x27; &#x27;numpy==<span class="number">1</span>.<span class="number">16</span>.<span class="number">0</span>; python_version==&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;<span class="number">3</span>.<span class="number">7</span>&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27; and platform_system==&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;AIX&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;&#x27; &#x27;numpy==<span class="number">1</span>.<span class="number">17</span>.<span class="number">3</span>; python_version&gt;=&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;<span class="number">3</span>.<span class="number">8</span>&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27; and platform_system==&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;AIX&#x27;<span class="string">&quot;&#x27;&quot;</span>&#x27;&#x27; cwd: None Complete output (<span class="number">25</span> lines): Ignoring numpy: markers &#x27;python_version == <span class="string">&quot;3.6&quot;</span> and platform_system != <span class="string">&quot;AIX&quot;</span>&#x27; don&#x27;t match your environment Ignoring numpy: markers &#x27;python_version == <span class="string">&quot;3.7&quot;</span> and platform_system != <span class="string">&quot;AIX&quot;</span>&#x27; don&#x27;t match your environment Ignoring numpy: markers &#x27;python_version == <span class="string">&quot;3.6&quot;</span> and platform_system == <span class="string">&quot;AIX&quot;</span>&#x27; don&#x27;t match your environment Ignoring numpy: markers &#x27;python_version == <span class="string">&quot;3.7&quot;</span> and platform_system == <span class="string">&quot;AIX&quot;</span>&#x27; don&#x27;t match your environment Ignoring numpy: markers &#x27;python_version &gt;= <span class="string">&quot;3.8&quot;</span> and platform_system == <span class="string">&quot;AIX&quot;</span>&#x27; don&#x27;t match your environment Collecting setuptools Using cached setuptools-<span class="number">50</span>.<span class="number">3</span>.<span class="number">0</span>-py3-none-any.whl (<span class="number">785</span> kB) Collecting wheel Using cached wheel-<span class="number">0</span>.<span class="number">35</span>.<span class="number">1</span>-py2.py3-none-any.whl (<span class="number">33</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-了解與錯誤嘗試"><a href="#2-了解與錯誤嘗試" class="headerlink" title="2.了解與錯誤嘗試"></a><strong>2.了解與錯誤嘗試</strong></h3><p>一開始還看不出個所以然，感覺就是跟什麼套件的版本相依性有關係，但是怎麼重新裝他上面提及的套件都沒有用，參照一些有相關錯誤碼的文章也不行，例如：</p>
 <blockquote>
-<p><a href="https://stackoverflow.com/questions/65084318/trouble-installing-pandas-on-new-macbook-air-m1" target="_blank" rel="noopener">https://stackoverflow.com/questions/65084318/trouble-installing-pandas-on-new-macbook-air-m1</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/65084318/trouble-installing-pandas-on-new-macbook-air-m1">https://stackoverflow.com/questions/65084318/trouble-installing-pandas-on-new-macbook-air-m1</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://stackoverflow.com/questions/64352000/how-to-solve-error-installing-pandas-winerror123" target="_blank" rel="noopener">https://stackoverflow.com/questions/64352000/how-to-solve-error-installing-pandas-winerror123</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/64352000/how-to-solve-error-installing-pandas-winerror123">https://stackoverflow.com/questions/64352000/how-to-solve-error-installing-pandas-winerror123</a></p>
 </blockquote>
 <p>依然的錯誤，後來認為應該還是 mac 本身的問題，所以查了更多的相關資料，才發現執行環境必須使用 rosetta 才能正常使用，而這個東西在我安裝 docker 的時候就已經裝好了，不知道的讀者可以參考這篇 <a href="https://chilunhuang.github.io/posts/22454/?utm_source=clh&utm_medium=link&utm_content=Mac">Mac M1系列-如何安裝 docker</a> 有安裝的方法。</p>
 <p>安裝語法：</p>
-<pre><code>softwareupdate --install-rosetta</code></pre><h3 id="3-解決"><a href="#3-解決" class="headerlink" title="3.解決"></a><strong>3.解決</strong></h3><p>但是 iTerm2 預設啟動 terminal 時並沒有使用  rosetta 啟動，所以我們要將它修改成預設就可以囉！</p>
+<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">softwareupdate <span class="comment">--install-rosetta</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-解決"><a href="#3-解決" class="headerlink" title="3.解決"></a><strong>3.解決</strong></h3><p>但是 iTerm2 預設啟動 terminal 時並沒有使用  rosetta 啟動，所以我們要將它修改成預設就可以囉！</p>
 <blockquote>
-<p><a href="https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7" target="_blank" rel="noopener">https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7</a></p>
+<p><a target="_blank" rel="noopener" href="https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7">https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7</a></p>
 </blockquote>
 <p>參照上方那篇設定:<br><code>iTerm 按右鍵選擇資訊，把裡面的 rosetta 打勾 就可以了</code></p>
 <p>重新執行，應該就沒問題了！</p>
-<pre class="line-numbers language-sh"><code class="language-sh">pip install pandas<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">pip install pandas</span><br></pre></td></tr></table></figure>
+
+
+
+
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>最終解決方案</p>
 <blockquote>
-<p><a href="https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7" target="_blank" rel="noopener">https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7</a></p>
+<p><a target="_blank" rel="noopener" href="https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7">https://alexslobodnik.medium.com/apple-m1-python-pandas-and-homebrew-20f14828ccc7</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -492,7 +502,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>
@@ -617,12 +627,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <span class="chip bg-color">mac</span>
                     </a>
                     
-                    <a href="/tags/M1/" target="_blank">
-                        <span class="chip bg-color">M1</span>
-                    </a>
-                    
                     <a href="/tags/docker/" target="_blank">
                         <span class="chip bg-color">docker</span>
+                    </a>
+                    
+                    <a href="/tags/M1/" target="_blank">
+                        <span class="chip bg-color">M1</span>
                     </a>
                     
                     <a href="/tags/mysql/" target="_blank">

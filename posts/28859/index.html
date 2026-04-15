@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -428,27 +428,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <li><code>--metadata-from-file startup-script</code>: 啟動機器第一個要執行的 script 位置</li>
 </ul>
 <p>完整的範例如下： </p>
-<pre class="line-numbers language-bash"><code class="language-bash">gcloud compute --project<span class="token operator">=</span>gce-test instances create test-vm \
-    --address<span class="token operator">=</span>123.123.123.123 \
-    --zone<span class="token operator">=</span>asia-east1-b \
-    --machine-type<span class="token operator">=</span>n1-highcpu-4 \
-    --network<span class="token operator">=</span>default --maintenance-policy<span class="token operator">=</span>MIGRATE \
-    --service-account<span class="token operator">=</span>your_service_account \
-    --scopes<span class="token operator">=</span>https://www.googleapis.com/auth/cloud-platform \
-    --boot-disk-size<span class="token operator">=</span>10GB --boot-disk-type<span class="token operator">=</span>pd-standard 
-    --metadata-from-file startup-script<span class="token operator">=</span>/root/script/startupscript.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gcloud compute --project=gce-test instances create test-vm \</span><br><span class="line">    --address=123.123.123.123 \</span><br><span class="line">    --zone=asia-east1-b \</span><br><span class="line">    --machine-type=n1-highcpu-4 \</span><br><span class="line">    --network=default --maintenance-policy=MIGRATE \</span><br><span class="line">    --service-account=your_service_account \</span><br><span class="line">    --scopes=https://www.googleapis.com/auth/cloud-platform \</span><br><span class="line">    --boot-disk-size=10GB --boot-disk-type=pd-standard </span><br><span class="line">    --metadata-from-file startup-script=/root/script/startupscript.sh</span><br></pre></td></tr></table></figure>
 <p><strong>以上為常用的相關指令，其他指令放在下方參考資料請自行選用</strong></p>
 <h3 id="2-查看未執行-startup-script-方式"><a href="#2-查看未執行-startup-script-方式" class="headerlink" title="2.查看未執行 startup-script 方式"></a><strong>2.查看未執行 startup-script 方式</strong></h3><p>如果順利地使用上方的方式啟動機器，並設置好自己要帶過去的 script 後，卻發現安裝的東西或是服務並沒有被啟動或設置，就可以使用以下指令(於啟動的 VM 環境中執行)：</p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">sudo</span> journalctl -u google-startup-scripts.service<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> journalctl -u google-startup-scripts.service</span><br></pre></td></tr></table></figure>
+
 <p>這個指令會列出開機執行後所執行的相關指令，如果有相關的錯誤也會寫在上面，就是 log 檔的概念。基本上只要是 script 本身的問題都可以用這個方式找到原因，以上分享。</p>
 <p>有任何問題歡迎與我聯絡，謝謝。</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>更多 GCE 指令請詳見：</p>
 <blockquote>
-<p><a href="https://cloud.google.com/compute/docs/gcloud-compute/" target="_blank" rel="noopener">https://cloud.google.com/compute/docs/gcloud-compute/</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.google.com/compute/docs/gcloud-compute/">https://cloud.google.com/compute/docs/gcloud-compute/</a></p>
 </blockquote>
 <p>Stackoverflow:</p>
 <blockquote>
-<p><a href="https://stackoverflow.com/questions/44084713/startup-script-doesnt-seem-to-work" target="_blank" rel="noopener">https://stackoverflow.com/questions/44084713/startup-script-doesnt-seem-to-work</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/44084713/startup-script-doesnt-seem-to-work">https://stackoverflow.com/questions/44084713/startup-script-doesnt-seem-to-work</a></p>
 </blockquote>
 
             </div>
@@ -496,7 +489,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

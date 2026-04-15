@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -363,20 +363,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <span class="chip bg-color">seo</span>
                             </a>
                         
-                            <a href="/tags/text-compression/" target="_blank">
-                                <span class="chip bg-color">text compression</span>
-                            </a>
-                        
-                            <a href="/tags/GZIP/" target="_blank">
-                                <span class="chip bg-color">GZIP</span>
+                            <a href="/tags/performance/" target="_blank">
+                                <span class="chip bg-color">performance</span>
                             </a>
                         
                             <a href="/tags/nginx/" target="_blank">
                                 <span class="chip bg-color">nginx</span>
                             </a>
                         
-                            <a href="/tags/performance/" target="_blank">
-                                <span class="chip bg-color">performance</span>
+                            <a href="/tags/text-compression/" target="_blank">
+                                <span class="chip bg-color">text compression</span>
+                            </a>
+                        
+                            <a href="/tags/GZIP/" target="_blank">
+                                <span class="chip bg-color">GZIP</span>
                             </a>
                         
                     </div>
@@ -436,60 +436,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <li>自己架設的網頁</li>
 </ul>
 <p>網頁架設過程或後期都會針對 <code>seo 進行優化來提高能見度</code>，但有些 seo 檢測網站提出的建議很難被修正或是有不得不使用狀況，例如大家常用的相關套件<code>bootstrap</code>、<code>jquery</code>： </p>
-<pre class="line-numbers language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/jquery/jquery.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>/static/vendor/bootstrap/js/bootstrap.bundle.min.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script language-javascript"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;/static/vendor/jquery/jquery.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;/static/vendor/bootstrap/js/bootstrap.bundle.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>這時候還有一個方法就是將他壓縮，透過 server 傳出來時再解壓縮，可以節省很多傳遞的時間，那我們就繼續往下看吧！</p>
-<h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a href="https://web.dev/" target="_blank" rel="noopener">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p>
+<h3 id="1-為自己的網頁進行-seo-健檢"><a href="#1-為自己的網頁進行-seo-健檢" class="headerlink" title="1.為自己的網頁進行 seo 健檢"></a><strong>1.為自己的網頁進行 seo 健檢</strong></h3><p>仿間的工具相當的多元，可以再另外寫一篇文章介紹，這裡就用 Google 自己推出的偵測工具 <a target="_blank" rel="noopener" href="https://web.dev/">web.dev</a>，畫面簡單也沒有廣告(英文版)，跑一下就會有網頁的相關分數出來。</p>
 <p><img src="/medias/post_img/12526_2.jpg" alt="未壓縮的分數"></p>
 <p>輸入自己要偵測的網址後，就可以得到相關的報表，可以看到效能(Performance)的分數不算太高，其中跟效能有關的一條就是我們今天要解決的，訊息如下：</p>
-<pre><code>Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes.</code></pre><p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p>
+<figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">Text-<span class="keyword">based </span>resources <span class="keyword">should </span><span class="keyword">be </span>served with compression (gzip, deflate <span class="keyword">or </span><span class="keyword">brotli) </span>to minimize total network <span class="keyword">bytes.</span></span><br></pre></td></tr></table></figure>
+<p><img src="/medias/post_img/12526_3.jpg" alt="建議修正訊息"></p>
 <p>該建議要我們將一些文字相關的訊息或檔案壓縮，來增進網頁載入速度。</p>
-<h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a href="https://pypi.org/project/django-compression-middleware/" target="_blank" rel="noopener">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p>
+<h3 id="2-Compression-text-based-resources-with-gzip"><a href="#2-Compression-text-based-resources-with-gzip" class="headerlink" title="2.Compression text-based resources with gzip"></a><strong>2.Compression text-based resources with gzip</strong></h3><p>壓縮的方法其實也有相當多的文章可以參考，也有一些架構有自己的套件，筆者本身是使用 <code>Django + Nginx + uwagi</code>架設網站(非本部落格)，而 Django 也有<a target="_blank" rel="noopener" href="https://pypi.org/project/django-compression-middleware/">相關的套件可以使用</a>，本文將從 nginx server 的角度入手，有機會再分享 Django 本身的套件。</p>
 <p>找到 nginx server 的設定檔，沒意外預設會放在：</p>
-<pre><code>vim /etc/nginx/nginx.conf</code></pre><p>加入以下訊息壓縮文字檔案，可以視情況調整：</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"><span class="keyword">vim</span> /etc/nginx/nginx.<span class="keyword">conf</span></span><br></pre></td></tr></table></figure>
+<p>加入以下訊息壓縮文字檔案，可以視情況調整：</p>
 <blockquote>
-<p>不知道該如何加以即要加什麼的朋友可以參考 <a href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/" target="_blank" rel="noopener">nginx</a>官網文章</p>
+<p>不知道該如何加以即要加什麼的朋友可以參考 <a target="_blank" rel="noopener" href="https://docs.nginx.com/nginx/admin-guide/web-server/compression/">nginx</a>官網文章</p>
 </blockquote>
-<pre><code># Enable Gzip 
-    gzip on; 
-    gzip_http_version 1.0; 
-    gzip_comp_level 2; 
-    gzip_min_length 1100; 
-    gzip_buffers  4 8k; 
-    gzip_proxied any; 
-    gzip_types 
-    # text/html is always compressed by HttpGzipModule 
-    text/css 
-    text/javascript 
-    text/xml 
-    text/plain 
-    text/x-component 
-    application/javascript 
-    application/json 
-    application/xml 
-    application/rss+xml 
-    font/truetype 
-    font/opentype 
-    application/vnd.ms-fontobject 
-    image/svg+xml; 
-
-    gzip_static on; 
-    gzip_proxied  expired no-cache no-store private auth; 
-    gzip_disable  &quot;MSIE [1-6]\.&quot;; 
-    gzip_vary   on; </code></pre><p>內容基本上就是：</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Enable Gzip </span></span><br><span class="line">    <span class="attribute">gzip</span> <span class="literal">on</span>; </span><br><span class="line">    <span class="attribute">gzip_http_version</span> <span class="number">1</span>.<span class="number">0</span>; </span><br><span class="line">    <span class="attribute">gzip_comp_level</span> <span class="number">2</span>; </span><br><span class="line">    <span class="attribute">gzip_min_length</span> <span class="number">1100</span>; </span><br><span class="line">    <span class="attribute">gzip_buffers</span>  <span class="number">4</span> <span class="number">8k</span>; </span><br><span class="line">    <span class="attribute">gzip_proxied</span> any; </span><br><span class="line">    <span class="attribute">gzip_types</span> </span><br><span class="line">    <span class="comment"># text/html is always compressed by HttpGzipModule </span></span><br><span class="line">    text/css </span><br><span class="line">    text/javascript </span><br><span class="line">    text/xml </span><br><span class="line">    text/plain </span><br><span class="line">    text/x-component </span><br><span class="line">    application/javascript </span><br><span class="line">    application/json </span><br><span class="line">    application/xml </span><br><span class="line">    application/rss+xml </span><br><span class="line">    font/truetype </span><br><span class="line">    font/opentype </span><br><span class="line">    application/vnd.ms-fontobject </span><br><span class="line">    image/svg+xml; </span><br><span class="line"></span><br><span class="line">    <span class="attribute">gzip_static</span> <span class="literal">on</span>; </span><br><span class="line">    <span class="attribute">gzip_proxied</span>  expired <span class="literal">no</span>-cache <span class="literal">no</span>-store private auth; </span><br><span class="line">    <span class="attribute">gzip_disable</span>  <span class="string">&quot;MSIE [1-6]\.&quot;</span>; </span><br><span class="line">    <span class="attribute">gzip_vary</span>   <span class="literal">on</span>; </span><br></pre></td></tr></table></figure>
+<p>內容基本上就是：</p>
 <ul>
 <li>啟動 gzip 壓縮</li>
 <li>設定要被壓縮的類型(css、javascript 等等)</li>
 </ul>
 <p>最後一個步驟重啟 nginx (不同架設方式和環境與法會不一樣)：</p>
-<pre><code>nginx -s reload </code></pre><h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p>
+<figure class="highlight ebnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">nginx -s reload</span> </span><br></pre></td></tr></table></figure>
+
+<h3 id="3-看看效果如何？"><a href="#3-看看效果如何？" class="headerlink" title="3.看看效果如何？"></a><strong>3.看看效果如何？</strong></h3><p><img src="/medias/post_img/12526_1.jpg" alt="壓縮後的分數"></p>
 <p>進步超級多，壓縮效果是不是相當的驚人呢！</p>
 <p>有機會再與大家分享更多 seo 更多經驗！</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
-<p><a href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento" target="_blank" rel="noopener">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento">https://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento</a></p>
 </blockquote>
 <blockquote>
-<p><a href="http://hk.uwenku.com/question/p-huzefjen-gn.html" target="_blank" rel="noopener">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p>
+<p><a target="_blank" rel="noopener" href="http://hk.uwenku.com/question/p-huzefjen-gn.html">http://hk.uwenku.com/question/p-huzefjen-gn.html</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -538,7 +516,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>
@@ -574,69 +552,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/17948/">
-                    <div class="card-image">
-                        
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題">
-                        
-                        <span class="card-title">seo-使用 Cache-Control 在 nginx 解決 Serve static assects with an efficient cache policy 問題</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary">Solve “Serve static assects with an efficient cache policy” on nginx with Cache-Control.在本範例你會學到：
-
-在 nginx 中設定緩存參數
-seo 的</div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-10
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fa fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/SEO/" class="post-category" target="_blank">
-                                    SEO
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/django/" target="_blank">
-                        <span class="chip bg-color">django</span>
-                    </a>
-                    
-                    <a href="/tags/seo/" target="_blank">
-                        <span class="chip bg-color">seo</span>
-                    </a>
-                    
-                    <a href="/tags/nginx/" target="_blank">
-                        <span class="chip bg-color">nginx</span>
-                    </a>
-                    
-                    <a href="/tags/performance/" target="_blank">
-                        <span class="chip bg-color">performance</span>
-                    </a>
-                    
-                    <a href="/tags/Cache-Control/" target="_blank">
-                        <span class="chip bg-color">Cache-Control</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
-            </div>
-            <div class="card">
                 <a href="/posts/53969/">
                     <div class="card-image">
                         
@@ -653,9 +568,9 @@ seo 的</div>
 
 在本範</div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
-                            </span>
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -675,12 +590,64 @@ seo 的</div>
                         <span class="chip bg-color">seo</span>
                     </a>
                     
+                    <a href="/tags/lazyload/" target="_blank">
+                        <span class="chip bg-color">lazyload</span>
+                    </a>
+                    
                     <a href="/tags/performance/" target="_blank">
                         <span class="chip bg-color">performance</span>
                     </a>
                     
-                    <a href="/tags/lazyload/" target="_blank">
-                        <span class="chip bg-color">lazyload</span>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/posts/9661/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)">
+                        
+                        <span class="card-title">Github - 如何使用rebase移除GitHub上最新或特定的 commit(二)</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">How to remove the last commit and froce push again?在前一篇 Github - 如何移除GitHub上所有的 commit(一) 的系列文中介紹到了如何完整個將整個 repository 的</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-22
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/GitHub/" class="post-category" target="_blank">
+                                    GitHub
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/github/" target="_blank">
+                        <span class="chip bg-color">github</span>
+                    </a>
+                    
+                    <a href="/tags/commit/" target="_blank">
+                        <span class="chip bg-color">commit</span>
+                    </a>
+                    
+                    <a href="/tags/rebase/" target="_blank">
+                        <span class="chip bg-color">rebase</span>
                     </a>
                     
                 </div>

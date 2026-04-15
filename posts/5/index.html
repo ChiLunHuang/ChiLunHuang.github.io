@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -419,28 +419,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <p>假設以本站的某一篇文章為例子：</p>
 <p><code>https://chilunhuang.github.io/posts/52152/#toc-heading-5</code></p>
 <p>第一種去頭去尾(拿掉 http/https 以及 get 相關參數)：</p>
-<pre><code>{{request.path}}</code></pre><p>結果為：</p>
+<figure class="highlight handlebars"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123;<span class="name">request.path</span>&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>結果為：</p>
 <blockquote>
 <p>/posts/52152/</p>
 </blockquote>
 <p>第二種去頭(拿掉 http/https)：</p>
-<pre><code>{{request.get_full_path}}</code></pre><p>結果為：</p>
+<figure class="highlight handlebars"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123;<span class="name">request.get_full_path</span>&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>結果為：</p>
 <blockquote>
 <p>/posts/52152/#toc-heading-5</p>
 </blockquote>
 <p>第三種完整 url：</p>
-<pre><code>{{request.build_absolute_uri}}</code></pre><p>結果為：</p>
+<figure class="highlight handlebars"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123;<span class="name">request.build_absolute_uri</span>&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>結果為：</p>
 <blockquote>
 <p><a href="https://chilunhuang.github.io/posts/52152/#toc-heading-5">https://chilunhuang.github.io/posts/52152/#toc-heading-5</a></p>
 </blockquote>
-<h3 id="2-在-view-py-中"><a href="#2-在-view-py-中" class="headerlink" title="2.在 view.py 中"></a><strong>2.在 view.py 中</strong></h3><p>其實基本上剛剛上面 template 的例子全部也都可以直接使用在 view.py 當中喔，只要把 <code>{{}}</code> 拿掉就可以使用了，<code>request</code> 大家應該也相對的很熟悉了，每一段 function 都要使用啊！</p>
+<h3 id="2-在-view-py-中"><a href="#2-在-view-py-中" class="headerlink" title="2.在 view.py 中"></a><strong>2.在 view.py 中</strong></h3><p>其實基本上剛剛上面 template 的例子全部也都可以直接使用在 view.py 當中喔，只要把 <code>&#123;&#123;&#125;&#125;</code> 拿掉就可以使用了，<code>request</code> 大家應該也相對的很熟悉了，每一段 function 都要使用啊！</p>
 <p>就像下面判斷 GET/POST 的小範例一樣的用法：</p>
-<pre><code>if request.method == &#39;GET&#39;:
-    do_something()
-elif request.method == &#39;POST&#39;:
-    do_something_else()
-</code></pre><p>獲取方式就是下面這樣：</p>
-<pre><code>request.build_absolute_uri</code></pre><h3 id="3-取得前一頁網址-referrer"><a href="#3-取得前一頁網址-referrer" class="headerlink" title="3.取得前一頁網址(referrer)"></a><strong>3.取得前一頁網址(referrer)</strong></h3><p>這一段要介紹一個別東西： <code>HttpRequest.META</code><br>這個 library 可以獲取很多額外的資訊，例如：</p>
+<figure class="highlight isbl"><table><tr><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">if</span></span> <span class="variable">request.method</span> == <span class="string">&#x27;GET&#x27;</span>:</span><br><span class="line">    <span class="function"><span class="title">do_something</span>()</span></span><br><span class="line"><span class="variable">elif</span> <span class="variable">request.method</span> == <span class="string">&#x27;POST&#x27;</span>:</span><br><span class="line">    <span class="function"><span class="title">do_something_else</span>()</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>獲取方式就是下面這樣：</p>
+<figure class="highlight vbscript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">request</span>.build_absolute_uri</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-取得前一頁網址-referrer"><a href="#3-取得前一頁網址-referrer" class="headerlink" title="3.取得前一頁網址(referrer)"></a><strong>3.取得前一頁網址(referrer)</strong></h3><p>這一段要介紹一個別東西： <code>HttpRequest.META</code><br>這個 library 可以獲取很多額外的資訊，例如：</p>
 <ul>
 <li>client’s user-agent  </li>
 <li>The IP address of the client.</li>
@@ -449,24 +454,23 @@ elif request.method == &#39;POST&#39;:
 </ul>
 <p>更多功能請見官網：</p>
 <blockquote>
-<p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META">https://docs.djangoproject.com/en/3.1/ref/request-response/#django.http.HttpRequest.META</a></p>
 </blockquote>
 <p>這裡就示範我最常用的導回前一頁的功能，大家可能會想怎麼會有這個需求呢？通常填完表單就讓他再回到表單頁就好，那就簡單的 redirect 到  <code>request.build_absolute_uri</code> 就好，幹嘛需要 <code>referrer</code>？</p>
 <p>這麼做的原因是有些表單填完送出後是沒有真實頁面存在的，他就直接 call view.py 去執行相關的動作後就會結束，如果我倒回原來的頁面，網址其實是不對的，是不是很抽象？我來舉個例子：</p>
 <p>假設我在 <code>https://chilunhuang.github.io/</code> 有個表單，該表單是讓大家寄信問問題，送出後就會直接寄信給我以及 user，但該表單並沒有一個獨立頁面，而是嵌在 <code>https://chilunhuang.github.io/</code>，當表單送出時會導向一個頁面(<code>send_gmail/</code>)，以及執行已經在 view.py 中定義的 func(<code>send_gmail</code>)</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># 在 urls.py 中</span>
-path<span class="token punctuation">(</span><span class="token string">'send_gmail/'</span><span class="token punctuation">,</span> send_gmail<span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'send_gmail'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在 urls.py 中</span></span><br><span class="line">path(<span class="string">&#x27;send_gmail/&#x27;</span>, send_gmail, name=<span class="string">&#x27;send_gmail&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <p>執行完畢後直接使用 <code>request.build_absolute_uri</code> 回到該頁面就會導向 <code>send_gmail/</code> 這個不存在的頁面去！所以才會有導向 <code>referrer</code> 的需求，那該如何是好呢？可以使用以下的語法(<code>HTTP_REFERER</code>)：</p>
-<pre class="line-numbers language-python"><code class="language-python">HttpResponseRedirect<span class="token punctuation">(</span>request<span class="token punctuation">.</span>META<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'HTTP_REFERER'</span><span class="token punctuation">,</span> <span class="token string">'/'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">HttpResponseRedirect(request.META.get(<span class="string">&#x27;HTTP_REFERER&#x27;</span>, <span class="string">&#x27;/&#x27;</span>))</span><br></pre></td></tr></table></figure>
 <p>使用上面的這個方法就可以直接回到 <code>send_gmail/</code> 前一頁的 <code>https://chilunhuang.github.io/</code>！</p>
 <p>以上為簡單的與 url path 相關的一些語法介紹，這裡面的水其實蠻深的，也有很多有趣的東西，有興趣的讀者可以自己好好的玩玩！</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>官方文件：</p>
 <blockquote>
-<p><a href="https://docs.djangoproject.com/en/3.1/ref/request-response/" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/request-response/</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/en/3.1/ref/request-response/">https://docs.djangoproject.com/en/3.1/ref/request-response/</a></p>
 </blockquote>
 <p>stackoverflow：</p>
 <blockquote>
-<p><a href="https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template" target="_blank" rel="noopener">https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template">https://stackoverflow.com/questions/2882490/how-to-get-the-current-url-within-a-django-template</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我<code>隨便點個廣告</code>，謝謝。</p>
 
@@ -515,7 +519,7 @@ path<span class="token punctuation">(</span><span class="token string">'send_gma
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

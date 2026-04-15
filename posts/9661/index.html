@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -427,23 +427,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <h3 id="1-找到想要刪除的-commit"><a href="#1-找到想要刪除的-commit" class="headerlink" title="1.找到想要刪除的 commit"></a><strong>1.找到想要刪除的 commit</strong></h3><ul>
 <li>在 terminal 輸入下列語法，後面的數字<code>2</code>可以自己隨意更改</li>
 </ul>
-<pre><code>git rebase -i HEAD~2</code></pre><ul>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">git</span> rebase -i HEAD~<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<ul>
 <li>基本上會進入一個編輯模式，將會列出最新兩筆 commit</li>
 </ul>
-<pre><code>pick 600557f test-1001 Add round() to function
-pick c4394fd test-1001 Modified typo error
-</code></pre><h3 id="2-刪除指定-commit-的資訊"><a href="#2-刪除指定-commit-的資訊" class="headerlink" title="2.刪除指定 commit 的資訊"></a><strong>2.刪除指定 commit 的資訊</strong></h3><ul>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">pick 600557f test-1001 <span class="built_in">Add</span> round() <span class="keyword">to</span> function</span><br><span class="line">pick c4394fd test-1001 Modified typo <span class="built_in">error</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-刪除指定-commit-的資訊"><a href="#2-刪除指定-commit-的資訊" class="headerlink" title="2.刪除指定 commit 的資訊"></a><strong>2.刪除指定 commit 的資訊</strong></h3><ul>
 <li>編輯該檔案，將想要刪除的 commit 整句刪掉，越下面的 commit 代表越新</li>
 <li>存檔離開後就會被提醒該檔案被修正了</li>
 </ul>
-<pre><code>Successfully rebased and updated refs/heads/test-1001. </code></pre><h3 id="3-更新到-GitHub上"><a href="#3-更新到-GitHub上" class="headerlink" title="3.更新到 GitHub上"></a><strong>3.更新到 GitHub上</strong></h3><p>目前所有動作都是在本地端的紀錄，在 GitHub 上的 commit 還是存在的，所以要強制 push 將舊的紀錄蓋掉:</p>
-<pre><code>git push origin yourbranchName --force</code></pre><p>記得換上自己的分支名稱，執行後上 GitHub 頁面有沒有發現少了一個 commit 呢?!</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">Successfully rebased <span class="keyword">and</span> updated <span class="built_in">ref</span>s/heads/test<span class="number">-1001.</span> </span><br></pre></td></tr></table></figure>
+
+<h3 id="3-更新到-GitHub上"><a href="#3-更新到-GitHub上" class="headerlink" title="3.更新到 GitHub上"></a><strong>3.更新到 GitHub上</strong></h3><p>目前所有動作都是在本地端的紀錄，在 GitHub 上的 commit 還是存在的，所以要強制 push 將舊的紀錄蓋掉:</p>
+<figure class="highlight maxima"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">push</span> <span class="built_in">origin</span> yourbranchName --force</span><br></pre></td></tr></table></figure>
+<p>記得換上自己的分支名稱，執行後上 GitHub 頁面有沒有發現少了一個 commit 呢?!</p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>網路上有蠻多各種五花八門的方式，我也不能確定哪種方式是最好的，所以選擇了一個相對簡單的方式，如果有更正式或好用的方法歡迎大家留言告訴我。</p>
 <blockquote>
-<p><a href="https://medium.com/micheh/%E7%A7%BB%E9%99%A4-github-%E4%B8%8A%E9%9D%A2%E7%9A%84-commit-91d62ca424a1" target="_blank" rel="noopener">https://medium.com/micheh/%E7%A7%BB%E9%99%A4-github-%E4%B8%8A%E9%9D%A2%E7%9A%84-commit-91d62ca424a1</a></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/micheh/%E7%A7%BB%E9%99%A4-github-%E4%B8%8A%E9%9D%A2%E7%9A%84-commit-91d62ca424a1">https://medium.com/micheh/%E7%A7%BB%E9%99%A4-github-%E4%B8%8A%E9%9D%A2%E7%9A%84-commit-91d62ca424a1</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://gist.github.com/CrookedNumber/8964442" target="_blank" rel="noopener">https://gist.github.com/CrookedNumber/8964442</a></p>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/CrookedNumber/8964442">https://gist.github.com/CrookedNumber/8964442</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -492,7 +496,7 @@ pick c4394fd test-1001 Modified typo error
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>
@@ -528,21 +532,21 @@ pick c4394fd test-1001 Modified typo error
             <div class="article-badge left-badge text-color">
                 <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/53969/">
+                <a href="/posts/12526/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="seo系列 - Image Lazy Load 延遲載入圖片">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="seo系列 - Enable text compression on Nginx">
                         
-                        <span class="card-title">seo系列 - Image Lazy Load 延遲載入圖片</span>
+                        <span class="card-title">seo系列 - Enable text compression on Nginx</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary">How to use image lazy load to speed up performance of website?在本範例你會學到：
+                    <div class="summary">Enable GZIP for CSS and JS files on NGINX server.在本範例你會學到：
 
-如何用最簡單的方式提升多圖的網頁速度
-使用 image lazy load 改造網頁
+如何評分自己網頁的 seo 是否及格
+在 nginx 實現GZIP壓縮 css 與 js 來達成加速網頁載入
 
-在本範</div>
+在本範例</div>
                     <div class="publish-info">
                         <span class="publish-date">
                             <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-13
@@ -562,6 +566,10 @@ pick c4394fd test-1001 Modified typo error
                 
                 <div class="card-action article-tags">
                     
+                    <a href="/tags/django/" target="_blank">
+                        <span class="chip bg-color">django</span>
+                    </a>
+                    
                     <a href="/tags/seo/" target="_blank">
                         <span class="chip bg-color">seo</span>
                     </a>
@@ -570,8 +578,16 @@ pick c4394fd test-1001 Modified typo error
                         <span class="chip bg-color">performance</span>
                     </a>
                     
-                    <a href="/tags/lazyload/" target="_blank">
-                        <span class="chip bg-color">lazyload</span>
+                    <a href="/tags/nginx/" target="_blank">
+                        <span class="chip bg-color">nginx</span>
+                    </a>
+                    
+                    <a href="/tags/text-compression/" target="_blank">
+                        <span class="chip bg-color">text compression</span>
+                    </a>
+                    
+                    <a href="/tags/GZIP/" target="_blank">
+                        <span class="chip bg-color">GZIP</span>
                     </a>
                     
                 </div>

@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -363,16 +363,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <span class="chip bg-color">Dataproc</span>
                             </a>
                         
+                            <a href="/tags/pyspark/" target="_blank">
+                                <span class="chip bg-color">pyspark</span>
+                            </a>
+                        
                             <a href="/tags/TrackingUI/" target="_blank">
                                 <span class="chip bg-color">TrackingUI</span>
                             </a>
                         
                             <a href="/tags/memory/" target="_blank">
                                 <span class="chip bg-color">memory</span>
-                            </a>
-                        
-                            <a href="/tags/pyspark/" target="_blank">
-                                <span class="chip bg-color">pyspark</span>
                             </a>
                         
                     </div>
@@ -424,14 +424,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <h1 id="How-to-monitor-usage-of-memory-of-workers-on-dataproc-spark-cluster"><a href="#How-to-monitor-usage-of-memory-of-workers-on-dataproc-spark-cluster" class="headerlink" title="How to monitor usage of memory of workers on dataproc(spark cluster)?"></a>How to monitor usage of memory of workers on dataproc(spark cluster)?</h1><p>有在使用 GCP 上使用 Dataproc 啟動 cluster 進行 spark 或 hadoop 分散式運算的夥伴們，應該都會有一樣的狀況就是 GCP 頁面無法監測到機器 memory 的使用率以及機器的使用狀況，導致在調教機器數量(省錢)的時候會有一定的困擾。</p>
 <p>以下教學將會示範如何在本機進行連線來查看機器使用狀況(本範例同時也可以在機器直接使用jupyter)。</p>
 <h3 id="大致上可參考-GCP-官方頁面操作"><a href="#大致上可參考-GCP-官方頁面操作" class="headerlink" title="大致上可參考 GCP 官方頁面操作"></a>大致上可參考 GCP 官方頁面操作</h3><blockquote>
-<p><a href="https://cloud.google.com/sdk/docs/quickstart-mac-os-x" target="_blank" rel="noopener">https://cloud.google.com/sdk/docs/quickstart-mac-os-x</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.google.com/sdk/docs/quickstart-mac-os-x">https://cloud.google.com/sdk/docs/quickstart-mac-os-x</a></p>
 </blockquote>
 <h3 id="1-確認-python-版本"><a href="#1-確認-python-版本" class="headerlink" title="1.確認 python 版本"></a><strong>1.確認 python 版本</strong></h3><p><code>python -V</code></p>
 <h3 id="2-下載相對應的版本"><a href="#2-下載相對應的版本" class="headerlink" title="2.下載相對應的版本"></a><strong>2.下載相對應的版本</strong></h3><p>Mac OS X (x86_64) or Mac OS X (x86)</p>
 <h3 id="3-安裝"><a href="#3-安裝" class="headerlink" title="3.安裝"></a><strong>3.安裝</strong></h3><p><code>./google-cloud-sdk/install.sh</code></p>
 <h3 id="4-初始化-gcloud-指令"><a href="#4-初始化-gcloud-指令" class="headerlink" title="4.初始化 gcloud 指令"></a><strong>4.初始化 gcloud 指令</strong></h3><p><code>gcloud init</code></p>
-<h3 id="5-與已建立的機器-ssh-連線"><a href="#5-與已建立的機器-ssh-連線" class="headerlink" title="5.與已建立的機器 ssh 連線"></a><strong>5.與已建立的機器 ssh 連線</strong></h3><pre class="line-numbers language-bash"><code class="language-bash">gcloud compute <span class="token function">ssh</span>  --zone<span class="token operator">=</span><span class="token operator">&lt;</span>zone<span class="token operator">></span> --ssh-flag<span class="token operator">=</span><span class="token string">"-D 1080"</span> --ssh-flag<span class="token operator">=</span><span class="token string">"-N"</span> --ssh-flag<span class="token operator">=</span><span class="token string">"-n"</span> <span class="token operator">&lt;</span>ClusterName-m<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="6-開啟新瀏覽視窗"><a href="#6-開啟新瀏覽視窗" class="headerlink" title="6.開啟新瀏覽視窗"></a><strong>6.開啟新瀏覽視窗</strong></h3><pre class="line-numbers language-bash"><code class="language-bash">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server<span class="token operator">=</span><span class="token string">"socks5://localhost:1080"</span> --host-resolver-rules<span class="token operator">=</span><span class="token string">"MAP * 0.0.0.0 , EXCLUDE localhost"</span> --user-data-dir<span class="token operator">=</span>/tmp/<span class="token operator">&lt;</span>ClusterName-m<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="5-與已建立的機器-ssh-連線"><a href="#5-與已建立的機器-ssh-連線" class="headerlink" title="5.與已建立的機器 ssh 連線"></a><strong>5.與已建立的機器 ssh 連線</strong></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gcloud compute ssh  --zone=&lt;zone&gt; --ssh-flag=<span class="string">&quot;-D 1080&quot;</span> --ssh-flag=<span class="string">&quot;-N&quot;</span> --ssh-flag=<span class="string">&quot;-n&quot;</span> &lt;ClusterName-m&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-開啟新瀏覽視窗"><a href="#6-開啟新瀏覽視窗" class="headerlink" title="6.開啟新瀏覽視窗"></a><strong>6.開啟新瀏覽視窗</strong></h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --proxy-server=<span class="string">&quot;socks5://localhost:1080&quot;</span> --host-resolver-rules=<span class="string">&quot;MAP * 0.0.0.0 , EXCLUDE localhost&quot;</span> --user-data-dir=/tmp/&lt;ClusterName-m&gt;</span><br></pre></td></tr></table></figure>
 <h3 id="7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter"><a href="#7-在新瀏覽視窗啟動-TrackingUI-or-Jupyter" class="headerlink" title="7. 在新瀏覽視窗啟動 TrackingUI or Jupyter"></a><strong>7. 在新瀏覽視窗啟動 TrackingUI or Jupyter</strong></h3><p>TrackingUI: <code>http://&lt;ClusterName-m&gt;:8088</code></p>
 <p>Jupyter: <code>http://&lt;ClusterName-m&gt;:8123</code></p>
 
@@ -480,7 +481,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>
@@ -602,16 +603,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <span class="chip bg-color">Dataproc</span>
                     </a>
                     
+                    <a href="/tags/pyspark/" target="_blank">
+                        <span class="chip bg-color">pyspark</span>
+                    </a>
+                    
                     <a href="/tags/TrackingUI/" target="_blank">
                         <span class="chip bg-color">TrackingUI</span>
                     </a>
                     
                     <a href="/tags/memory/" target="_blank">
                         <span class="chip bg-color">memory</span>
-                    </a>
-                    
-                    <a href="/tags/pyspark/" target="_blank">
-                        <span class="chip bg-color">pyspark</span>
                     </a>
                     
                 </div>

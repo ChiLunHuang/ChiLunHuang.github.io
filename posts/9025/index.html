@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -416,38 +416,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <li>歡樂愉快的學習精神</li>
 </ul>
 <h3 id="1-Create-Dataframe"><a href="#1-Create-Dataframe" class="headerlink" title="1.Create Dataframe"></a><strong>1.Create Dataframe</strong></h3><p>建立一個簡單的水果清單以及進貨日期，一開始日期是 <code>string</code>：</p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true">#!/usr/bin/env python</span>
-<span class="token comment" spellcheck="true"># -*- coding: utf-8 -*-</span>
-<span class="token keyword">from</span> pyspark <span class="token keyword">import</span> SparkConf<span class="token punctuation">,</span> SparkContext
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql <span class="token keyword">import</span> SparkSession
-<span class="token keyword">import</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>functions <span class="token keyword">as</span> F
-<span class="token keyword">from</span> pyspark<span class="token punctuation">.</span>sql<span class="token punctuation">.</span>types <span class="token keyword">import</span> <span class="token operator">*</span>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pyspark <span class="keyword">import</span> SparkConf, SparkContext</span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">spark = SparkSession.builder.appName(<span class="string">&#x27;date_process&#x27;</span>).getOrCreate()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create dataset</span></span><br><span class="line">df = spark.createDataFrame([(<span class="string">&quot;bell fruit&quot;</span>, <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;2020/05/26&quot;</span>), \</span><br><span class="line">                                (<span class="string">&quot;bell fruit&quot;</span>, <span class="string">&quot;banana&quot;</span>, <span class="string">&quot;2020/05/27&quot;</span>), \</span><br><span class="line">                                (<span class="string">&quot;banana&quot;</span>, <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;2020/05/28&quot;</span>), \</span><br><span class="line">                                ], [<span class="string">&quot;fruit_1&quot;</span>, <span class="string">&quot;fruit_2&quot;</span>, <span class="string">&quot;date&quot;</span>])</span><br></pre></td></tr></table></figure>
 
-spark <span class="token operator">=</span> SparkSession<span class="token punctuation">.</span>builder<span class="token punctuation">.</span>appName<span class="token punctuation">(</span><span class="token string">'date_process'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>getOrCreate<span class="token punctuation">(</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true"># Create dataset</span>
-df <span class="token operator">=</span> spark<span class="token punctuation">.</span>createDataFrame<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token string">"bell fruit"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/26"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
-                                <span class="token punctuation">(</span><span class="token string">"bell fruit"</span><span class="token punctuation">,</span> <span class="token string">"banana"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/27"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
-                                <span class="token punctuation">(</span><span class="token string">"banana"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"2020/05/28"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> \
-                                <span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">"fruit_1"</span><span class="token punctuation">,</span> <span class="token string">"fruit_2"</span><span class="token punctuation">,</span> <span class="token string">"date"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><img src="/medias/post_img/9025_1.jpg" alt="創建資料"></p>
 <h3 id="2-轉換-date-格式"><a href="#2-轉換-date-格式" class="headerlink" title="2.轉換 date 格式"></a><strong>2.轉換 date 格式</strong></h3><p>非常簡單的方法，使用 <code>to_date</code>，前面的 <code>F</code> 是在前面 import 時取的新名稱 <code>import pyspark.sql.functions as F</code>，後面的 <code>yyyy/MM/dd</code> 格式為原始字串的格式，如果原始字串是 <code>2020-05-27</code> 就要改成 <code>yyyy-MM-dd</code></p>
 <p><strong><em>要注意的是這個方法是在 <code>spark 2.2 版本</code> 中才新增的喔！！</em></strong></p>
-<pre class="line-numbers language-python"><code class="language-python">df_todate <span class="token operator">=</span> df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">"date"</span><span class="token punctuation">,</span> F<span class="token punctuation">.</span>to_date<span class="token punctuation">(</span>F<span class="token punctuation">.</span>col<span class="token punctuation">(</span><span class="token string">"date"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'yyyy/MM/dd'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df_todate = df.withColumn(<span class="string">&quot;date&quot;</span>, F.to_date(F.col(<span class="string">&quot;date&quot;</span>), <span class="string">&#x27;yyyy/MM/dd&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
 <p>執行後就會看到資料的格式已經從 <code>string</code> 轉成 <code>date</code> 型態了！</p>
 <p><img src="/medias/post_img/9025_2.jpg" alt="字串格式變成 date"></p>
 <h3 id="3-轉換-timestamp-格式"><a href="#3-轉換-timestamp-格式" class="headerlink" title="3.轉換 timestamp 格式"></a><strong>3.轉換 timestamp 格式</strong></h3><p>這裡也相當的簡單，如果需要將時間格式轉成 timestamp，只要使用 <code>unix_timestamp</code> 就可以了，跟上面的 <code>F.to_date</code> 使用方法是一模一樣的喔！</p>
-<pre class="line-numbers language-python"><code class="language-python">df_timestamp <span class="token operator">=</span> df<span class="token punctuation">.</span>withColumn<span class="token punctuation">(</span><span class="token string">'timestamp'</span><span class="token punctuation">,</span>F<span class="token punctuation">.</span>unix_timestamp<span class="token punctuation">(</span>F<span class="token punctuation">.</span>col<span class="token punctuation">(</span><span class="token string">'date'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string">'yy/MM/dd'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df_timestamp = df.withColumn(<span class="string">&#x27;timestamp&#x27;</span>,F.unix_timestamp(F.col(<span class="string">&#x27;date&#x27;</span>),<span class="string">&#x27;yy/MM/dd&#x27;</span>))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>可以看到新增了一個 timestamp 欄位，型態為 <code>int</code></p>
 <p><img src="/medias/post_img/9025_3.jpg" alt="字串格式變成 timestamp"></p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 <p>在 <code>pyspark.sql.functions</code> 其實有許多好用的小 function 可以直接使用，也不用再自己辛苦的寫 <code>udf</code>(User Defined function)，在之後的介紹會再慢慢帶給大家。下方為今天介紹的兩種好用的小function。</p>
 <blockquote>
-<p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.to_date" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.to_date</a></p>
+<p><a target="_blank" rel="noopener" href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.to_date">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.to_date</a></p>
 </blockquote>
 <blockquote>
-<p><a href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.unix_timestamp" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.unix_timestamp</a></p>
+<p><a target="_blank" rel="noopener" href="https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.unix_timestamp">https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#pyspark.sql.functions.unix_timestamp</a></p>
 </blockquote>
 
             </div>
@@ -495,7 +483,7 @@ df <span class="token operator">=</span> spark<span class="token punctuation">.<
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>

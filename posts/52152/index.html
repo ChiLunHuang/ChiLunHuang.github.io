@@ -61,7 +61,7 @@
 
     <!-- GA & GTM END-->
 
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
@@ -427,7 +427,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </ul>
 <p>在官方文件中也解釋得蠻清楚的，我就簡單的帶過所有可以使用的相關語法：</p>
 <h3 id="1-truncatechars"><a href="#1-truncatechars" class="headerlink" title="1. truncatechars"></a><strong>1. truncatechars</strong></h3><p><code>truncatechars</code>從字面上的意思也很好理解，使用方式如下：</p>
-<pre><code>{{ value|truncatechars:7 }}</code></pre><p>結果如下圖，可以看出他秀出了六個字<code>&lt;p&gt;這是一…</code>，這個例子可以看出兩個小結論：</p>
+<figure class="highlight handlebars"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123; <span class="name">value</span>|truncatechars:7 &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>結果如下圖，可以看出他秀出了六個字<code>&lt;p&gt;這是一…</code>，這個例子可以看出兩個小結論：</p>
 <ul>
 <li>Filters 後面所寫的數字會自動 <code>-1</code>，我是填 7，但只出現 6 個</li>
 <li>如果文章儲存的方式是直接存入整個 <code>html</code>，這樣其他 tag 也會被算入</li>
@@ -436,22 +437,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <p>針對第二點，<code>Django filters</code> 也有相對應的解決方式，請繼續看下去！ </p>
 <p><img src="/medias/post_img/52152_1.jpg" alt="結果"></p>
 <h3 id="2-truncatechars-html"><a href="#2-truncatechars-html" class="headerlink" title="2. truncatechars_html"></a><strong>2. truncatechars_html</strong></h3><p>直接上範例：</p>
-<pre><code>{{ value| truncatechars_html:7 }}</code></pre><p>這時候大家應該有發現，這次 filter 自動忽略了 tag <code>&lt;p&gt;...&lt;/p&gt;</code>，直接抓取了中間的六個文字！</p>
+<figure class="highlight handlebars"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123; <span class="name">value</span>| truncatechars_html:7 &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>這時候大家應該有發現，這次 filter 自動忽略了 tag <code>&lt;p&gt;...&lt;/p&gt;</code>，直接抓取了中間的六個文字！</p>
 <blockquote>
 <p>小提醒：如果不想要顯示 html 出現在頁面上，在要語法後面加上<code>safe</code>:</p>
 </blockquote>
-<pre><code>{{ value| truncatechars_html:7|safe }}</code></pre><p><img src="/medias/post_img/52152_2.jpg" alt="結果"></p>
+<figure class="highlight handlebars"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123; <span class="name">value</span>| truncatechars_html:7|safe &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/medias/post_img/52152_2.jpg" alt="結果"></p>
 <h3 id="3-truncatewords-中文不適用"><a href="#3-truncatewords-中文不適用" class="headerlink" title="3. truncatewords(中文不適用)"></a><strong>3. truncatewords(中文不適用)</strong></h3><p>這個字面上看起來好理解，但他卻<code>不適用在中文</code>上面喔！他會針對句子中的標點符號或是空白來斷字，這個方式對英語系的才會有效果，中文會變得非常奇怪，變成整段字都會回傳！</p>
 <h3 id="4-truncatewords-html-中文不適用"><a href="#4-truncatewords-html-中文不適用" class="headerlink" title="4. truncatewords_html(中文不適用)"></a><strong>4. truncatewords_html(中文不適用)</strong></h3><p>與 <code>truncatewords</code>相同，不適用於中文，與上面的差別就是 html tag 會被忽略計算。</p>
 <h3 id="5-同場加碼-slice"><a href="#5-同場加碼-slice" class="headerlink" title="5. 同場加碼 slice"></a><strong>5. 同場加碼 slice</strong></h3><p><code>slice</code>這個方法是我還沒發現 <code>truncat</code> 體系時最常使用切割字串的方式，不過他就不會自動加上 <code>...</code>了。</p>
 <p>他比較特別的是有點像 python List [:] 的用法，可以指定前後的位置：</p>
-<pre><code>{{ some_list|slice:"0:2" }}</code></pre><p><strong><em>特別的是他與 python 相同，是從 0 開始計算位置，但不能使用 -1</em></strong></p>
+<figure class="highlight handlebars"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123; <span class="name">some_list</span>|slice:<span class="string">&quot;0:2&quot;</span> &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong><em>特別的是他與 python 相同，是從 0 開始計算位置，但不能使用 -1</em></strong></p>
 <p><img src="/medias/post_img/52152_3.jpg" alt="結果"></p>
 <h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a><strong>參考資料</strong></h3><blockquote>
-<p>truncatechars: <a href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#truncatechars" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#truncatechars</a></p>
+<p>truncatechars: <a target="_blank" rel="noopener" href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#truncatechars">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#truncatechars</a></p>
 </blockquote>
 <blockquote>
-<p>slice: <a href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#slice" target="_blank" rel="noopener">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#slice</a></p>
+<p>slice: <a target="_blank" rel="noopener" href="https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#slice">https://docs.djangoproject.com/en/3.1/ref/templates/builtins/#slice</a></p>
 </blockquote>
 <p>若有任何問題與指教歡迎與我聯繫，若覺得我的內容不錯麻煩幫我隨便點個廣告，謝謝。</p>
 
@@ -500,7 +506,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="disqus-card card" data-aos="fade-up">
     <div id="disqus_thread" class="card-content">
         <noscript>Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
     </div>
 </div>
@@ -619,12 +625,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/python/" target="_blank">
-                        <span class="chip bg-color">python</span>
-                    </a>
-                    
                     <a href="/tags/urlparse/" target="_blank">
                         <span class="chip bg-color">urlparse</span>
+                    </a>
+                    
+                    <a href="/tags/python/" target="_blank">
+                        <span class="chip bg-color">python</span>
                     </a>
                     
                     <a href="/tags/utm/" target="_blank">
