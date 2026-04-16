@@ -1093,11 +1093,11 @@
             
             <tag> Dataproc </tag>
             
-            <tag> pyspark </tag>
-            
             <tag> TrackingUI </tag>
             
             <tag> memory </tag>
+            
+            <tag> pyspark </tag>
             
         </tags>
       
